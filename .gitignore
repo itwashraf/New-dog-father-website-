@@ -12,3 +12,6 @@ Thumbs.db
 # WordPress local artifacts
 wp-config.php
 *.sql
+
+# Build artifacts (zips)
+dist/
