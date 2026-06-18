@@ -65,7 +65,153 @@ class DFCC_Services extends DFCC_Module {
 		add_filter( 'manage_dfcc_service_posts_columns', array( $this, 'columns' ) );
 		add_action( 'manage_dfcc_service_posts_custom_column', array( $this, 'render_column' ), 10, 2 );
 
+		// Dedicated, reliable editor screen in the control center.
+		add_filter( 'dfcc_admin_pages', array( $this, 'register_page' ) );
+		add_action( 'admin_post_dfcc_save_services', array( $this, 'handle_manager_save' ) );
+
 		add_shortcode( 'dfcc_services', array( $this, 'shortcode' ) );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Services Manager screen
+	 * ------------------------------------------------------------------- */
+
+	/**
+	 * Register the "Manage Services" control-center page.
+	 *
+	 * @param array $pages Existing pages.
+	 * @return array
+	 */
+	public function register_page( $pages ) {
+		$pages[] = array(
+			'slug'     => 'dfcc-services',
+			'title'    => __( 'Manage Services', 'dog-father-control-center' ),
+			'callback' => array( $this, 'render_manager' ),
+			'order'    => 20,
+		);
+		return $pages;
+	}
+
+	/**
+	 * Fetch all services (any status) ordered for the manager.
+	 *
+	 * @return WP_Post[]
+	 */
+	private function all_services() {
+		return get_posts(
+			array(
+				'post_type'        => 'dfcc_service',
+				'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+				'numberposts'      => -1,
+				'orderby'          => 'menu_order',
+				'order'            => 'ASC',
+				'suppress_filters' => true,
+			)
+		);
+	}
+
+	/**
+	 * Render the Services Manager screen.
+	 *
+	 * @return void
+	 */
+	public function render_manager() {
+		$this->view(
+			'services-manager',
+			array(
+				'services' => $this->all_services(),
+				'icons'    => $this->icon_choices(),
+			)
+		);
+	}
+
+	/**
+	 * A small curated set of dashicons for the icon picker.
+	 *
+	 * @return array slug => label.
+	 */
+	public function icon_choices() {
+		return array(
+			'dashicons-building'            => __( 'Building / Room', 'dog-father-control-center' ),
+			'dashicons-pets'               => __( 'Paw', 'dog-father-control-center' ),
+			'dashicons-heart'              => __( 'Heart / Vet', 'dog-father-control-center' ),
+			'dashicons-awards'             => __( 'Award / Training', 'dog-father-control-center' ),
+			'dashicons-buddicons-activity' => __( 'Spa / Grooming', 'dog-father-control-center' ),
+			'dashicons-buddicons-community' => __( 'Pool / Community', 'dog-father-control-center' ),
+			'dashicons-car'                => __( 'Car / Pickup', 'dog-father-control-center' ),
+			'dashicons-clock'              => __( 'Clock / Day Care', 'dog-father-control-center' ),
+			'dashicons-star-filled'        => __( 'Star', 'dog-father-control-center' ),
+			'dashicons-shield'             => __( 'Shield / Safety', 'dog-father-control-center' ),
+		);
+	}
+
+	/**
+	 * Handle the Services Manager save (create / update / delete in one go).
+	 *
+	 * @return void
+	 */
+	public function handle_manager_save() {
+		if ( ! current_user_can( dfcc_admin_cap() ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'dog-father-control-center' ) );
+		}
+		check_admin_referer( 'dfcc_save_services' );
+
+		$rows = isset( $_POST['service'] ) && is_array( $_POST['service'] ) ? wp_unslash( $_POST['service'] ) : array(); // phpcs:ignore WordPress.Security.ValidationSanitization.MissingUnslash, WordPress.Security.ValidationSanitization.InputNotSanitized
+
+		$order = 0;
+		foreach ( $rows as $key => $row ) {
+			$title = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+
+			// "new" row only creates when a title is provided.
+			$is_new = ( 0 === strpos( (string) $key, 'new' ) );
+			if ( $is_new && '' === $title ) {
+				continue;
+			}
+
+			// Delete existing rows flagged for removal.
+			if ( ! $is_new && ! empty( $row['delete'] ) ) {
+				wp_trash_post( (int) $key );
+				continue;
+			}
+
+			if ( '' === $title ) {
+				continue;
+			}
+
+			$postarr = array(
+				'post_type'    => 'dfcc_service',
+				'post_status'  => 'publish',
+				'post_title'   => $title,
+				'post_excerpt' => isset( $row['excerpt'] ) ? sanitize_textarea_field( $row['excerpt'] ) : '',
+				'menu_order'   => $order,
+			);
+			if ( ! isset( $row['excerpt'] ) ) {
+				unset( $postarr['post_excerpt'] );
+			}
+
+			if ( $is_new ) {
+				$postarr['post_content'] = $postarr['post_excerpt'] ?? '';
+				$id                      = wp_insert_post( $postarr );
+			} else {
+				$postarr['ID'] = (int) $key;
+				$id            = wp_update_post( $postarr );
+			}
+
+			if ( $id && ! is_wp_error( $id ) ) {
+				update_post_meta( $id, self::PREFIX . 'price', sanitize_text_field( $row['price'] ?? '' ) );
+				update_post_meta( $id, self::PREFIX . 'price_suffix', sanitize_text_field( $row['price_suffix'] ?? '' ) );
+				update_post_meta( $id, self::PREFIX . 'icon', sanitize_text_field( $row['icon'] ?? '' ) );
+				update_post_meta( $id, self::PREFIX . 'features', sanitize_textarea_field( $row['features'] ?? '' ) );
+				update_post_meta( $id, self::PREFIX . 'highlight', empty( $row['highlight'] ) ? '' : '1' );
+				update_post_meta( $id, self::PREFIX . 'visible', empty( $row['visible'] ) ? '0' : '1' );
+			}
+			$order++;
+		}
+
+		dfcc_purge_caches();
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-services', 'dfcc_saved' => '1' ), admin_url( 'admin.php' ) ) );
+		exit;
 	}
 
 	/**
@@ -201,6 +347,10 @@ class DFCC_Services extends DFCC_Module {
 		// Visibility checkbox (default visible).
 		$visible = isset( $_POST['dfcc_visible'] ) ? '1' : '0';
 		update_post_meta( $post_id, self::PREFIX . 'visible', $visible );
+
+		if ( function_exists( 'dfcc_purge_caches' ) ) {
+			dfcc_purge_caches();
+		}
 	}
 
 	/**

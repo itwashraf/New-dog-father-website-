@@ -139,6 +139,10 @@ class DFCC_Setup extends DFCC_Module {
 
 		// Rebuild everything (pages/menus/services/testimonials/faqs/gallery).
 		$this->run();
+
+		if ( function_exists( 'dfcc_purge_caches' ) ) {
+			dfcc_purge_caches();
+		}
 	}
 
 	/**

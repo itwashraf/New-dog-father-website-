@@ -42,6 +42,12 @@ class DFCC_Admin_Menu extends DFCC_Module {
 		add_action( 'admin_init', array( $this, 'maybe_flush_rewrite' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 		add_filter( 'admin_footer_text', array( $this, 'footer_credit' ) );
+
+		// Clear caches whenever the site's content/brand settings are saved.
+		foreach ( array( 'dfcc_home_settings', 'dfcc_global_settings', 'dfcc_theme_settings', 'dfcc_seo_settings' ) as $dfcc_opt ) {
+			add_action( 'update_option_' . $dfcc_opt, 'dfcc_purge_caches', 10, 0 );
+			add_action( 'add_option_' . $dfcc_opt, 'dfcc_purge_caches', 10, 0 );
+		}
 	}
 
 	/**

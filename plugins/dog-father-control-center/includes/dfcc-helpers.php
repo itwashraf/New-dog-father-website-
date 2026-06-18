@@ -26,6 +26,56 @@ function dfcc_get_setting( $group, $key, $default = '' ) {
 }
 
 /**
+ * Purge the most common caching layers after the plugin changes content.
+ *
+ * Keeps the public site from showing a stale version after editing services,
+ * the homepage, or running the official-content reset. Safely no-ops when a
+ * given cache plugin or host feature is not present.
+ *
+ * @return void
+ */
+function dfcc_purge_caches() {
+	if ( function_exists( 'wp_cache_flush' ) ) {
+		wp_cache_flush();
+	}
+
+	// LiteSpeed Cache.
+	do_action( 'litespeed_purge_all' );
+
+	// WP Rocket.
+	if ( function_exists( 'rocket_clean_domain' ) ) {
+		rocket_clean_domain();
+	}
+
+	// W3 Total Cache.
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all();
+	}
+
+	// WP Super Cache.
+	if ( function_exists( 'wp_cache_clear_cache' ) ) {
+		wp_cache_clear_cache();
+	}
+
+	// WP Fastest Cache.
+	if ( isset( $GLOBALS['wp_fastest_cache'] ) && is_object( $GLOBALS['wp_fastest_cache'] ) && method_exists( $GLOBALS['wp_fastest_cache'], 'deleteCache' ) ) {
+		$GLOBALS['wp_fastest_cache']->deleteCache( true );
+	}
+
+	// SG Optimizer, Cache Enabler, Autoptimize, Breeze, Hummingbird.
+	do_action( 'sg_cachepress_purge_cache' );
+	do_action( 'cache_enabler_clear_complete_cache' );
+	do_action( 'autoptimize_action_cachepurged' );
+	do_action( 'breeze_clear_all_cache' );
+	do_action( 'wphb_clear_page_cache' );
+
+	/**
+	 * Allow integrations to flush their own cache.
+	 */
+	do_action( 'dfcc_purge_caches' );
+}
+
+/**
  * Convenience accessor for a brand color with sane fallbacks.
  *
  * @param string $slug One of: primary, gold, dark_red, orange, black, white.
