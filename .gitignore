@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+vendor/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+
+# WordPress local artifacts
+wp-config.php
+*.sql
