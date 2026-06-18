@@ -94,9 +94,11 @@ class DFCC_Post_Types extends DFCC_Module {
 					'show_in_menu' => $menu,
 					'public'       => true,
 					'has_archive'  => true,
-					'rewrite'      => array( 'slug' => 'services' ),
+					'rewrite'      => array( 'slug' => 'dog-services' ),
 					'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
-					'show_in_rest' => true,
+					// Classic editor for reliability (the block editor can white-screen
+					// on some hosts when combined with custom meta boxes).
+					'show_in_rest' => false,
 				)
 			)
 		);

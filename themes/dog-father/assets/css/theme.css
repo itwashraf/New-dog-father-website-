@@ -103,12 +103,13 @@ p { margin: 0 0 1.2em; }
   border-bottom: 1px solid var(--df-border-soft); transition: background .3s ease, border-color .3s ease;
 }
 .df-header.is-scrolled { background: rgba(0,0,0,.95); border-bottom-color: var(--df-border); }
-.df-header__inner { display: flex; align-items: center; gap: 28px; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
-.df-brand img, .df-brand .custom-logo { max-height: 54px; width: auto; }
+.df-header__inner { display: flex; align-items: center; gap: 20px; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
+.df-brand { display: flex; align-items: center; flex: 0 0 auto; }
+.df-brand img, .df-brand .custom-logo { max-height: 58px; width: auto; }
 .df-brand__text { font-family: var(--dfcc-heading-font); font-weight: 800; font-size: 1.4rem; color: #fff; letter-spacing: -.01em; }
 .df-brand__text span { color: var(--dfcc-primary); }
-.df-nav { display: flex; align-items: center; gap: 30px; margin-left: auto; }
-.df-menu { display: flex; align-items: center; gap: 26px; list-style: none; margin: 0; padding: 0; }
+.df-nav { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.df-menu { display: flex; align-items: center; gap: 20px; list-style: none; margin: 0; padding: 0; }
 .df-menu li { position: relative; }
 .df-menu a { color: #fff; font-weight: 600; font-size: .98rem; padding: 6px 0; position: relative; }
 .df-menu > li > a::after {
@@ -291,7 +292,10 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 .df-footer__social { display: flex; gap: 12px; margin-top: 18px; }
 .df-footer__social a { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--df-border-soft); display: grid; place-items: center; }
 .df-footer__social a:hover { border-color: var(--dfcc-primary); }
-.df-footer__bottom { border-top: 1px solid var(--df-border-soft); text-align: center; padding: 22px 24px; color: var(--df-ink-3); font-size: .88rem; }
+.df-footer__bottom { border-top: 1px solid var(--df-border-soft); display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; justify-content: space-between; padding: 22px 24px; color: var(--df-ink-3); font-size: .88rem; max-width: 1400px; margin: 0 auto; }
+.df-footer__bottom p { margin: 0; }
+.df-credit a { color: var(--dfcc-gold); font-weight: 700; }
+.df-credit a:hover { color: var(--dfcc-primary); }
 
 /* WhatsApp float --------------------------------------------------------- */
 .df-wa-float { position: fixed; right: 22px; bottom: 22px; z-index: 998; width: 58px; height: 58px; border-radius: 50%;
@@ -299,7 +303,7 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 .df-wa-float:hover { transform: scale(1.06); color: #fff; }
 
 /* Responsive ------------------------------------------------------------- */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .df-burger { display: flex; }
   .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 380px); flex-direction: column; align-items: flex-start;
     gap: 22px; background: #08080a; border-left: 1px solid var(--df-border); padding: 90px 28px 40px; transform: translateX(100%);

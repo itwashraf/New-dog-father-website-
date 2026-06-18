@@ -19,15 +19,17 @@ if ( ! dfather_show( 'services' ) ) {
 $df_eyebrow = dfather_home( 'services_eyebrow', __( 'What We Offer', 'dog-father' ) );
 $df_title   = dfather_home( 'services_title', __( 'Premium Services', 'dog-father' ) );
 
-$df_services = get_posts(
-	array(
-		'post_type'      => 'dfcc_service',
-		'posts_per_page' => 6,
-		'post_status'    => 'publish',
-		'orderby'        => 'menu_order',
-		'order'          => 'ASC',
-	)
+$df_service_args = array(
+	'post_type'      => 'dfcc_service',
+	'posts_per_page' => 6,
+	'post_status'    => 'publish',
+	'orderby'        => 'menu_order',
+	'order'          => 'ASC',
 );
+if ( class_exists( 'DFCC_Services' ) ) {
+	$df_service_args['meta_query'] = DFCC_Services::visible_meta_query(); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+}
+$df_services = get_posts( $df_service_args );
 
 $df_defaults = array(
 	array( 'dashicons-building', __( 'Luxury Boarding Suite', 'dog-father' ), __( 'Private climate-controlled suites with plush bedding and daily housekeeping.', 'dog-father' ) ),

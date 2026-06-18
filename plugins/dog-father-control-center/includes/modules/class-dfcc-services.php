@@ -115,6 +115,7 @@ class DFCC_Services extends DFCC_Module {
 		$icon         = self::get_meta( $post->ID, 'icon' );
 		$features     = self::get_meta( $post->ID, 'features' );
 		$highlight    = self::get_meta( $post->ID, 'highlight' );
+		$visible      = self::get_meta( $post->ID, 'visible', '1' );
 		?>
 		<div class="dfcc-meta-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
 			<p>
@@ -136,6 +137,14 @@ class DFCC_Services extends DFCC_Module {
 					<input type="checkbox" id="dfcc-highlight" name="dfcc_highlight" value="1" <?php checked( $highlight, '1' ); ?> />
 					<?php esc_html_e( 'Mark this service as featured', 'dog-father-control-center' ); ?>
 				</label>
+			</p>
+			<p>
+				<label><strong><?php esc_html_e( 'Visibility', 'dog-father-control-center' ); ?></strong></label><br />
+				<label for="dfcc-visible">
+					<input type="checkbox" id="dfcc-visible" name="dfcc_visible" value="1" <?php checked( '0' !== (string) $visible ); ?> />
+					<?php esc_html_e( 'Show this service on the website', 'dog-father-control-center' ); ?>
+				</label>
+				<span class="description"><?php esc_html_e( 'Untick to hide it everywhere without deleting it.', 'dog-father-control-center' ); ?></span>
 			</p>
 		</div>
 		<p>
@@ -188,6 +197,31 @@ class DFCC_Services extends DFCC_Module {
 		// Highlight checkbox.
 		$highlight = isset( $_POST['dfcc_highlight'] ) ? '1' : '';
 		update_post_meta( $post_id, self::PREFIX . 'highlight', $highlight );
+
+		// Visibility checkbox (default visible).
+		$visible = isset( $_POST['dfcc_visible'] ) ? '1' : '0';
+		update_post_meta( $post_id, self::PREFIX . 'visible', $visible );
+	}
+
+	/**
+	 * Meta query fragment that excludes services explicitly hidden
+	 * (visible = '0'). Services without the meta are treated as visible.
+	 *
+	 * @return array
+	 */
+	public static function visible_meta_query() {
+		return array(
+			'relation' => 'OR',
+			array(
+				'key'     => self::PREFIX . 'visible',
+				'value'   => '0',
+				'compare' => '!=',
+			),
+			array(
+				'key'     => self::PREFIX . 'visible',
+				'compare' => 'NOT EXISTS',
+			),
+		);
 	}
 
 	/* ---------------------------------------------------------------------
@@ -207,6 +241,7 @@ class DFCC_Services extends DFCC_Module {
 			if ( 'title' === $key ) {
 				$new['dfcc_price']     = __( 'Price', 'dog-father-control-center' );
 				$new['dfcc_featured']  = __( 'Featured', 'dog-father-control-center' );
+				$new['dfcc_visible']   = __( 'Visible', 'dog-father-control-center' );
 			}
 		}
 		return $new;
@@ -225,6 +260,11 @@ class DFCC_Services extends DFCC_Module {
 			echo '' === $price ? '—' : esc_html( wp_strip_all_tags( dfcc_money( $price ) ) );
 		} elseif ( 'dfcc_featured' === $column ) {
 			echo self::get_meta( $post_id, 'highlight' ) ? '★' : '—';
+		} elseif ( 'dfcc_visible' === $column ) {
+			$visible = '0' !== (string) self::get_meta( $post_id, 'visible', '1' );
+			echo $visible
+				? '<span class="dashicons dashicons-visibility" style="color:#46b450" title="' . esc_attr__( 'Shown on the website', 'dog-father-control-center' ) . '"></span>'
+				: '<span class="dashicons dashicons-hidden" style="color:#cf240a" title="' . esc_attr__( 'Hidden', 'dog-father-control-center' ) . '"></span>';
 		}
 	}
 
@@ -260,6 +300,7 @@ class DFCC_Services extends DFCC_Module {
 				'date'       => 'DESC',
 			),
 			'no_found_rows'  => true,
+			'meta_query'     => self::visible_meta_query(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		);
 
 		if ( '' !== $atts['category'] ) {

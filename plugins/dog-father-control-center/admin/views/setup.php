@@ -11,7 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$dfcc_just_ran = isset( $_GET['dfcc_setup'] ) && 'done' === sanitize_text_field( wp_unslash( $_GET['dfcc_setup'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$dfcc_action   = isset( $_GET['dfcc_setup'] ) ? sanitize_text_field( wp_unslash( $_GET['dfcc_setup'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$dfcc_just_ran = ( 'done' === $dfcc_action );
+$dfcc_was_reset = ( 'reset' === $dfcc_action );
 $dfcc_is_theme = ( 'dog-father' === get_template() );
 ?>
 <div class="wrap dfcc-wrap">
@@ -25,6 +27,12 @@ $dfcc_is_theme = ( 'dog-father' === get_template() );
 
 	<?php if ( $dfcc_just_ran ) : ?>
 		<div class="dfcc-alert"><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Setup finished! Your site is ready. Visit the homepage to see it live.', 'dog-father-control-center' ); ?>
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'View site', 'dog-father-control-center' ); ?></a>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( $dfcc_was_reset ) : ?>
+		<div class="dfcc-alert"><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e( 'Official Dog Father content applied — homepage, services, FAQs and business info are now up to date.', 'dog-father-control-center' ); ?>
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'View site', 'dog-father-control-center' ); ?></a>
 		</div>
 	<?php endif; ?>
@@ -79,5 +87,21 @@ $dfcc_is_theme = ( 'dog-father' === get_template() );
 				</p>
 			<?php endif; ?>
 		</div>
+	</div>
+
+	<div class="dfcc-panel" style="border-color:var(--dfcc-orange,#FF2D08);">
+		<h2><?php esc_html_e( 'Apply Official Dog Father Content', 'dog-father-control-center' ); ?></h2>
+		<p class="description" style="margin-bottom:12px;">
+			<?php esc_html_e( 'Load the official content: homepage copy, real services & EGP prices, FAQs, business info (phone, WhatsApp, email) and the extra pages (Clinic, Home Visit, Pickup, Shop).', 'dog-father-control-center' ); ?>
+		</p>
+		<p class="description" style="margin-bottom:16px;color:var(--dfcc-orange,#FF2D08);">
+			<strong><?php esc_html_e( 'Note:', 'dog-father-control-center' ); ?></strong>
+			<?php esc_html_e( 'This overwrites the current homepage text and replaces the demo services, testimonials, FAQs and gallery placeholders. Your bookings, dog profiles, pages and menus are not touched.', 'dog-father-control-center' ); ?>
+		</p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('<?php echo esc_js( __( 'Apply the official content? This replaces demo services, testimonials, FAQs and homepage text.', 'dog-father-control-center' ) ); ?>');">
+			<input type="hidden" name="action" value="dfcc_reset_content" />
+			<?php wp_nonce_field( 'dfcc_reset_content' ); ?>
+			<button type="submit" class="button button-secondary button-hero"><?php esc_html_e( 'Reset to Official Content', 'dog-father-control-center' ); ?></button>
+		</form>
 	</div>
 </div>

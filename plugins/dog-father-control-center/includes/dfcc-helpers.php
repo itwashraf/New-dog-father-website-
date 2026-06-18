@@ -74,6 +74,9 @@ function dfcc_menu_slug() {
  * @return string
  */
 function dfcc_money( $amount ) {
-	$currency = dfcc_get_setting( 'dfcc_global_settings', 'currency', 'SAR' );
-	return esc_html( $currency . ' ' . number_format_i18n( (float) $amount, 2 ) );
+	$currency = dfcc_get_setting( 'dfcc_global_settings', 'currency', 'EGP' );
+	$amount   = (float) $amount;
+	// Whole numbers render without trailing decimals (e.g. "500 EGP"); otherwise keep 2dp.
+	$decimals = ( floor( $amount ) === $amount ) ? 0 : 2;
+	return esc_html( number_format_i18n( $amount, $decimals ) . ' ' . $currency );
 }

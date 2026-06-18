@@ -41,6 +41,7 @@ class DFCC_Admin_Menu extends DFCC_Module {
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 		add_action( 'admin_init', array( $this, 'maybe_flush_rewrite' ) );
 		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+		add_filter( 'admin_footer_text', array( $this, 'footer_credit' ) );
 	}
 
 	/**
@@ -196,6 +197,32 @@ class DFCC_Admin_Menu extends DFCC_Module {
 			$classes .= ' dfcc-admin-screen';
 		}
 		return $classes;
+	}
+
+	/**
+	 * Provada credit in the admin footer (Dog Father screens + our CPTs).
+	 *
+	 * @param string $text Existing footer text.
+	 * @return string
+	 */
+	public function footer_credit( $text ) {
+		$page    = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_dfcc = ( 0 === strpos( $page, 'dfcc' ) );
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( $screen && 0 === strpos( (string) $screen->post_type, 'dfcc_' ) ) {
+			$is_dfcc = true;
+		}
+
+		if ( ! $is_dfcc ) {
+			return $text;
+		}
+
+		return sprintf(
+			/* translators: %s: Provada link. */
+			esc_html__( 'The Dog Father Control Center — built by %s', 'dog-father-control-center' ),
+			'<a href="https://provada.net" target="_blank" rel="noopener"><strong>Provada</strong></a>'
+		);
 	}
 }
 

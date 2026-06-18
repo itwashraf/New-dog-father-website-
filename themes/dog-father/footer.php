@@ -75,6 +75,10 @@ $df_address  = dfather_info( 'address', '' );
 			);
 			?>
 		</p>
+		<p class="df-credit">
+			<?php esc_html_e( 'Designed & developed by', 'dog-father' ); ?>
+			<a href="https://provada.net" target="_blank" rel="noopener">Provada</a>
+		</p>
 	</div>
 </footer>
 

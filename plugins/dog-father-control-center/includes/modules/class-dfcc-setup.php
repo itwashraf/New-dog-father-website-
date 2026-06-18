@@ -39,6 +39,7 @@ class DFCC_Setup extends DFCC_Module {
 		add_filter( 'dfcc_admin_pages', array( $this, 'register_page' ) );
 		add_action( 'after_switch_theme', array( $this, 'maybe_auto_setup' ) );
 		add_action( 'admin_post_dfcc_run_setup', array( $this, 'handle_run' ) );
+		add_action( 'admin_post_dfcc_reset_content', array( $this, 'handle_reset' ) );
 		add_action( 'admin_notices', array( $this, 'first_run_notice' ) );
 	}
 
@@ -91,6 +92,85 @@ class DFCC_Setup extends DFCC_Module {
 	}
 
 	/**
+	 * Handle "Reset to official content" — overwrites homepage/global content and
+	 * replaces demo services, testimonials, FAQs and gallery with the official
+	 * Dog Father content.
+	 *
+	 * @return void
+	 */
+	public function handle_reset() {
+		if ( ! current_user_can( dfcc_admin_cap() ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'dog-father-control-center' ) );
+		}
+		check_admin_referer( 'dfcc_reset_content' );
+
+		$this->reset();
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-setup', 'dfcc_setup' => 'reset' ), admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * Force-apply the official content: wipe demo CPT content, overwrite the
+	 * homepage + global settings, then re-run the full build.
+	 *
+	 * @return void
+	 */
+	public function reset() {
+		// Remove auto-generated demo content so it can be reseeded cleanly.
+		foreach ( array( 'dfcc_service', 'dfcc_testimonial', 'dfcc_faq', 'dfcc_gallery' ) as $type ) {
+			$ids = get_posts(
+				array(
+					'post_type'        => $type,
+					'post_status'      => 'any',
+					'numberposts'      => -1,
+					'fields'           => 'ids',
+					'suppress_filters' => true,
+				)
+			);
+			foreach ( $ids as $pid ) {
+				wp_delete_post( $pid, true );
+			}
+		}
+
+		// Force-overwrite homepage + global content.
+		$this->seed_home_defaults( true );
+		$this->seed_global( true );
+
+		// Rebuild everything (pages/menus/services/testimonials/faqs/gallery).
+		$this->run();
+	}
+
+	/**
+	 * Seed the business/global settings.
+	 *
+	 * @param bool $force Overwrite existing core values when true.
+	 * @return void
+	 */
+	private function seed_global( $force = false ) {
+		$current = get_option( 'dfcc_global_settings', array() );
+		$current = is_array( $current ) ? $current : array();
+
+		$official = array(
+			'business_name' => 'The Dog Father Hotel',
+			'tagline'       => "Egypt's Trusted Dog Boarding Hotel",
+			'phone'         => '+201094622999',
+			'whatsapp'      => '+201094622999',
+			'email'         => 'egy.dog.hotel@gmail.com',
+			'address'       => 'Cairo & Giza, Egypt',
+			'currency'      => 'EGP',
+			'opening_hours' => "Housekeeping every hour, 6:00 AM – 11:30 PM\nBoarding & care 24/7",
+		);
+
+		foreach ( $official as $key => $val ) {
+			if ( $force || empty( $current[ $key ] ) ) {
+				$current[ $key ] = $val;
+			}
+		}
+		update_option( 'dfcc_global_settings', $current );
+	}
+
+	/**
 	 * Show a welcome notice until setup has run.
 	 *
 	 * @return void
@@ -124,6 +204,7 @@ class DFCC_Setup extends DFCC_Module {
 		$pages = $this->create_pages();
 		$this->configure_reading( $pages );
 		$this->create_menus( $pages );
+		$this->seed_global();
 		$this->seed_home_defaults();
 		$this->seed_services();
 		$this->seed_testimonials();
@@ -142,17 +223,26 @@ class DFCC_Setup extends DFCC_Module {
 	 */
 	private function create_pages() {
 		$defs = array(
-			'home'           => array( __( 'Home', 'dog-father-control-center' ), '' ),
-			'about'          => array( __( 'About Us', 'dog-father-control-center' ), __( 'The Dog Father Hotel blends luxury hospitality with expert canine care. Edit this page with Elementor or the block editor.', 'dog-father-control-center' ) ),
-			'services'       => array( __( 'Services', 'dog-father-control-center' ), '[dfcc_services]' ),
-			'gallery'        => array( __( 'Gallery', 'dog-father-control-center' ), '[dfcc_gallery]' ),
-			'testimonials'   => array( __( 'Testimonials', 'dog-father-control-center' ), '[dfcc_testimonials]' ),
-			'book-now'       => array( __( 'Book Now', 'dog-father-control-center' ), '[dfcc_booking_form]' ),
-			'contact'        => array( __( 'Contact', 'dog-father-control-center' ), "[dfcc_address]\n[dfcc_phone]\n[dfcc_email]\n[dfcc_map]" ),
-			'faq'            => array( __( 'FAQ', 'dog-father-control-center' ), '' ),
-			'blog'           => array( __( 'Blog', 'dog-father-control-center' ), '' ),
-			'privacy-policy' => array( __( 'Privacy Policy', 'dog-father-control-center' ), __( 'Add your privacy policy here.', 'dog-father-control-center' ) ),
-			'terms'          => array( __( 'Terms & Conditions', 'dog-father-control-center' ), __( 'Add your terms and conditions here.', 'dog-father-control-center' ) ),
+			'home'              => array( __( 'Home', 'dog-father-control-center' ), '' ),
+			'about'             => array( __( 'About Us', 'dog-father-control-center' ), $this->about_content() ),
+			'services'          => array( __( 'Services', 'dog-father-control-center' ), '[dfcc_services count="9"]' ),
+			'dog-boarding'      => array( __( 'Dog Boarding', 'dog-father-control-center' ), $this->boarding_content() ),
+			'long-term-boarding' => array( __( 'Long-Term Boarding', 'dog-father-control-center' ), __( 'Ideal for travel, relocation, business trips and extended vacations. Your dog enjoys the same structured daily routine, feeding, exercise and supervision for as long as needed. Contact us for extended-stay rates.', 'dog-father-control-center' ) ),
+			'clinic'            => array( __( 'Clinic', 'dog-father-control-center' ), $this->clinic_content() ),
+			'home-visit'        => array( __( 'Home Visit', 'dog-father-control-center' ), $this->home_visit_content() ),
+			'pickup'            => array( __( 'Pickup', 'dog-father-control-center' ), $this->pickup_content() ),
+			'shop'              => array( __( 'Shop', 'dog-father-control-center' ), __( 'Our pet shop is coming soon — premium food, accessories and care products for your dog. Stay tuned!', 'dog-father-control-center' ) ),
+			'gallery'           => array( __( 'Gallery', 'dog-father-control-center' ), '[dfcc_gallery]' ),
+			'testimonials'      => array( __( 'Testimonials', 'dog-father-control-center' ), '[dfcc_testimonials count="9"]' ),
+			'book-now'          => array( __( 'Book Now', 'dog-father-control-center' ), '[dfcc_booking_form]' ),
+			'booking'           => array( __( 'Booking', 'dog-father-control-center' ), '[dfcc_booking_form]' ),
+			'contact'           => array( __( 'Contact', 'dog-father-control-center' ), "[dfcc_address]\n[dfcc_phone]\n[dfcc_whatsapp]\n[dfcc_email]\n[dfcc_map]" ),
+			'faq'               => array( __( 'FAQ', 'dog-father-control-center' ), '' ),
+			'blog'              => array( __( 'Blog', 'dog-father-control-center' ), '' ),
+			'privacy-policy'    => array( __( 'Privacy Policy', 'dog-father-control-center' ), __( 'Add your privacy policy here.', 'dog-father-control-center' ) ),
+			'terms'             => array( __( 'Terms & Conditions', 'dog-father-control-center' ), __( 'Add your terms and conditions here.', 'dog-father-control-center' ) ),
+			'refund-policy'     => array( __( 'Refund Policy', 'dog-father-control-center' ), __( 'Add your refund policy here.', 'dog-father-control-center' ) ),
+			'vaccination-policy' => array( __( 'Vaccination Policy', 'dog-father-control-center' ), $this->vaccination_content() ),
 		);
 
 		$map = array();
@@ -206,7 +296,7 @@ class DFCC_Setup extends DFCC_Module {
 
 		$primary_id = $this->build_menu(
 			__( 'Primary Menu', 'dog-father-control-center' ),
-			array( 'home', 'about', 'services', 'gallery', 'testimonials', 'contact', 'book-now' ),
+			array( 'home', 'about', 'dog-boarding', 'clinic', 'home-visit', 'pickup', 'gallery', 'blog', 'contact' ),
 			$pages
 		);
 		if ( $primary_id ) {
@@ -215,7 +305,7 @@ class DFCC_Setup extends DFCC_Module {
 
 		$footer_id = $this->build_menu(
 			__( 'Footer Menu', 'dog-father-control-center' ),
-			array( 'about', 'services', 'gallery', 'faq', 'contact', 'privacy-policy' ),
+			array( 'about', 'dog-boarding', 'clinic', 'home-visit', 'gallery', 'faq', 'contact', 'privacy-policy', 'terms' ),
 			$pages
 		);
 		if ( $footer_id ) {
@@ -273,7 +363,7 @@ class DFCC_Setup extends DFCC_Module {
 	 *
 	 * @return void
 	 */
-	private function seed_home_defaults() {
+	private function seed_home_defaults( $force = false ) {
 		if ( ! class_exists( 'DFCC_Home_Settings' ) ) {
 			return;
 		}
@@ -283,7 +373,7 @@ class DFCC_Setup extends DFCC_Module {
 		$current  = is_array( $current ) ? $current : array();
 
 		foreach ( $defaults as $key => $val ) {
-			if ( ! isset( $current[ $key ] ) || '' === $current[ $key ] ) {
+			if ( $force || ! isset( $current[ $key ] ) || '' === $current[ $key ] ) {
 				$current[ $key ] = $val;
 			}
 		}
@@ -305,37 +395,133 @@ class DFCC_Setup extends DFCC_Module {
 		if ( $this->has_content( 'dfcc_service' ) ) {
 			return;
 		}
-		$services = array(
-			array( __( 'Luxury Boarding Suite', 'dog-father-control-center' ), __( 'Private climate-controlled suites with plush bedding and daily housekeeping.', 'dog-father-control-center' ), '250', __( '/ night', 'dog-father-control-center' ), 'dashicons-building', array( __( 'Private suite', 'dog-father-control-center' ), __( 'Plush orthopedic bedding', 'dog-father-control-center' ), __( 'Daily housekeeping', 'dog-father-control-center' ) ), 1 ),
-			array( __( 'Doggy Day Care', 'dog-father-control-center' ), __( 'Supervised play, socialisation and enrichment in a safe environment.', 'dog-father-control-center' ), '120', __( '/ day', 'dog-father-control-center' ), 'dashicons-pets', array( __( 'Group & solo play', 'dog-father-control-center' ), __( 'Trained supervisors', 'dog-father-control-center' ), __( 'Enrichment activities', 'dog-father-control-center' ) ), 0 ),
-			array( __( 'Veterinary Care', 'dog-father-control-center' ), __( 'On-site, on-call veterinary supervision and medication management.', 'dog-father-control-center' ), '', '', 'dashicons-heart', array( __( '24/7 on-call vet', 'dog-father-control-center' ), __( 'Medication handling', 'dog-father-control-center' ), __( 'Health monitoring', 'dog-father-control-center' ) ), 0 ),
-			array( __( 'Training Academy', 'dog-father-control-center' ), __( 'Certified trainers offering obedience, behaviour and confidence programmes.', 'dog-father-control-center' ), '300', __( '/ course', 'dog-father-control-center' ), 'dashicons-awards', array( __( 'Certified trainers', 'dog-father-control-center' ), __( 'Custom programmes', 'dog-father-control-center' ), __( 'Progress reports', 'dog-father-control-center' ) ), 0 ),
-			array( __( 'Spa & Grooming', 'dog-father-control-center' ), __( 'Premium baths, styling and pampering to keep your dog looking five-star.', 'dog-father-control-center' ), '150', __( '/ session', 'dog-father-control-center' ), 'dashicons-buddicons-activity', array( __( 'Luxury bath', 'dog-father-control-center' ), __( 'Styling & trim', 'dog-father-control-center' ), __( 'Nail & ear care', 'dog-father-control-center' ) ), 0 ),
-			array( __( 'Pickup & Drop-off', 'dog-father-control-center' ), __( 'Door-to-door luxury transport so your dog travels in total comfort.', 'dog-father-control-center' ), '80', __( '/ trip', 'dog-father-control-center' ), 'dashicons-car', array( __( 'Climate-controlled', 'dog-father-control-center' ), __( 'GPS tracked', 'dog-father-control-center' ), __( 'Safe & insured', 'dog-father-control-center' ) ), 0 ),
-		);
-
-		$order = 0;
-		foreach ( $services as $s ) {
+		foreach ( $this->service_data() as $order => $s ) {
 			$id = wp_insert_post(
 				array(
 					'post_type'    => 'dfcc_service',
 					'post_status'  => 'publish',
-					'post_title'   => $s[0],
-					'post_excerpt' => $s[1],
-					'post_content' => $s[1],
-					'menu_order'   => $order++,
+					'post_title'   => $s['title'],
+					'post_excerpt' => $s['excerpt'],
+					'post_content' => $s['excerpt'],
+					'menu_order'   => $order,
 				)
 			);
 			if ( $id && ! is_wp_error( $id ) ) {
-				update_post_meta( $id, '_dfcc_price', $s[2] );
-				update_post_meta( $id, '_dfcc_price_suffix', $s[3] );
-				update_post_meta( $id, '_dfcc_icon', $s[4] );
-				update_post_meta( $id, '_dfcc_features', implode( "\n", $s[5] ) );
-				if ( $s[6] ) {
-					update_post_meta( $id, '_dfcc_highlight', 1 );
-				}
+				update_post_meta( $id, '_dfcc_price', $s['price'] );
+				update_post_meta( $id, '_dfcc_price_suffix', $s['suffix'] );
+				update_post_meta( $id, '_dfcc_icon', $s['icon'] );
+				update_post_meta( $id, '_dfcc_features', implode( "\n", $s['features'] ) );
+				update_post_meta( $id, '_dfcc_highlight', $s['featured'] ? 1 : '' );
+				update_post_meta( $id, '_dfcc_visible', 1 );
 			}
 		}
+	}
+
+	/**
+	 * The real Dog Father service catalogue (all prices in EGP).
+	 *
+	 * @return array
+	 */
+	private function service_data() {
+		return array(
+			array(
+				'title'    => __( 'Dog Boarding (Luxury Room)', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Private individual room with meals included and round-the-clock care.', 'dog-father-control-center' ),
+				'price'    => '500',
+				'suffix'   => __( '/ night · meals included', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-building',
+				'features' => array(
+					__( 'Private individual room', 'dog-father-control-center' ),
+					__( 'Meals included', 'dog-father-control-center' ),
+					__( 'Daily exercise sessions', 'dog-father-control-center' ),
+					__( 'Housekeeping every hour (6 AM – 11:30 PM)', 'dog-father-control-center' ),
+					__( 'Daily WhatsApp videos & reports', 'dog-father-control-center' ),
+				),
+				'featured' => 1,
+			),
+			array(
+				'title'    => __( 'Doggy Day Care', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Supervised day care for 4–6 hours. Pre-booking required.', 'dog-father-control-center' ),
+				'price'    => '500',
+				'suffix'   => __( '· 4–6 hours · pre-booking', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-pets',
+				'features' => array(
+					__( '4–6 hours supervised care', 'dog-father-control-center' ),
+					__( 'Pre-booking required', 'dog-father-control-center' ),
+					__( 'Group & solo play', 'dog-father-control-center' ),
+					__( 'Daily WhatsApp updates', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+			array(
+				'title'    => __( 'Training Academy', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Obedience, behaviour and confidence training tailored to your dog.', 'dog-father-control-center' ),
+				'price'    => '5000',
+				'suffix'   => __( 'starting from', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-awards',
+				'features' => array(
+					__( 'Obedience & behaviour', 'dog-father-control-center' ),
+					__( 'Confidence building', 'dog-father-control-center' ),
+					__( 'Tailored programmes', 'dog-father-control-center' ),
+					__( 'Daily WhatsApp videos & reports', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+			array(
+				'title'    => __( 'Spa & Grooming', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Premium baths, styling and pampering to keep your dog looking their best.', 'dog-father-control-center' ),
+				'price'    => '400',
+				'suffix'   => __( 'starting from', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-buddicons-activity',
+				'features' => array(
+					__( 'Luxury bath', 'dog-father-control-center' ),
+					__( 'Styling & trim', 'dog-father-control-center' ),
+					__( 'Nail & ear care', 'dog-father-control-center' ),
+					__( 'Daily WhatsApp photos', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+			array(
+				'title'    => __( 'Private Pool & Swimming', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Supervised swimming sessions in our private pool — great fun and exercise.', 'dog-father-control-center' ),
+				'price'    => '',
+				'suffix'   => '',
+				'icon'     => 'dashicons-buddicons-community',
+				'features' => array(
+					__( 'Private pool', 'dog-father-control-center' ),
+					__( 'Supervised swimming', 'dog-father-control-center' ),
+					__( 'Confidence in the water', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+			array(
+				'title'    => __( 'Pickup & Drop-off', 'dog-father-control-center' ),
+				'excerpt'  => __( 'Door-to-door transport via our trusted partner companies across Cairo & Giza.', 'dog-father-control-center' ),
+				'price'    => '',
+				'suffix'   => __( 'on request', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-car',
+				'features' => array(
+					__( 'Door-to-door service', 'dog-father-control-center' ),
+					__( 'Outsourced via multiple trusted companies', 'dog-father-control-center' ),
+					__( 'Covers Cairo & Giza', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+			array(
+				'title'    => __( 'Veterinary Support', 'dog-father-control-center' ),
+				'excerpt'  => __( 'On-call veterinary consultation and emergency support with Dr. Ali.', 'dog-father-control-center' ),
+				'price'    => '',
+				'suffix'   => __( 'on request', 'dog-father-control-center' ),
+				'icon'     => 'dashicons-heart',
+				'features' => array(
+					__( 'On-call vet (Dr. Ali)', 'dog-father-control-center' ),
+					__( 'Vaccinations', 'dog-father-control-center' ),
+					__( 'Medication handling', 'dog-father-control-center' ),
+					__( 'Emergency support', 'dog-father-control-center' ),
+				),
+				'featured' => 0,
+			),
+		);
 	}
 
 	/**
@@ -383,12 +569,14 @@ class DFCC_Setup extends DFCC_Module {
 			return;
 		}
 		$faqs = array(
-			array( __( 'What vaccinations does my dog need?', 'dog-father-control-center' ), __( 'All guests must be up to date on core vaccinations. Our team confirms the exact requirements when you book.', 'dog-father-control-center' ) ),
-			array( __( 'What should I bring for my dog’s stay?', 'dog-father-control-center' ), __( 'Just their food (if on a special diet), any medication, and a familiar comfort item. We provide everything else.', 'dog-father-control-center' ) ),
-			array( __( 'Will I receive updates while my dog stays?', 'dog-father-control-center' ), __( 'Yes — we send daily photos and updates so you always know your best friend is happy and safe.', 'dog-father-control-center' ) ),
-			array( __( 'Can you manage medication and special diets?', 'dog-father-control-center' ), __( 'Absolutely. Our trained staff and on-call vet handle medication, special diets and any medical needs.', 'dog-father-control-center' ) ),
-			array( __( 'How do I book and what is your cancellation policy?', 'dog-father-control-center' ), __( 'Book online in minutes. Flexible cancellation details are confirmed at the time of booking.', 'dog-father-control-center' ) ),
-			array( __( 'How is feeding handled?', 'dog-father-control-center' ), __( 'We follow your dog’s normal feeding schedule and can accommodate any dietary requirements.', 'dog-father-control-center' ) ),
+			array( __( 'What should I bring when boarding my dog?', 'dog-father-control-center' ), __( 'Bring enough of your dog’s regular food for the stay (with feeding instructions), any clearly labelled medications and supplements, a comfort item such as a favourite toy or blanket, up-to-date vaccination records, and your emergency contact details.', 'dog-father-control-center' ) ),
+			array( __( 'How do you ensure my dog’s safety and comfort?', 'dog-father-control-center' ), __( 'Clean, secure facilities with regular disinfection, experienced staff trained for all breeds and temperaments, personalised feeding and play routines, veterinary support via our partner Dr. Ali, and 24/7 monitoring with a clear emergency protocol.', 'dog-father-control-center' ) ),
+			array( __( 'What happens if my dog gets sick during their stay?', 'dog-father-control-center' ), __( 'Our trained staff act immediately to stabilise your dog, consult our partner veterinarian Dr. Ali, and contact you right away with updates and recommendations. Any required medication is administered accurately by our team.', 'dog-father-control-center' ) ),
+			array( __( 'Can my dog receive medication?', 'dog-father-control-center' ), __( 'Yes. We carefully follow owner instructions and maintain scheduled medication routines.', 'dog-father-control-center' ) ),
+			array( __( 'How many times are dogs fed?', 'dog-father-control-center' ), __( 'According to your instructions and our structured feeding schedule — typically a morning and an evening meal, with adjustments for age, breed and health needs.', 'dog-father-control-center' ) ),
+			array( __( 'Can I visit before booking?', 'dog-father-control-center' ), __( 'Yes. Visits can be arranged by appointment — just message us on WhatsApp.', 'dog-father-control-center' ) ),
+			array( __( 'Do you accept puppies?', 'dog-father-control-center' ), __( 'Yes, subject to vaccination status and health requirements.', 'dog-father-control-center' ) ),
+			array( __( 'What vaccinations are required?', 'dog-father-control-center' ), __( 'Rabies, DHPP (distemper/parvovirus and more), plus anti-flea and deworming treatment. Please bring records on arrival.', 'dog-father-control-center' ) ),
 		);
 		$order = 0;
 		foreach ( $faqs as $f ) {
@@ -455,6 +643,64 @@ class DFCC_Setup extends DFCC_Module {
 			)
 		);
 		return ! empty( $existing );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Page content builders
+	 * ------------------------------------------------------------------- */
+
+	/**
+	 * About page content.
+	 *
+	 * @return string
+	 */
+	private function about_content() {
+		return "<h2>Who We Are</h2>\n<p>The Dog Father Hotel was created by dog lovers who understood the need for professional boarding services in Egypt. Our facility was built around one principle: treat every dog like family.</p>\n<p>We understand that leaving your dog behind can be stressful. That's why we provide a structured environment where dogs receive proper care, exercise, feeding, and attention throughout their stay — whether for a weekend or an extended boarding period.</p>\n<h3>Why Choose Us</h3>\n<ul>\n<li><strong>Expert Care:</strong> our trained staff are true dog lovers who treat every guest as their own.</li>\n<li><strong>Safety First:</strong> a secure environment with attentive 24/7 supervision.</li>\n<li><strong>Tailored Services:</strong> boarding, grooming and personalized attention for each dog's needs.</li>\n</ul>";
+	}
+
+	/**
+	 * Dog Boarding page content.
+	 *
+	 * @return string
+	 */
+	private function boarding_content() {
+		return "<p>Professional overnight accommodations for dogs of all sizes — 500 EGP per night, including meals.</p>\n<h3>Includes</h3>\n<ul>\n<li>Individual room accommodation</li>\n<li>Daily feeding (meals included)</li>\n<li>Daily exercise sessions</li>\n<li>Housekeeping every hour, 6:00 AM – 11:30 PM</li>\n<li>Health monitoring</li>\n<li>Medication administration</li>\n<li>Supervised care &amp; daily WhatsApp updates</li>\n</ul>\n[dfcc_booking_form]";
+	}
+
+	/**
+	 * Clinic page content.
+	 *
+	 * @return string
+	 */
+	private function clinic_content() {
+		return "<p>Our partnered veterinary clinic provides consultations, vaccinations, treatments and emergency support, led by Dr. Ali and the team.</p>\n<p>Veterinary services are handled by our licensed veterinary partners to ensure professional care and legal responsibility.</p>\n<p>To book a clinic appointment, message us on WhatsApp: <a href=\"https://wa.me/201094622999\">+20 109 462 2999</a>.</p>";
+	}
+
+	/**
+	 * Vet Home Visit page content.
+	 *
+	 * @return string
+	 */
+	private function home_visit_content() {
+		return "<h2>🏡 Vet Home Visits — Expert Veterinary Care, Right at Your Doorstep</h2>\n<p>No time to visit the clinic? We bring the vet to your home! Whether it's a routine checkup or collecting lab samples, our home-visit service makes it easy to care for your dog in a stress-free environment.</p>\n<h3>🩺 Services Available</h3>\n<ul>\n<li>Routine checkups &amp; consultations</li>\n<li>Vaccinations</li>\n<li>Blood sample collection</li>\n<li>Minor treatments</li>\n<li>Follow-up care after boarding</li>\n<li>Elderly dog care at home</li>\n</ul>\n<p><em>Advanced cases or critical emergencies may still require in-clinic treatment.</em></p>\n<h3>🤝 Powered by Trusted Professionals</h3>\n<p>The Dog Father Hotel manages booking and communication, while medical services are handled directly by our partnered, licensed veterinary team to ensure professional care and legal responsibility.</p>\n<h3>💳 Booking &amp; Fees</h3>\n<ul>\n<li>Home visits available daily (subject to vet availability)</li>\n<li>Charges depend on location and type of service</li>\n<li>Payment via Paymob, cash, or bank transfer</li>\n<li>Advance booking required (at least 24 hours' notice)</li>\n</ul>\n<h3>📍 Areas Covered</h3>\n<p>We currently serve most areas in Cairo and Giza. Please contact us to confirm coverage in your neighborhood.</p>\n<h3>📲 Ready to Book?</h3>\n<p><a href=\"https://wa.me/201094622999\">Message us on WhatsApp</a> or call +20 109 462 2999.</p>\n<h3>⚠️ Important Reminders</h3>\n<ul>\n<li>Please ensure your dog is secured (on leash or in a room) when the vet arrives.</li>\n<li>If your dog is aggressive or scared of strangers, notify us in advance.</li>\n<li>This service is for non-emergency cases only. For urgent situations, please go to the nearest animal hospital.</li>\n</ul>";
+	}
+
+	/**
+	 * Pickup page content.
+	 *
+	 * @return string
+	 */
+	private function pickup_content() {
+		return "<h2>Pickup &amp; Drop-off</h2>\n<p>Door-to-door pet transportation so your dog travels in comfort. This service is provided through our trusted outsourced partners (more than one company) covering most areas of Cairo and Giza.</p>\n<p>Charges depend on location and distance. Contact us to arrange a pickup: <a href=\"https://wa.me/201094622999\">+20 109 462 2999</a>.</p>";
+	}
+
+	/**
+	 * Vaccination policy content.
+	 *
+	 * @return string
+	 */
+	private function vaccination_content() {
+		return "<h2>Vaccination Policy</h2>\n<p>For the safety of every guest, all dogs must be up to date on the following before boarding:</p>\n<ul>\n<li><strong>Rabies</strong></li>\n<li><strong>DHPP</strong> (distemper, hepatitis, parvovirus, parainfluenza)</li>\n<li><strong>Anti-flea &amp; deworming treatment</strong></li>\n</ul>\n<p>Please bring up-to-date vaccination records on arrival. Puppies are accepted subject to vaccination status and health requirements.</p>";
 	}
 
 	/**

@@ -92,7 +92,7 @@ $quick_links = array(
 				?>
 			</p>
 		</div>
-		<span class="dfcc-version"><?php echo esc_html( 'v' . DFCC_VERSION ); ?></span>
+		<span class="dfcc-version" title="<?php echo esc_attr( 'v' . DFCC_VERSION ); ?>"><?php echo esc_html( defined( 'DFCC_RELEASE' ) ? DFCC_RELEASE : 'v' . DFCC_VERSION ); ?></span>
 	</div>
 
 	<?php if ( $pending > 0 ) : ?>
