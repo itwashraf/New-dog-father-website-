@@ -4,6 +4,10 @@ A luxury, five-star **dog hotel** website: black-first, gold/yellow accents,
 large imagery, smooth animations and Apple/Tesla-level simplicity. Built to be
 fast, accessible, SEO-friendly and easy for a non-technical owner to run.
 
+**Upload it, activate it, click once — you have a finished website.** No parent
+theme, no Elementor required. Still fully editable with Elementor *and* the
+Dog Father control panel.
+
 ---
 
 ## Brand
@@ -26,14 +30,16 @@ the whole site as live CSS variables (`--dfcc-primary`, `--dfcc-gold`, …).
 ## Tech stack
 
 - **WordPress** 6.2+
-- **Hello Elementor** (lightweight parent theme)
-- **Dog Father Child** theme — brand foundation (this repo)
-- **Elementor + Elementor Pro** — all page design + Theme Builder header/footer
+- **Dog Father** theme — a **standalone** luxury theme (no parent theme, no
+  dependencies). Renders a complete homepage out of the box and steps aside for
+  Elementor when used.
 - **Dog Father Control Center** plugin — bookings, dog profiles, services,
-  gallery, testimonials, brand settings, integrations (this repo)
+  gallery, testimonials, FAQs, homepage editor, brand settings, SEO,
+  integrations, and **one-click site setup**.
+- **Elementor** (optional, free is enough) — for pixel-level page editing.
 
-**Elementor-first:** no page layout is hardcoded. The theme stays out of
-Elementor's way; the plugin owns the data and brand.
+**Editable, not hardcoded:** the homepage copy lives in the control panel; any
+page can be taken over by Elementor at any time.
 
 ---
 
@@ -43,41 +49,40 @@ Elementor's way; the plugin owns the data and brand.
 .
 ├── README.md                          ← you are here
 ├── docs/
-│   ├── INSTALLATION.md                ← step-by-step setup (owner-friendly)
+│   ├── QUICK-START.md                 ← upload & go (start here)
+│   ├── INSTALLATION.md                ← detailed setup
 │   ├── OWNER-GUIDE.md                 ← day-to-day editing & shortcodes
 │   └── ARCHITECTURE.md                ← module system, CPTs, options, extending
 ├── themes/
-│   └── dog-father-child/              ← the child theme
-│       ├── style.css                  ← theme header + base brand CSS
-│       ├── functions.php              ← enqueues, menus, supports, perf
-│       ├── theme.json                 ← global styles / brand palette (v2)
-│       └── screenshot-README.txt      ← note on the theme screenshot
+│   └── dog-father/                    ← the standalone theme
+│       ├── style.css  functions.php  theme.json  README.txt
+│       ├── header.php  footer.php  front-page.php  page.php
+│       ├── single.php  archive.php  search.php  index.php  404.php
+│       ├── inc/                       ← helpers + template tags
+│       ├── template-parts/home/       ← hero, about, services, … sections
+│       └── assets/                    ← theme.css + theme.js
 └── plugins/
     └── dog-father-control-center/
         ├── dog-father-control-center.php
         ├── includes/                  ← self-registering modules, helpers
         ├── admin/                     ← admin views/assets
-        └── templates/elementor/       ← importable Elementor designs
-            ├── home.json   about.json   services.json
-            ├── contact.json   book-now.json
-            └── header.json   footer.json
+        └── templates/elementor/       ← optional importable Elementor designs
 ```
 
 ---
 
 ## Quick start
 
-1. Read **[docs/INSTALLATION.md](docs/INSTALLATION.md)** and follow the steps.
-2. Install WordPress → Hello Elementor → Elementor Pro.
-3. Upload `themes/dog-father-child` (Appearance → Themes) and activate.
-4. Upload `plugins/dog-father-control-center` (Plugins) and activate.
-5. Import the designs from `plugins/dog-father-control-center/templates/elementor/`
-   (Templates → Import, and Theme Builder for header/footer).
-6. Set the homepage, configure brand colors and contact details under the
-   **Dog Father** menu, and build your menus.
+1. Zip & upload **`plugins/dog-father-control-center`** → activate.
+2. Zip & upload **`themes/dog-father`** → activate.
+3. Go to **Dog Father → Setup** → **Run Setup Now** (auto-runs on theme
+   activation too).
+4. Fill in **Dog Father → Global Settings** and tweak **Theme Settings**
+   (colors) and **Homepage** copy.
 
-Then use **[docs/OWNER-GUIDE.md](docs/OWNER-GUIDE.md)** for everyday edits, and
-**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** to extend it.
+Full walkthrough: **[docs/QUICK-START.md](docs/QUICK-START.md)**. Everyday
+editing: **[docs/OWNER-GUIDE.md](docs/OWNER-GUIDE.md)**. Extending it:
+**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ---
 
@@ -94,33 +99,32 @@ See the OWNER-GUIDE for parameters and usage.
 
 ## Feature checklist (mapped to the brief)
 
-- [x] Lightweight, Elementor-friendly **child theme** of Hello Elementor
-- [x] Black background + white text defaults, premium font stack
-- [x] Consumes plugin brand CSS variables with hardcoded fallbacks
-- [x] Brand-colored links/buttons/selection
+- [x] **Standalone** luxury theme — no parent theme, zero dependencies
+- [x] Complete homepage out of the box: hero, trust, about, services, why-us,
+      stats, gallery, testimonials, FAQ, CTA, contact
+- [x] **One-click setup** auto-creates pages, menus & demo content
+- [x] Black background + white text, premium Poppins/Inter type
+- [x] Editable brand colors/fonts → live site-wide CSS variables
+- [x] Homepage editor + section show/hide in the control panel
+- [x] Sticky luxury header (logo, dropdown nav, click-to-call, Book Now) +
+      multi-column footer + WhatsApp float — all built in, no Pro needed
+- [x] Full template set: front-page, page, single, archive, search, 404, blog
+- [x] Elementor-aware: building a page in Elementor overrides the theme section
 - [x] Accessibility: reduced-motion, focus-visible, skip link, sr-only
-- [x] Parent + child stylesheet enqueue with dependency & version
-- [x] Primary / Footer / Mobile nav menu locations
-- [x] Theme supports: title-tag, post-thumbnails, html5, custom-logo,
-      responsive embeds, align-wide, editor-styles
-- [x] Elementor Theme Builder locations registered **gracefully** (no fatal if
-      Elementor absent)
-- [x] Google Fonts (Poppins + Inter) with `display=swap` + preconnect
-- [x] Performance helper (emoji scripts removed)
+- [x] Performance: swap fonts + preconnect, lean CSS, reveal-on-scroll, no emoji
 - [x] `theme.json` v2 brand palette, fonts, wide/content sizes
-- [x] Screenshot note (1200×900 intended look)
-- [x] Importable Elementor templates: Home, About, Services, Contact, Book Now,
-      Header, Footer — black sections, gold/yellow headings, CTA buttons
-- [x] Dynamic sections embedded via Shortcode widgets (`[dfcc_*]`)
-- [x] Documentation: Installation, Owner Guide, Architecture, README
-- [x] All JSON validated; all PHP lints clean
-- [x] **New files only** — no existing plugin files modified
+- [x] Booking system, dog profiles, services, gallery, testimonials, FAQs
+- [x] SEO (schema/OG), integrations (payments/analytics/pixels), reports, backup
+- [x] Optional importable Elementor templates included
+- [x] All JSON validated; all PHP lints clean; boot + setup verified
 
 ---
 
 ## Notes
 
-- Replace `themes/dog-father-child/screenshot.png` before shipping (see
-  `screenshot-README.txt`).
+- Add `themes/dog-father/screenshot.png` (1200×900) before distributing the
+  theme (see `themes/dog-father/README.txt`).
 - Built for **PageSpeed 90+**: lean CSS, swap fonts, preconnects, no emoji
   scripts. Keep uploaded images optimised.
+- Demo gallery items are placeholders — set a Featured Image on each to show
+  real photos.
