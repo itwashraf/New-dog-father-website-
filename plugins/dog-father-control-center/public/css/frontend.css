@@ -1,0 +1,684 @@
+/**
+ * Dog Father Control Center — public front-end styles.
+ *
+ * Premium dark brand styling for services, gallery, testimonials and the
+ * booking form. CSS variables (--dfcc-*) are output by the theme; hardcoded
+ * fallbacks keep everything looking right if they are missing.
+ *
+ * Mobile-first. Brand palette:
+ *   primary  #FFF10A   gold     #FEC208   dark_red #CF240A
+ *   orange   #FF2D08   black    #000000   white    #FFFFFF
+ */
+
+:root {
+	--dfcc-primary: #FFF10A;
+	--dfcc-gold: #FEC208;
+	--dfcc-dark-red: #CF240A;
+	--dfcc-orange: #FF2D08;
+	--dfcc-black: #000000;
+	--dfcc-white: #FFFFFF;
+}
+
+/* Scope everything under our wrappers to avoid leaking into the theme. */
+.dfcc-services,
+.dfcc-gallery-wrap,
+.dfcc-testimonials,
+.dfcc-booking-form-wrap {
+	--_primary: var(--dfcc-primary, #FFF10A);
+	--_gold: var(--dfcc-gold, #FEC208);
+	--_dark-red: var(--dfcc-dark-red, #CF240A);
+	--_orange: var(--dfcc-orange, #FF2D08);
+	--_bg: var(--dfcc-black, #000000);
+	--_text: var(--dfcc-white, #FFFFFF);
+	--_muted: rgba(255, 255, 255, 0.7);
+	--_surface: #141414;
+	--_surface-2: #1d1d1d;
+	--_border: rgba(255, 255, 255, 0.1);
+	--_radius: 16px;
+	--_shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+	color: var(--_text);
+	box-sizing: border-box;
+}
+
+.dfcc-services *,
+.dfcc-gallery-wrap *,
+.dfcc-testimonials *,
+.dfcc-booking-form-wrap * {
+	box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------------------
+ * Grid utilities
+ * ------------------------------------------------------------------- */
+.dfcc-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+}
+
+@media (min-width: 600px) {
+	.dfcc-cols-2,
+	.dfcc-cols-3,
+	.dfcc-cols-4,
+	.dfcc-cols-5 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 900px) {
+	.dfcc-cols-3 { grid-template-columns: repeat(3, 1fr); }
+	.dfcc-cols-4 { grid-template-columns: repeat(4, 1fr); }
+	.dfcc-cols-5 { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* ---------------------------------------------------------------------
+ * Buttons
+ * ------------------------------------------------------------------- */
+.dfcc-btn {
+	display: inline-block;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 999px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.dfcc-btn-primary {
+	background: linear-gradient(135deg, var(--_primary), var(--_gold));
+	color: #111;
+}
+
+.dfcc-btn-primary:hover,
+.dfcc-btn-primary:focus-visible {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 22px rgba(254, 194, 8, 0.35);
+	filter: brightness(1.03);
+}
+
+.dfcc-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	transform: none;
+	box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------
+ * Service cards
+ * ------------------------------------------------------------------- */
+.dfcc-service-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--_surface);
+	border: 1px solid var(--_border);
+	border-radius: var(--_radius);
+	overflow: hidden;
+	box-shadow: var(--_shadow);
+	transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.dfcc-service-card:hover {
+	transform: translateY(-4px);
+	border-color: var(--_gold);
+}
+
+.dfcc-service-card.is-featured {
+	border-color: var(--_primary);
+	box-shadow: 0 10px 30px rgba(255, 241, 10, 0.18);
+}
+
+.dfcc-badge {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	z-index: 2;
+	padding: 4px 12px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	background: var(--_primary);
+	color: #111;
+}
+
+.dfcc-service-media {
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+}
+
+.dfcc-service-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.4s ease;
+}
+
+.dfcc-service-card:hover .dfcc-service-img {
+	transform: scale(1.05);
+}
+
+.dfcc-service-body {
+	padding: 20px;
+	flex: 1 1 auto;
+}
+
+.dfcc-service-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 10px;
+	font-size: 1.3rem;
+	line-height: 1.25;
+	color: var(--_text);
+}
+
+.dfcc-service-icon {
+	font-size: 1.4em;
+	color: var(--_gold);
+	line-height: 1;
+}
+
+.dfcc-service-price {
+	margin: 0 0 14px;
+	font-weight: 800;
+	color: var(--_primary);
+}
+
+.dfcc-price-amount { font-size: 1.5rem; }
+
+.dfcc-price-suffix {
+	font-size: 0.85rem;
+	font-weight: 500;
+	color: var(--_muted);
+}
+
+.dfcc-service-excerpt {
+	margin: 0 0 14px;
+	color: var(--_muted);
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+.dfcc-service-features {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.dfcc-service-features li {
+	position: relative;
+	padding: 6px 0 6px 26px;
+	color: var(--_text);
+	font-size: 0.92rem;
+	border-bottom: 1px solid var(--_border);
+}
+
+.dfcc-service-features li:last-child { border-bottom: 0; }
+
+.dfcc-service-features li::before {
+	content: "✓";
+	position: absolute;
+	left: 0;
+	top: 6px;
+	color: var(--_gold);
+	font-weight: 800;
+}
+
+.dfcc-service-footer {
+	padding: 0 20px 22px;
+}
+
+.dfcc-service-footer .dfcc-btn { width: 100%; text-align: center; }
+
+/* ---------------------------------------------------------------------
+ * Gallery
+ * ------------------------------------------------------------------- */
+.dfcc-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 22px;
+}
+
+.dfcc-filter {
+	padding: 8px 18px;
+	border: 1px solid var(--_border);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--_text);
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.dfcc-filter:hover { border-color: var(--_gold); }
+
+.dfcc-filter.is-active {
+	background: var(--_primary);
+	border-color: var(--_primary);
+	color: #111;
+}
+
+.dfcc-masonry {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+@media (min-width: 600px) {
+	.dfcc-masonry.dfcc-cols-2,
+	.dfcc-masonry.dfcc-cols-3,
+	.dfcc-masonry.dfcc-cols-4,
+	.dfcc-masonry.dfcc-cols-5 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 900px) {
+	.dfcc-masonry.dfcc-cols-3 { grid-template-columns: repeat(3, 1fr); }
+	.dfcc-masonry.dfcc-cols-4 { grid-template-columns: repeat(4, 1fr); }
+	.dfcc-masonry.dfcc-cols-5 { grid-template-columns: repeat(5, 1fr); }
+}
+
+.dfcc-gallery-item {
+	position: relative;
+	margin: 0;
+	border-radius: 14px;
+	overflow: hidden;
+	background: var(--_surface-2);
+	border: 1px solid var(--_border);
+}
+
+.dfcc-gallery-item.is-hidden { display: none; }
+
+.dfcc-gallery-trigger {
+	display: block;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+	position: relative;
+}
+
+.dfcc-gallery-img,
+.dfcc-gallery-noimg {
+	display: block;
+	width: 100%;
+	height: 240px;
+	object-fit: cover;
+	transition: transform 0.4s ease, filter 0.3s ease;
+}
+
+.dfcc-gallery-noimg {
+	background: linear-gradient(135deg, #222, #111);
+}
+
+.dfcc-gallery-item:hover .dfcc-gallery-img {
+	transform: scale(1.06);
+	filter: brightness(0.85);
+}
+
+.dfcc-play-badge {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22px;
+	color: #111;
+	background: var(--_primary);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+	pointer-events: none;
+}
+
+.dfcc-gallery-caption {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 28px 14px 12px;
+	text-align: left;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: #fff;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.dfcc-gallery-item:hover .dfcc-gallery-caption { opacity: 1; }
+
+/* Lightbox */
+.dfcc-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: rgba(0, 0, 0, 0.92);
+}
+
+.dfcc-lightbox.is-open {
+	display: flex;
+	animation: dfcc-fade 0.25s ease;
+}
+
+@keyframes dfcc-fade {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+.dfcc-lightbox-content {
+	max-width: 92vw;
+	max-height: 88vh;
+	position: relative;
+}
+
+.dfcc-lightbox-content img,
+.dfcc-lightbox-content video,
+.dfcc-lightbox-content iframe {
+	display: block;
+	max-width: 92vw;
+	max-height: 88vh;
+	width: auto;
+	height: auto;
+	border-radius: 10px;
+	background: #000;
+}
+
+.dfcc-lightbox-content iframe {
+	width: 80vw;
+	height: 45vw;
+	max-height: 88vh;
+}
+
+.dfcc-lightbox-close {
+	position: absolute;
+	top: -16px;
+	right: -16px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	border: 0;
+	background: var(--dfcc-primary, #FFF10A);
+	color: #111;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------
+ * Testimonials
+ * ------------------------------------------------------------------- */
+.dfcc-testimonials-grid .dfcc-testimonials-track {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+}
+
+@media (min-width: 700px) {
+	.dfcc-testimonials-grid .dfcc-testimonials-track {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1000px) {
+	.dfcc-testimonials-grid .dfcc-testimonials-track {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.dfcc-testimonial-card {
+	margin: 0;
+	padding: 26px;
+	background: var(--_surface);
+	border: 1px solid var(--_border);
+	border-radius: var(--_radius);
+	box-shadow: var(--_shadow);
+}
+
+.dfcc-stars {
+	color: var(--_gold);
+	font-size: 1.1rem;
+	letter-spacing: 2px;
+	margin-bottom: 12px;
+}
+
+.dfcc-testimonial-text {
+	margin: 0 0 18px;
+	color: var(--_text);
+	font-size: 1.02rem;
+	line-height: 1.65;
+	quotes: "\201C" "\201D";
+}
+
+.dfcc-testimonial-text p { margin: 0 0 10px; }
+.dfcc-testimonial-text p:last-child { margin-bottom: 0; }
+
+.dfcc-testimonial-author {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.dfcc-testimonial-avatar {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid var(--_gold);
+}
+
+.dfcc-testimonial-meta {
+	display: flex;
+	flex-direction: column;
+}
+
+.dfcc-testimonial-name {
+	font-weight: 700;
+	color: var(--_text);
+}
+
+.dfcc-testimonial-role {
+	font-size: 0.85rem;
+	color: var(--_muted);
+}
+
+/* Slider */
+.dfcc-testimonials-slider {
+	position: relative;
+}
+
+.dfcc-testimonials-slider .dfcc-testimonials-track {
+	display: flex;
+	gap: 24px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	padding-bottom: 8px;
+	scrollbar-width: none;
+}
+
+.dfcc-testimonials-slider .dfcc-testimonials-track::-webkit-scrollbar {
+	display: none;
+}
+
+.dfcc-testimonials-slider .dfcc-testimonial-card {
+	flex: 0 0 88%;
+	scroll-snap-align: center;
+}
+
+@media (min-width: 700px) {
+	.dfcc-testimonials-slider .dfcc-testimonial-card { flex-basis: 46%; }
+}
+
+@media (min-width: 1000px) {
+	.dfcc-testimonials-slider .dfcc-testimonial-card { flex-basis: 31%; }
+}
+
+.dfcc-slider-nav {
+	display: flex;
+	justify-content: center;
+	gap: 14px;
+	margin-top: 18px;
+}
+
+.dfcc-slider-prev,
+.dfcc-slider-next {
+	width: 46px;
+	height: 46px;
+	border-radius: 50%;
+	border: 1px solid var(--_border);
+	background: var(--_surface-2);
+	color: var(--_text);
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.18s ease, color 0.18s ease;
+}
+
+.dfcc-slider-prev:hover,
+.dfcc-slider-next:hover {
+	background: var(--_primary);
+	color: #111;
+}
+
+/* ---------------------------------------------------------------------
+ * Booking form
+ * ------------------------------------------------------------------- */
+.dfcc-booking-form-wrap {
+	max-width: 760px;
+	margin: 0 auto;
+}
+
+.dfcc-booking-form {
+	background: var(--_surface);
+	border: 1px solid var(--_border);
+	border-radius: var(--_radius);
+	padding: 28px;
+	box-shadow: var(--_shadow);
+}
+
+.dfcc-form-title {
+	margin: 0 0 22px;
+	text-align: center;
+	color: var(--_text);
+	font-size: 1.6rem;
+}
+
+.dfcc-form-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+@media (min-width: 620px) {
+	.dfcc-form-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.dfcc-field {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.dfcc-field-full { margin-top: 16px; }
+
+.dfcc-field label {
+	margin-bottom: 6px;
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: var(--_muted);
+}
+
+.dfcc-field-required > label > span { color: var(--_orange); }
+
+.dfcc-booking-form input,
+.dfcc-booking-form select,
+.dfcc-booking-form textarea {
+	width: 100%;
+	padding: 12px 14px;
+	background: var(--_surface-2);
+	border: 1px solid var(--_border);
+	border-radius: 10px;
+	color: var(--_text);
+	font-size: 1rem;
+	transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dfcc-booking-form input:focus,
+.dfcc-booking-form select:focus,
+.dfcc-booking-form textarea:focus {
+	outline: none;
+	border-color: var(--_primary);
+	box-shadow: 0 0 0 3px rgba(255, 241, 10, 0.18);
+}
+
+.dfcc-booking-form .dfcc-invalid input,
+.dfcc-booking-form .dfcc-invalid select,
+.dfcc-booking-form .dfcc-invalid textarea,
+.dfcc-booking-form input.dfcc-invalid,
+.dfcc-booking-form select.dfcc-invalid,
+.dfcc-booking-form textarea.dfcc-invalid {
+	border-color: var(--_dark-red);
+	box-shadow: 0 0 0 3px rgba(207, 36, 10, 0.2);
+}
+
+.dfcc-form-actions {
+	margin: 22px 0 0;
+	text-align: center;
+}
+
+.dfcc-form-actions .dfcc-btn { min-width: 220px; }
+
+.dfcc-form-message {
+	margin-top: 18px;
+	padding: 0;
+	font-weight: 600;
+	text-align: center;
+}
+
+.dfcc-form-message.is-error {
+	color: #ff8a73;
+}
+
+.dfcc-form-message.is-success {
+	color: var(--_primary);
+}
+
+/* Accessibility helpers */
+.dfcc-btn:focus-visible,
+.dfcc-filter:focus-visible,
+.dfcc-gallery-trigger:focus-visible,
+.dfcc-slider-prev:focus-visible,
+.dfcc-slider-next:focus-visible,
+.dfcc-lightbox-close:focus-visible {
+	outline: 3px solid var(--dfcc-gold, #FEC208);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dfcc-services *,
+	.dfcc-gallery-wrap *,
+	.dfcc-testimonials *,
+	.dfcc-booking-form-wrap * {
+		transition: none !important;
+		animation: none !important;
+	}
+}

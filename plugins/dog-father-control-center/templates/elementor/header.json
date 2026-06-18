@@ -1,0 +1,44 @@
+{
+  "version": "0.4",
+  "title": "Dog Father — Header",
+  "type": "header",
+  "page_settings": [],
+  "content": [
+    {
+      "id": "hdsec001",
+      "elType": "section",
+      "settings": {
+        "layout": "full_width",
+        "background_background": "classic",
+        "background_color": "#000000",
+        "padding": { "unit": "px", "top": "14", "bottom": "14", "left": "20", "right": "20", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "hdlogoc1",
+          "elType": "column",
+          "settings": { "_column_size": 33, "content_position": "center" },
+          "elements": [
+            { "id": "hdlogow1", "elType": "widget", "widgetType": "theme-site-logo", "settings": { "align": "left" } }
+          ]
+        },
+        {
+          "id": "hdnavc01",
+          "elType": "column",
+          "settings": { "_column_size": 34, "content_position": "center" },
+          "elements": [
+            { "id": "hdnavw01", "elType": "widget", "widgetType": "nav-menu", "settings": { "menu": "primary", "align": "center", "color_menu_item": "#FFFFFF", "color_menu_item_hover": "#FEC208" } }
+          ]
+        },
+        {
+          "id": "hdbtnc01",
+          "elType": "column",
+          "settings": { "_column_size": 33, "content_position": "center" },
+          "elements": [
+            { "id": "hdbtnw01", "elType": "widget", "widgetType": "button", "settings": { "text": "Book Now", "align": "right", "link": { "url": "/book-now/" }, "background_color": "#FEC208", "button_text_color": "#000000" } }
+          ]
+        }
+      ]
+    }
+  ]
+}

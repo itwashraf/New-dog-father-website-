@@ -1,0 +1,71 @@
+{
+  "version": "0.4",
+  "title": "Dog Father — Footer",
+  "type": "footer",
+  "page_settings": [],
+  "content": [
+    {
+      "id": "ftsec001",
+      "elType": "section",
+      "settings": {
+        "layout": "full_width",
+        "background_background": "classic",
+        "background_color": "#000000",
+        "padding": { "unit": "px", "top": "60", "bottom": "30", "left": "20", "right": "20", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "ftcol001",
+          "elType": "column",
+          "settings": { "_column_size": 33 },
+          "elements": [
+            { "id": "ftbiz001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_business_name]" } },
+            { "id": "ftabt001", "elType": "widget", "widgetType": "text-editor", "settings": { "editor": "<p style=\"color:#cccccc;\">A five-star luxury hotel, spa and playground for the dogs you love.</p>" } }
+          ]
+        },
+        {
+          "id": "ftcol002",
+          "elType": "column",
+          "settings": { "_column_size": 33 },
+          "elements": [
+            { "id": "ftmenuhd", "elType": "widget", "widgetType": "heading", "settings": { "title": "Explore", "header_size": "h4", "title_color": "#FEC208" } },
+            { "id": "ftmenuw1", "elType": "widget", "widgetType": "nav-menu", "settings": { "menu": "footer", "color_menu_item": "#FFFFFF", "color_menu_item_hover": "#FEC208" } }
+          ]
+        },
+        {
+          "id": "ftcol003",
+          "elType": "column",
+          "settings": { "_column_size": 33 },
+          "elements": [
+            { "id": "ftconthd", "elType": "widget", "widgetType": "heading", "settings": { "title": "Contact", "header_size": "h4", "title_color": "#FEC208" } },
+            { "id": "ftph0001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_phone]" } },
+            { "id": "ftwa0001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_whatsapp]" } },
+            { "id": "ftem0001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_email]" } },
+            { "id": "ftad0001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_address]" } },
+            { "id": "fthr0001", "elType": "widget", "widgetType": "shortcode", "settings": { "shortcode": "[dfcc_hours]" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ftbar001",
+      "elType": "section",
+      "settings": {
+        "layout": "full_width",
+        "background_background": "classic",
+        "background_color": "#0a0a0a",
+        "padding": { "unit": "px", "top": "16", "bottom": "16", "left": "20", "right": "20", "isLinked": false }
+      },
+      "elements": [
+        {
+          "id": "ftbarc01",
+          "elType": "column",
+          "settings": { "_column_size": 100, "content_position": "center" },
+          "elements": [
+            { "id": "ftbarw01", "elType": "widget", "widgetType": "text-editor", "settings": { "editor": "<p style=\"text-align:center;color:#999999;margin:0;\">&copy; The Dog Father Hotel. All rights reserved.</p>" } }
+          ]
+        }
+      ]
+    }
+  ]
+}

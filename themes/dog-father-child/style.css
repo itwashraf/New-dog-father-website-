@@ -1,0 +1,182 @@
+/*
+Theme Name:   Dog Father Child
+Theme URI:    https://thedogfatherhotel.com
+Description:  Luxury, Elementor-first child theme for The Dog Father Hotel. A lightweight child of Hello Elementor — black-first, gold/yellow accents, premium typography, fast and accessible. All page design is built in Elementor; this theme simply provides the brand foundation and gets out of Elementor's way.
+Author:       The Dog Father Hotel
+Author URI:   https://thedogfatherhotel.com
+Template:     hello-elementor
+Version:      1.0.0
+License:      GNU General Public License v2 or later
+License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  dog-father-child
+Tags:         elementor, luxury, hospitality, black, accessibility-ready
+*/
+
+/* =========================================================================
+   Brand tokens
+   The Dog Father Control Center plugin prints the live values as CSS custom
+   properties on wp_head (#dfcc-brand-vars). The fallbacks below keep the
+   theme on-brand even before the plugin is active.
+   ========================================================================= */
+:root {
+  --dfcc-primary:   #FFF10A; /* Primary Yellow */
+  --dfcc-gold:      #FEC208; /* Luxury Gold */
+  --dfcc-dark-red:  #CF240A; /* Dark Red */
+  --dfcc-orange:    #FF2D08; /* Accent Orange */
+  --dfcc-black:     #000000; /* Preferred main background */
+  --dfcc-white:     #FFFFFF;
+  --dfcc-radius:    14px;
+  --dfcc-heading-font: "Poppins", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --dfcc-body-font:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--dfcc-black, #000);
+  color: var(--dfcc-white, #fff);
+  font-family: var(--dfcc-body-font);
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--dfcc-heading-font);
+  color: var(--dfcc-white, #fff);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* =========================================================================
+   Links & buttons in brand colors
+   ========================================================================= */
+a {
+  color: var(--dfcc-gold, #FEC208);
+  text-decoration: none;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+a:hover,
+a:focus {
+  color: var(--dfcc-primary, #FFF10A);
+}
+
+button,
+input[type="submit"],
+input[type="button"],
+.button,
+.wp-block-button__link {
+  display: inline-block;
+  background-color: var(--dfcc-gold, #FEC208);
+  color: var(--dfcc-black, #000);
+  font-family: var(--dfcc-heading-font);
+  font-weight: 600;
+  border: 0;
+  border-radius: var(--dfcc-radius, 14px);
+  padding: 0.85em 1.9em;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: transform 0.2s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.button:hover,
+.wp-block-button__link:hover {
+  background-color: var(--dfcc-primary, #FFF10A);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(254, 194, 8, 0.25);
+}
+
+/* Form fields on a dark canvas */
+input, textarea, select {
+  background-color: #0c0c0c;
+  color: var(--dfcc-white, #fff);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--dfcc-radius, 14px);
+  padding: 0.7em 1em;
+  font-family: var(--dfcc-body-font);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--dfcc-gold, #FEC208);
+  outline: none;
+}
+
+/* =========================================================================
+   Selection
+   ========================================================================= */
+::selection {
+  background: var(--dfcc-gold, #FEC208);
+  color: var(--dfcc-black, #000);
+}
+::-moz-selection {
+  background: var(--dfcc-gold, #FEC208);
+  color: var(--dfcc-black, #000);
+}
+
+/* =========================================================================
+   Accessibility
+   ========================================================================= */
+:focus-visible {
+  outline: 3px solid var(--dfcc-primary, #FFF10A);
+  outline-offset: 2px;
+}
+
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 100000;
+  background: var(--dfcc-gold);
+  color: var(--dfcc-black);
+  padding: 0.6em 1em;
+  border-radius: var(--dfcc-radius);
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
