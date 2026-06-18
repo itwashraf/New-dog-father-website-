@@ -180,3 +180,260 @@ input:focus, textarea:focus, select:focus {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================================
+   Theme header & footer (works on FREE Elementor — no Theme Builder needed)
+   ========================================================================= */
+.dfcc-skip-link.screen-reader-text {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100000;
+}
+.dfcc-skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--dfcc-gold);
+  color: var(--dfcc-black);
+  padding: 0.6em 1em;
+  border-radius: var(--dfcc-radius);
+}
+
+/* Header ----------------------------------------------------------------- */
+.dfcc-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(254, 194, 8, 0.18);
+}
+.dfcc-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.dfcc-header-brand img,
+.dfcc-header-brand .custom-logo {
+  max-height: 56px;
+  width: auto;
+  height: auto;
+}
+.dfcc-brand-text {
+  font-family: var(--dfcc-heading-font);
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--dfcc-white);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+.dfcc-brand-text:hover { color: var(--dfcc-primary); }
+
+.dfcc-primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-left: auto;
+}
+.dfcc-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dfcc-menu li { position: relative; }
+.dfcc-menu a {
+  color: var(--dfcc-white);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.98rem;
+  padding: 0.4rem 0;
+  transition: color 0.2s ease;
+}
+.dfcc-menu a:hover,
+.dfcc-menu .current-menu-item > a { color: var(--dfcc-primary); }
+
+/* Dropdown submenus */
+.dfcc-menu .sub-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: #0c0c0c;
+  border: 1px solid rgba(254, 194, 8, 0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+  list-style: none;
+  margin: 0.6rem 0 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.2s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.dfcc-menu li:hover > .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.dfcc-menu .sub-menu a { display: block; padding: 0.55rem 0.8rem; border-radius: 8px; }
+.dfcc-menu .sub-menu a:hover { background: rgba(255, 241, 10, 0.08); }
+
+.dfcc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.dfcc-header-phone {
+  color: var(--dfcc-gold);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.dfcc-header-phone:hover { color: var(--dfcc-primary); }
+
+.dfcc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--dfcc-heading-font);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--dfcc-radius);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  white-space: nowrap;
+}
+.dfcc-btn-primary {
+  background: linear-gradient(135deg, var(--dfcc-primary), var(--dfcc-gold));
+  color: var(--dfcc-black);
+}
+.dfcc-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(254, 194, 8, 0.35);
+}
+
+/* Hamburger */
+.dfcc-nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: auto;
+}
+.dfcc-nav-toggle-bar {
+  width: 26px;
+  height: 2px;
+  background: var(--dfcc-white);
+  transition: 0.25s ease;
+}
+
+/* Footer ----------------------------------------------------------------- */
+.dfcc-site-footer {
+  background: #050505;
+  border-top: 1px solid rgba(254, 194, 8, 0.18);
+  margin-top: 4rem;
+}
+.dfcc-footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 2.5rem;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: 2.5rem;
+}
+.dfcc-footer-title {
+  font-size: 1.5rem;
+  margin: 0 0 0.6rem;
+  background: linear-gradient(135deg, var(--dfcc-primary), var(--dfcc-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dfcc-footer-tagline { color: #b9b9c0; margin: 0; }
+.dfcc-footer-heading {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dfcc-gold);
+  margin: 0 0 1rem;
+}
+.dfcc-footer-menu,
+.dfcc-footer-contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dfcc-footer-menu li,
+.dfcc-footer-contact-list li { margin-bottom: 0.6rem; }
+.dfcc-footer-menu a {
+  color: #d7d7dc;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.dfcc-footer-menu a:hover { color: var(--dfcc-primary); }
+.dfcc-footer-contact-list a { color: #d7d7dc; text-decoration: none; }
+.dfcc-footer-contact-list a:hover { color: var(--dfcc-primary); }
+.dfcc-footer-hours { color: #9a9aa5; margin-top: 0.8rem; font-size: 0.9rem; }
+.dfcc-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: center;
+  padding: 1.4rem 1.5rem;
+  color: #8a8a92;
+  font-size: 0.88rem;
+}
+.dfcc-footer-bottom p { margin: 0; }
+
+/* Responsive ------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .dfcc-nav-toggle { display: flex; }
+  .dfcc-primary-nav {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(82vw, 360px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    background: #0a0a0a;
+    border-left: 1px solid rgba(254, 194, 8, 0.2);
+    padding: 5rem 1.8rem 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+  body.dfcc-nav-open .dfcc-primary-nav { transform: translateX(0); }
+  body.dfcc-nav-open { overflow: hidden; }
+  .dfcc-menu {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  .dfcc-menu .sub-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: 0;
+    padding-left: 1rem;
+    margin: 0.2rem 0 0.4rem;
+  }
+  .dfcc-header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .dfcc-footer-inner { grid-template-columns: 1fr; gap: 1.8rem; }
+}
