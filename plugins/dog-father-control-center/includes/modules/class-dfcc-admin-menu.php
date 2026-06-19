@@ -173,7 +173,7 @@ class DFCC_Admin_Menu extends DFCC_Module {
 		wp_enqueue_script(
 			'dfcc-admin',
 			DFCC_PLUGIN_URL . 'admin/js/admin.js',
-			array( 'jquery', 'wp-color-picker' ),
+			array( 'jquery', 'wp-color-picker', 'jquery-ui-sortable' ),
 			DFCC_VERSION,
 			true
 		);

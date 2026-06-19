@@ -18,7 +18,7 @@ $df_title = dfather_home( 'faq_title', __( 'Frequently Asked Questions', 'dog-fa
 $df_items = get_posts(
 	array(
 		'post_type'      => 'dfcc_faq',
-		'posts_per_page' => 6,
+		'posts_per_page' => dfather_count( 'count_faq', 6 ),
 		'post_status'    => 'publish',
 		'orderby'        => 'menu_order',
 		'order'          => 'ASC',

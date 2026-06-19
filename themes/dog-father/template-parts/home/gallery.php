@@ -17,7 +17,7 @@ $df_title = dfather_home( 'gallery_title', __( 'Life at the Hotel', 'dog-father'
 $df_items = get_posts(
 	array(
 		'post_type'      => 'dfcc_gallery',
-		'posts_per_page' => 8,
+		'posts_per_page' => dfather_count( 'count_gallery', 8 ),
 		'post_status'    => 'publish',
 	)
 );

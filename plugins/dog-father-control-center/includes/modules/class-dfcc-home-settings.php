@@ -153,6 +153,11 @@ class DFCC_Home_Settings extends DFCC_Module {
 			'faq_title'            => 'text',
 			'contact_eyebrow'      => 'text',
 			'header_book_label'    => 'text',
+			// How many items each section shows.
+			'count_services'       => 'number',
+			'count_gallery'        => 'number',
+			'count_testimonials'   => 'number',
+			'count_faq'            => 'number',
 			// CTA.
 			'cta_title'            => 'text',
 			'cta_text'            => 'textarea',
@@ -164,24 +169,61 @@ class DFCC_Home_Settings extends DFCC_Module {
 	}
 
 	/**
-	 * Section visibility toggle keys.
+	 * The reorderable homepage sections (slug => label). The hero is always
+	 * first and is not part of this list. Slugs match template parts in
+	 * themes/dog-father/template-parts/home/ and the show_{slug} toggles.
+	 *
+	 * @return array
+	 */
+	public function sections() {
+		return array(
+			'trust'        => __( 'Trust Bar', 'dog-father-control-center' ),
+			'about'        => __( 'About', 'dog-father-control-center' ),
+			'services'     => __( 'Services', 'dog-father-control-center' ),
+			'why'          => __( 'Why Choose Us', 'dog-father-control-center' ),
+			'stats'        => __( 'Statistics', 'dog-father-control-center' ),
+			'gallery'      => __( 'Gallery', 'dog-father-control-center' ),
+			'testimonials' => __( 'Testimonials', 'dog-father-control-center' ),
+			'faq'          => __( 'FAQ', 'dog-father-control-center' ),
+			'cta'          => __( 'Call to Action', 'dog-father-control-center' ),
+			'contact'      => __( 'Contact', 'dog-father-control-center' ),
+		);
+	}
+
+	/**
+	 * The saved section order (validated against known sections, with any new
+	 * sections appended). Falls back to the natural order.
+	 *
+	 * @return string[]
+	 */
+	public function section_order() {
+		$known = array_keys( $this->sections() );
+		$saved = get_option( self::OPTION, array() );
+		$saved = ( is_array( $saved ) && ! empty( $saved['home_section_order'] ) && is_array( $saved['home_section_order'] ) ) ? $saved['home_section_order'] : array();
+
+		if ( empty( $saved ) ) {
+			return $known;
+		}
+		$order = array_values( array_intersect( $saved, $known ) );
+		foreach ( $known as $slug ) {
+			if ( ! in_array( $slug, $order, true ) ) {
+				$order[] = $slug;
+			}
+		}
+		return $order;
+	}
+
+	/**
+	 * Section visibility toggle keys (derived from the section registry).
 	 *
 	 * @return array
 	 */
 	public function toggles() {
-		return array(
-			'show_trust'        => __( 'Trust indicators', 'dog-father-control-center' ),
-			'show_about'        => __( 'About section', 'dog-father-control-center' ),
-			'show_services'     => __( 'Services', 'dog-father-control-center' ),
-			'show_why'          => __( 'Why choose us', 'dog-father-control-center' ),
-			'show_suites'       => __( 'Suites', 'dog-father-control-center' ),
-			'show_gallery'      => __( 'Gallery', 'dog-father-control-center' ),
-			'show_testimonials' => __( 'Testimonials', 'dog-father-control-center' ),
-			'show_stats'        => __( 'Statistics', 'dog-father-control-center' ),
-			'show_faq'          => __( 'FAQ', 'dog-father-control-center' ),
-			'show_cta'          => __( 'Call to action', 'dog-father-control-center' ),
-			'show_contact'      => __( 'Contact', 'dog-father-control-center' ),
-		);
+		$out = array();
+		foreach ( $this->sections() as $slug => $label ) {
+			$out[ 'show_' . $slug ] = $label;
+		}
+		return $out;
 	}
 
 	/**
@@ -254,6 +296,10 @@ class DFCC_Home_Settings extends DFCC_Module {
 			'faq_title'            => __( 'Frequently Asked Questions', 'dog-father-control-center' ),
 			'contact_eyebrow'      => __( 'Get in Touch', 'dog-father-control-center' ),
 			'header_book_label'    => __( 'Book Now', 'dog-father-control-center' ),
+			'count_services'       => '6',
+			'count_gallery'        => '8',
+			'count_testimonials'   => '3',
+			'count_faq'            => '6',
 			'cta_title'            => __( "Book Your Dog's Next Vacation With Us", 'dog-father-control-center' ),
 			'cta_text'             => __( 'Give your furry friend the ultimate vacation experience at our luxury dog boarding hotel. Join our growing pack of happy customers today.', 'dog-father-control-center' ),
 			'cta_button_label'     => __( 'Start Booking', 'dog-father-control-center' ),
@@ -284,6 +330,7 @@ class DFCC_Home_Settings extends DFCC_Module {
 					$clean[ $key ] = esc_url_raw( trim( $input[ $key ] ) );
 					break;
 				case 'media':
+				case 'number':
 					$clean[ $key ] = absint( $input[ $key ] );
 					break;
 				default:
@@ -294,6 +341,37 @@ class DFCC_Home_Settings extends DFCC_Module {
 		// Checkboxes: present = 1, absent = 0.
 		foreach ( array_keys( $this->toggles() ) as $key ) {
 			$clean[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
+		}
+
+		// Section order (validated against known sections).
+		$known = array_keys( $this->sections() );
+		if ( isset( $input['home_section_order'] ) && is_array( $input['home_section_order'] ) ) {
+			$order = array();
+			foreach ( $input['home_section_order'] as $slug ) {
+				$slug = sanitize_key( $slug );
+				if ( in_array( $slug, $known, true ) && ! in_array( $slug, $order, true ) ) {
+					$order[] = $slug;
+				}
+			}
+			foreach ( $known as $slug ) {
+				if ( ! in_array( $slug, $order, true ) ) {
+					$order[] = $slug;
+				}
+			}
+			$clean['home_section_order'] = $order;
+		}
+
+		// Per-section style: background color + spacing.
+		foreach ( $known as $slug ) {
+			$bg_key = 'sec_' . $slug . '_bg';
+			$sp_key = 'sec_' . $slug . '_space';
+			if ( isset( $input[ $bg_key ] ) ) {
+				$color           = sanitize_hex_color( trim( (string) $input[ $bg_key ] ) );
+				$clean[ $bg_key ] = $color ? $color : '';
+			}
+			if ( isset( $input[ $sp_key ] ) ) {
+				$clean[ $sp_key ] = in_array( $input[ $sp_key ], array( 'compact', 'normal', 'spacious' ), true ) ? $input[ $sp_key ] : 'normal';
+			}
 		}
 
 		return $clean;

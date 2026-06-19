@@ -21,7 +21,7 @@ $df_title   = dfather_home( 'services_title', __( 'Premium Services', 'dog-fathe
 
 $df_service_args = array(
 	'post_type'      => 'dfcc_service',
-	'posts_per_page' => 6,
+	'posts_per_page' => dfather_count( 'count_services', 6 ),
 	'post_status'    => 'publish',
 	'orderby'        => 'menu_order',
 	'order'          => 'ASC',

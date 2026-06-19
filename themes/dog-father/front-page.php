@@ -28,17 +28,26 @@ if ( $df_builder || '' !== $df_manual ) :
 		the_content();
 	endwhile;
 else :
+	// Hero is always first and pinned.
 	get_template_part( 'template-parts/home/hero' );
-	get_template_part( 'template-parts/home/trust' );
-	get_template_part( 'template-parts/home/about' );
-	get_template_part( 'template-parts/home/services' );
-	get_template_part( 'template-parts/home/why' );
-	get_template_part( 'template-parts/home/stats' );
-	get_template_part( 'template-parts/home/gallery' );
-	get_template_part( 'template-parts/home/testimonials' );
-	get_template_part( 'template-parts/home/faq' );
-	get_template_part( 'template-parts/home/cta' );
-	get_template_part( 'template-parts/home/contact' );
+
+	// Per-section background/spacing overrides chosen in Section Layout.
+	$df_inline = dfather_section_inline_styles();
+	if ( '' !== $df_inline ) {
+		printf( '<style id="df-section-styles">%s</style>', $df_inline ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- generated from sanitized hex / whitelisted values.
+	}
+
+	// Render the remaining sections in the owner's chosen order. Each part
+	// self-guards on its show_{slug} toggle; we also skip hidden ones here so
+	// no empty wrapper is emitted.
+	foreach ( dfather_section_order() as $df_slug ) {
+		if ( ! dfather_show( $df_slug ) ) {
+			continue;
+		}
+		echo '<div class="df-slot df-slot--' . esc_attr( $df_slug ) . '">';
+		get_template_part( 'template-parts/home/' . $df_slug );
+		echo '</div>';
+	}
 endif;
 
 get_footer();

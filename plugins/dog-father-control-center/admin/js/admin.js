@@ -10,6 +10,21 @@
 			$( '.dfcc-color-field' ).wpColorPicker();
 		}
 
+		// Drag-to-reorder the homepage Section Layout list.
+		if ( $.fn.sortable ) {
+			$( '#dfcc-section-sort' ).sortable( {
+				handle: '.dfcc-drag',
+				placeholder: 'dfcc-sortable-placeholder',
+				forcePlaceholderSize: true,
+				axis: 'y'
+			} );
+		}
+
+		// Dim a section row when its show/hide checkbox is unticked.
+		$( document ).on( 'change', '.dfcc-sec-toggle', function () {
+			$( this ).closest( '.dfcc-sec-row' ).toggleClass( 'dfcc-hidden', ! this.checked );
+		} );
+
 		// Media uploader for image fields (Open Graph, gallery, etc.).
 		$( document ).on( 'click', '.dfcc-media-upload', function ( e ) {
 			e.preventDefault();

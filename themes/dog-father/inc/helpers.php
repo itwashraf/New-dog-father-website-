@@ -107,6 +107,79 @@ function dfather_social_links() {
 }
 
 /**
+ * The canonical list of reorderable homepage section slugs. Each maps to a
+ * file in template-parts/home/{slug}.php and a show_{slug} visibility toggle.
+ *
+ * @return string[]
+ */
+function dfather_home_sections() {
+	return array( 'trust', 'about', 'services', 'why', 'stats', 'gallery', 'testimonials', 'faq', 'cta', 'contact' );
+}
+
+/**
+ * The homepage section order chosen by the owner (Dog Father → Homepage →
+ * Section Layout), validated against the known sections with any missing ones
+ * appended. Falls back to the natural order.
+ *
+ * @return string[]
+ */
+function dfather_section_order() {
+	$known = dfather_home_sections();
+	$saved = dfather_home( 'home_section_order', '' );
+	if ( ! is_array( $saved ) || empty( $saved ) ) {
+		return $known;
+	}
+	$order = array_values( array_intersect( $saved, $known ) );
+	foreach ( $known as $slug ) {
+		if ( ! in_array( $slug, $order, true ) ) {
+			$order[] = $slug;
+		}
+	}
+	return $order;
+}
+
+/**
+ * Build the per-section style overrides (background color + spacing) chosen in
+ * the Section Layout manager, as a CSS string scoped to each .df-slot wrapper.
+ *
+ * @return string
+ */
+function dfather_section_inline_styles() {
+	$space = array(
+		'compact'  => '64px',
+		'spacious' => '140px',
+	);
+	$css = '';
+	foreach ( dfather_home_sections() as $slug ) {
+		$rules = '';
+		$bg    = (string) dfather_home( 'sec_' . $slug . '_bg', '' );
+		if ( $bg && preg_match( '/^#[0-9a-fA-F]{3,8}$/', $bg ) ) {
+			$rules .= 'background:' . $bg . ' !important;';
+		}
+		$sp = (string) dfather_home( 'sec_' . $slug . '_space', 'normal' );
+		if ( isset( $space[ $sp ] ) ) {
+			$rules .= 'padding-top:' . $space[ $sp ] . ' !important;padding-bottom:' . $space[ $sp ] . ' !important;';
+		}
+		if ( '' !== $rules ) {
+			$css .= '.df-slot--' . $slug . ' > section{' . $rules . '}';
+		}
+	}
+	return $css;
+}
+
+/**
+ * Resolve how many items a homepage list should show (min 1).
+ *
+ * @param string $key     Setting key (e.g. count_services).
+ * @param int    $default Fallback count.
+ * @return int
+ */
+function dfather_count( $key, $default ) {
+	$n = (int) dfather_home( $key, $default );
+	return $n >= 1 ? $n : (int) $default;
+}
+
+/**
  * Whether a homepage section should render. Defaults to visible.
  *
  * @param string $section Section key without the show_ prefix (e.g. 'about').

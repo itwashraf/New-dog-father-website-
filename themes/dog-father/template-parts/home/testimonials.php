@@ -18,7 +18,7 @@ $df_title = dfather_home( 'testimonials_title', __( 'Loved by Dog Parents', 'dog
 $df_items = get_posts(
 	array(
 		'post_type'      => 'dfcc_testimonial',
-		'posts_per_page' => 3,
+		'posts_per_page' => dfather_count( 'count_testimonials', 3 ),
 		'post_status'    => 'publish',
 		'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			'relation' => 'OR',

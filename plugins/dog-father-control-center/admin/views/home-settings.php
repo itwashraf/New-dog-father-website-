@@ -248,17 +248,71 @@ $dfcc_name = 'dfcc_home_settings';
 		</div>
 
 		<div class="dfcc-panel">
-			<h2 class="dfcc-section-title"><?php esc_html_e( 'Show / Hide Sections', 'dog-father-control-center' ); ?></h2>
-			<p class="description" style="margin-bottom:14px;"><?php esc_html_e( 'Untick a section to hide it from the homepage.', 'dog-father-control-center' ); ?></p>
-			<div style="columns:2;">
-				<?php foreach ( $toggles as $key => $label ) : ?>
-					<?php $checked = ! isset( $settings[ $key ] ) || ! empty( $settings[ $key ] ); ?>
-					<label style="display:block;margin-bottom:10px;color:#fff;">
-						<input type="checkbox" name="<?php echo esc_attr( $dfcc_name ); ?>[<?php echo esc_attr( $key ); ?>]" value="1" <?php checked( $checked ); ?> />
-						<?php echo esc_html( $label ); ?>
-					</label>
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'How Many Items to Show', 'dog-father-control-center' ); ?></h2>
+			<div class="dfcc-field" style="display:flex;gap:18px;flex-wrap:wrap;max-width:760px;">
+				<?php
+				$dfcc_counts = array(
+					'count_services'     => __( 'Services', 'dog-father-control-center' ),
+					'count_gallery'      => __( 'Gallery photos', 'dog-father-control-center' ),
+					'count_testimonials' => __( 'Testimonials', 'dog-father-control-center' ),
+					'count_faq'          => __( 'FAQs', 'dog-father-control-center' ),
+				);
+				foreach ( $dfcc_counts as $ck => $cl ) :
+					?>
+					<span>
+						<label><?php echo esc_html( $cl ); ?></label>
+						<input type="number" min="1" max="24" step="1" style="width:90px;" name="<?php echo esc_attr( $dfcc_name ); ?>[<?php echo esc_attr( $ck ); ?>]" value="<?php echo esc_attr( $dfcc_val( $ck ) ); ?>" />
+					</span>
 				<?php endforeach; ?>
 			</div>
+		</div>
+
+		<div class="dfcc-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Section Layout', 'dog-father-control-center' ); ?></h2>
+			<p class="description" style="margin:-6px 0 14px;"><?php esc_html_e( 'Drag the handle to reorder homepage sections, tick to show/hide, and optionally give each section its own background color and spacing. (The hero banner is always first.)', 'dog-father-control-center' ); ?></p>
+
+			<style>
+				.dfcc-sortable{list-style:none;margin:0;padding:0;}
+				.dfcc-sec-row{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e2e2e6;border-radius:8px;padding:10px 12px;margin:0 0 8px;}
+				.dfcc-sec-row .dfcc-drag{cursor:move;color:#a7aaad;font-size:20px;}
+				.dfcc-sec-row .dfcc-sec-name{flex:1;font-weight:600;}
+				.dfcc-sec-row.dfcc-hidden{opacity:.55;}
+				.dfcc-sortable-placeholder{border:2px dashed #FEC208;border-radius:8px;margin:0 0 8px;height:46px;background:#fffdf5;}
+			</style>
+
+			<ul class="dfcc-sortable" id="dfcc-section-sort">
+				<?php
+				$dfcc_spaces = array(
+					'normal'   => __( 'Normal spacing', 'dog-father-control-center' ),
+					'compact'  => __( 'Compact spacing', 'dog-father-control-center' ),
+					'spacious' => __( 'Spacious spacing', 'dog-father-control-center' ),
+				);
+				$dfcc_sections = $module->sections();
+				foreach ( $module->section_order() as $dfcc_slug ) :
+					if ( ! isset( $dfcc_sections[ $dfcc_slug ] ) ) {
+						continue;
+					}
+					$dfcc_show_key = 'show_' . $dfcc_slug;
+					$dfcc_is_shown = ! isset( $settings[ $dfcc_show_key ] ) || ! empty( $settings[ $dfcc_show_key ] );
+					$dfcc_bg       = isset( $settings[ 'sec_' . $dfcc_slug . '_bg' ] ) ? $settings[ 'sec_' . $dfcc_slug . '_bg' ] : '';
+					$dfcc_space    = isset( $settings[ 'sec_' . $dfcc_slug . '_space' ] ) ? $settings[ 'sec_' . $dfcc_slug . '_space' ] : 'normal';
+					?>
+					<li class="dfcc-sec-row<?php echo $dfcc_is_shown ? '' : ' dfcc-hidden'; ?>">
+						<span class="dfcc-drag dashicons dashicons-move" aria-hidden="true"></span>
+						<input type="hidden" name="<?php echo esc_attr( $dfcc_name ); ?>[home_section_order][]" value="<?php echo esc_attr( $dfcc_slug ); ?>" />
+						<label style="display:inline-flex;align-items:center;gap:6px;">
+							<input type="checkbox" class="dfcc-sec-toggle" name="<?php echo esc_attr( $dfcc_name ); ?>[<?php echo esc_attr( $dfcc_show_key ); ?>]" value="1" <?php checked( $dfcc_is_shown ); ?> />
+						</label>
+						<span class="dfcc-sec-name"><?php echo esc_html( $dfcc_sections[ $dfcc_slug ] ); ?></span>
+						<select name="<?php echo esc_attr( $dfcc_name ); ?>[sec_<?php echo esc_attr( $dfcc_slug ); ?>_space]">
+							<?php foreach ( $dfcc_spaces as $sv => $sl ) : ?>
+								<option value="<?php echo esc_attr( $sv ); ?>" <?php selected( $dfcc_space, $sv ); ?>><?php echo esc_html( $sl ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<input type="text" class="dfcc-color-field" name="<?php echo esc_attr( $dfcc_name ); ?>[sec_<?php echo esc_attr( $dfcc_slug ); ?>_bg]" value="<?php echo esc_attr( $dfcc_bg ); ?>" data-default-color="" placeholder="<?php esc_attr_e( 'Background (optional)', 'dog-father-control-center' ); ?>" />
+					</li>
+				<?php endforeach; ?>
+			</ul>
 		</div>
 
 		<?php submit_button( __( 'Save Homepage', 'dog-father-control-center' ) ); ?>
