@@ -35,7 +35,7 @@ $df_defaults = array(
 <section class="df-section df-reveal" id="faq">
 	<div class="df-container">
 		<div class="df-section-head">
-			<span class="df-eyebrow"><?php esc_html_e( 'Questions', 'dog-father' ); ?></span>
+			<span class="df-eyebrow"><?php echo esc_html( dfather_home( 'faq_eyebrow', __( 'Questions', 'dog-father' ) ) ); ?></span>
 			<h2 class="df-section-title"><?php echo esc_html( $df_title ); ?></h2>
 		</div>
 		<div class="df-faq">

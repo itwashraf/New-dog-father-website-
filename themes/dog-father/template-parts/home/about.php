@@ -30,13 +30,18 @@ $df_text    = dfather_home( 'about_text', __( 'At The Dog Father Hotel we blend 
 				<?php if ( $df_img_url ) : ?>
 					<img src="<?php echo esc_url( $df_img_url ); ?>" alt="<?php echo esc_attr( $df_title ); ?>" loading="lazy" />
 				<?php endif; ?>
-				<div class="df-about__badge"><b><?php echo esc_html( dfather_home( 'stat3_number', '15+' ) ); ?></b><?php esc_html_e( 'Years of Excellence', 'dog-father' ); ?></div>
+				<div class="df-about__badge"><b><?php echo esc_html( dfather_home( 'stat3_number', '15+' ) ); ?></b><?php echo esc_html( dfather_home( 'about_badge_text', __( 'Years of Excellence', 'dog-father' ) ) ); ?></div>
 			</div>
 			<div>
 				<span class="df-eyebrow"><?php echo esc_html( $df_eyebrow ); ?></span>
 				<h2><?php echo esc_html( $df_title ); ?></h2>
 				<p><?php echo esc_html( $df_text ); ?></p>
-				<a class="df-btn df-btn--primary" href="<?php echo esc_url( dfather_url( '/about/', '/about/' ) ); ?>"><?php esc_html_e( 'Our Story', 'dog-father' ); ?></a>
+				<?php
+				$df_btn_label = dfather_home( 'about_button_label', __( 'Our Story', 'dog-father' ) );
+				if ( '' !== trim( (string) $df_btn_label ) ) :
+					?>
+					<a class="df-btn df-btn--primary" href="<?php echo dfather_url( dfather_home( 'about_button_url', '/about/' ), '/about/' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- dfather_url returns an escaped URL. ?>"><?php echo esc_html( $df_btn_label ); ?></a>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

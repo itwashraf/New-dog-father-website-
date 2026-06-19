@@ -73,9 +73,19 @@ class DFCC_Tools extends DFCC_Module {
 		add_action( 'admin_init', array( $this, 'handle_backup_export' ) );
 		add_action( 'admin_init', array( $this, 'handle_backup_import' ) );
 
+		// Kubio leftover cleanup actions.
+		add_action( 'admin_post_dfcc_kubio_clean', array( $this, 'handle_kubio_clean' ) );
+		add_action( 'admin_post_dfcc_kubio_restore', array( $this, 'handle_kubio_restore' ) );
+
 		// Apply security hardening based on saved toggles.
 		add_action( 'init', array( $this, 'apply_security' ) );
 	}
+
+	/**
+	 * Meta key that stores a one-time backup of post content before cleanup,
+	 * so the operation is reversible.
+	 */
+	const KUBIO_BACKUP_META = '_dfcc_pre_cleanup_content';
 
 	/**
 	 * Register all Tools admin pages.
@@ -101,6 +111,12 @@ class DFCC_Tools extends DFCC_Module {
 			'title'    => __( 'Backup Center', 'dog-father-control-center' ),
 			'callback' => array( $this, 'render_backup' ),
 			'order'    => 110,
+		);
+		$pages[] = array(
+			'slug'     => 'dfcc-cleanup',
+			'title'    => __( 'Cleanup (Kubio)', 'dog-father-control-center' ),
+			'callback' => array( $this, 'render_cleanup' ),
+			'order'    => 115,
 		);
 		$pages[] = array(
 			'slug'     => 'dfcc-security',
@@ -393,6 +409,178 @@ class DFCC_Tools extends DFCC_Module {
 		}
 
 		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-backup', 'dfcc_notice' => $notice ), admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Cleanup — remove leftover Kubio block markup
+	 * ------------------------------------------------------------------ */
+
+	/**
+	 * Find all posts/pages whose content still contains Kubio block markup.
+	 *
+	 * @return WP_Post[]
+	 */
+	private function scan_kubio_posts() {
+		global $wpdb;
+
+		$ids = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			"SELECT ID FROM {$wpdb->posts}
+			 WHERE post_status NOT IN ('trash','auto-draft','inherit')
+			   AND post_content LIKE '%wp:kubio%'
+			 ORDER BY post_type ASC, post_title ASC
+			 LIMIT 500"
+		);
+
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		return array_filter( array_map( 'get_post', array_map( 'intval', $ids ) ) );
+	}
+
+	/**
+	 * Count Kubio blocks in a chunk of content.
+	 *
+	 * @param string $content Post content.
+	 * @return int
+	 */
+	private function count_kubio_blocks( $content ) {
+		return preg_match_all( '/<!--\s*wp:kubio\//', (string) $content );
+	}
+
+	/**
+	 * Strip Kubio block delimiters from content, keeping any inner HTML so text
+	 * and images survive (mirrors WordPress' "Keep as HTML" recovery). When a
+	 * block has no real inner HTML the result is empty — which lets the theme's
+	 * built-in homepage take over.
+	 *
+	 * @param string $content Original content.
+	 * @return string Cleaned content.
+	 */
+	private function strip_kubio( $content ) {
+		// Remove opening Kubio block comments (with or without JSON attributes).
+		$content = preg_replace( '/<!--\s*wp:kubio\/[^>]*?-->/s', '', (string) $content );
+		// Remove closing Kubio block comments.
+		$content = preg_replace( '/<!--\s*\/wp:kubio\/[^>]*?-->/s', '', (string) $content );
+		// Collapse the blank lines left behind.
+		$content = preg_replace( "/(\r?\n){3,}/", "\n\n", (string) $content );
+		return trim( (string) $content );
+	}
+
+	/**
+	 * Render the Cleanup screen.
+	 *
+	 * @return void
+	 */
+	public function render_cleanup() {
+		$this->view(
+			'cleanup',
+			array(
+				'posts'        => $this->scan_kubio_posts(),
+				'backup_meta'  => self::KUBIO_BACKUP_META,
+				'count_blocks' => array( $this, 'count_kubio_blocks' ),
+			)
+		);
+	}
+
+	/**
+	 * Handle the "clean Kubio markup" action for one post or all of them.
+	 *
+	 * @return void
+	 */
+	public function handle_kubio_clean() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'dog-father-control-center' ) );
+		}
+		check_admin_referer( 'dfcc_kubio_clean' );
+
+		$target  = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : '';
+		$cleaned = 0;
+
+		if ( 'all' === $target ) {
+			$posts = $this->scan_kubio_posts();
+		} else {
+			$post  = get_post( (int) $target );
+			$posts = $post ? array( $post ) : array();
+		}
+
+		foreach ( $posts as $post ) {
+			$original = (string) $post->post_content;
+			if ( false === strpos( $original, 'wp:kubio' ) ) {
+				continue;
+			}
+
+			// Back up the original once so the change can be undone.
+			if ( '' === (string) get_post_meta( $post->ID, self::KUBIO_BACKUP_META, true ) ) {
+				update_post_meta( $post->ID, self::KUBIO_BACKUP_META, wp_slash( $original ) );
+			}
+
+			wp_update_post(
+				array(
+					'ID'           => $post->ID,
+					'post_content' => wp_slash( $this->strip_kubio( $original ) ),
+				)
+			);
+			$cleaned++;
+		}
+
+		if ( function_exists( 'dfcc_purge_caches' ) ) {
+			dfcc_purge_caches();
+		}
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-cleanup', 'dfcc_cleaned' => $cleaned ), admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * Restore the pre-cleanup content for one post (or all backed-up posts).
+	 *
+	 * @return void
+	 */
+	public function handle_kubio_restore() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'dog-father-control-center' ) );
+		}
+		check_admin_referer( 'dfcc_kubio_restore' );
+
+		$target   = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : '';
+		$restored = 0;
+
+		if ( 'all' === $target ) {
+			$ids = get_posts(
+				array(
+					'post_type'   => 'any',
+					'post_status' => 'any',
+					'fields'      => 'ids',
+					'numberposts' => 500,
+					'meta_key'    => self::KUBIO_BACKUP_META, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				)
+			);
+		} else {
+			$ids = array( (int) $target );
+		}
+
+		foreach ( $ids as $id ) {
+			$backup = (string) get_post_meta( $id, self::KUBIO_BACKUP_META, true );
+			if ( '' === $backup ) {
+				continue;
+			}
+			wp_update_post(
+				array(
+					'ID'           => $id,
+					'post_content' => wp_slash( $backup ),
+				)
+			);
+			delete_post_meta( $id, self::KUBIO_BACKUP_META );
+			$restored++;
+		}
+
+		if ( function_exists( 'dfcc_purge_caches' ) ) {
+			dfcc_purge_caches();
+		}
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-cleanup', 'dfcc_restored' => $restored ), admin_url( 'admin.php' ) ) );
 		exit;
 	}
 

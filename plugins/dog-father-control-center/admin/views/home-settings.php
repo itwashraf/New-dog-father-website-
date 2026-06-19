@@ -106,18 +106,40 @@ $dfcc_name = 'dfcc_home_settings';
 				<button type="button" class="button dfcc-media-upload" data-target="about_image_id" data-preview="about_image_preview"><?php esc_html_e( 'Choose Image', 'dog-father-control-center' ); ?></button>
 				<button type="button" class="button dfcc-media-clear" data-target="about_image_id" data-preview="about_image_preview"><?php esc_html_e( 'Remove', 'dog-father-control-center' ); ?></button>
 			</div>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Image Badge Text', 'dog-father-control-center' ); ?></label>
+				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[about_badge_text]" value="<?php echo esc_attr( $dfcc_val( 'about_badge_text' ) ); ?>" />
+				<p class="description"><?php esc_html_e( 'The small badge over the photo. The big number uses Stat 3.', 'dog-father-control-center' ); ?></p>
+			</div>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Button Label', 'dog-father-control-center' ); ?></label>
+				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[about_button_label]" value="<?php echo esc_attr( $dfcc_val( 'about_button_label' ) ); ?>" />
+			</div>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Button URL', 'dog-father-control-center' ); ?></label>
+				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[about_button_url]" value="<?php echo esc_attr( $dfcc_val( 'about_button_url' ) ); ?>" />
+			</div>
 		</div>
 
 		<div class="dfcc-panel">
-			<h2 class="dfcc-section-title"><?php esc_html_e( 'Section Titles', 'dog-father-control-center' ); ?></h2>
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Section Titles & Buttons', 'dog-father-control-center' ); ?></h2>
 			<?php
 			$dfcc_titles = array(
-				'services_eyebrow'   => __( 'Services Eyebrow', 'dog-father-control-center' ),
-				'services_title'     => __( 'Services Title', 'dog-father-control-center' ),
-				'gallery_title'      => __( 'Gallery Title', 'dog-father-control-center' ),
-				'testimonials_title' => __( 'Testimonials Title', 'dog-father-control-center' ),
-				'faq_title'          => __( 'FAQ Title', 'dog-father-control-center' ),
-				'contact_title'      => __( 'Contact Title', 'dog-father-control-center' ),
+				'services_eyebrow'      => __( 'Services Eyebrow', 'dog-father-control-center' ),
+				'services_title'        => __( 'Services Title', 'dog-father-control-center' ),
+				'services_button_label' => __( 'Services Button Label', 'dog-father-control-center' ),
+				'services_button_url'   => __( 'Services Button URL', 'dog-father-control-center' ),
+				'gallery_eyebrow'       => __( 'Gallery Eyebrow', 'dog-father-control-center' ),
+				'gallery_title'         => __( 'Gallery Title', 'dog-father-control-center' ),
+				'gallery_button_label'  => __( 'Gallery Button Label', 'dog-father-control-center' ),
+				'gallery_button_url'    => __( 'Gallery Button URL', 'dog-father-control-center' ),
+				'testimonials_eyebrow'  => __( 'Testimonials Eyebrow', 'dog-father-control-center' ),
+				'testimonials_title'    => __( 'Testimonials Title', 'dog-father-control-center' ),
+				'faq_eyebrow'           => __( 'FAQ Eyebrow', 'dog-father-control-center' ),
+				'faq_title'             => __( 'FAQ Title', 'dog-father-control-center' ),
+				'contact_eyebrow'       => __( 'Contact Eyebrow', 'dog-father-control-center' ),
+				'contact_title'         => __( 'Contact Title', 'dog-father-control-center' ),
+				'header_book_label'     => __( 'Header "Book Now" Button Label', 'dog-father-control-center' ),
 			);
 			foreach ( $dfcc_titles as $k => $lbl ) :
 				?>
@@ -126,6 +148,55 @@ $dfcc_name = 'dfcc_home_settings';
 					<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[<?php echo esc_attr( $k ); ?>]" value="<?php echo esc_attr( $dfcc_val( $k ) ); ?>" />
 				</div>
 			<?php endforeach; ?>
+		</div>
+
+		<div class="dfcc-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Trust Bar', 'dog-father-control-center' ); ?></h2>
+			<p class="description" style="margin:-6px 0 14px;"><?php esc_html_e( 'The four highlights shown just under the hero. Icon = a Dashicon name (browse names at developer.wordpress.org/resource/dashicons) or an emoji.', 'dog-father-control-center' ); ?></p>
+			<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
+				<div class="dfcc-field" style="display:flex;gap:12px;max-width:760px;">
+					<span style="flex:1;">
+						<label><?php printf( esc_html__( 'Item %d Icon', 'dog-father-control-center' ), (int) $i ); ?></label>
+						<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[trust<?php echo (int) $i; ?>_icon]" value="<?php echo esc_attr( $dfcc_val( 'trust' . $i . '_icon' ) ); ?>" placeholder="dashicons-shield-alt" />
+					</span>
+					<span style="flex:1;">
+						<label><?php printf( esc_html__( 'Item %d Title', 'dog-father-control-center' ), (int) $i ); ?></label>
+						<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[trust<?php echo (int) $i; ?>_title]" value="<?php echo esc_attr( $dfcc_val( 'trust' . $i . '_title' ) ); ?>" />
+					</span>
+					<span style="flex:1;">
+						<label><?php printf( esc_html__( 'Item %d Subtitle', 'dog-father-control-center' ), (int) $i ); ?></label>
+						<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[trust<?php echo (int) $i; ?>_sub]" value="<?php echo esc_attr( $dfcc_val( 'trust' . $i . '_sub' ) ); ?>" />
+					</span>
+				</div>
+			<?php endfor; ?>
+		</div>
+
+		<div class="dfcc-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Why Choose Us', 'dog-father-control-center' ); ?></h2>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Eyebrow', 'dog-father-control-center' ); ?></label>
+				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[why_eyebrow]" value="<?php echo esc_attr( $dfcc_val( 'why_eyebrow' ) ); ?>" />
+			</div>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Title', 'dog-father-control-center' ); ?></label>
+				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[why_title]" value="<?php echo esc_attr( $dfcc_val( 'why_title' ) ); ?>" />
+			</div>
+			<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
+				<div class="dfcc-field" style="border-top:1px solid #ededf0;padding-top:12px;">
+					<div style="display:flex;gap:12px;">
+						<span style="flex:1;">
+							<label><?php printf( esc_html__( 'Reason %d Icon', 'dog-father-control-center' ), (int) $i ); ?></label>
+							<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[why<?php echo (int) $i; ?>_icon]" value="<?php echo esc_attr( $dfcc_val( 'why' . $i . '_icon' ) ); ?>" placeholder="dashicons-shield" />
+						</span>
+						<span style="flex:2;">
+							<label><?php printf( esc_html__( 'Reason %d Title', 'dog-father-control-center' ), (int) $i ); ?></label>
+							<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[why<?php echo (int) $i; ?>_title]" value="<?php echo esc_attr( $dfcc_val( 'why' . $i . '_title' ) ); ?>" />
+						</span>
+					</div>
+					<label style="margin-top:8px;"><?php printf( esc_html__( 'Reason %d Text', 'dog-father-control-center' ), (int) $i ); ?></label>
+					<textarea name="<?php echo esc_attr( $dfcc_name ); ?>[why<?php echo (int) $i; ?>_text]" rows="2"><?php echo esc_textarea( $dfcc_val( 'why' . $i . '_text' ) ); ?></textarea>
+				</div>
+			<?php endfor; ?>
 		</div>
 
 		<div class="dfcc-panel">

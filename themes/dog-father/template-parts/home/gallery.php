@@ -30,7 +30,7 @@ if ( ! $df_items ) {
 <section class="df-section df-reveal" id="gallery">
 	<div class="df-container">
 		<div class="df-section-head">
-			<span class="df-eyebrow"><?php esc_html_e( 'Gallery', 'dog-father' ); ?></span>
+			<span class="df-eyebrow"><?php echo esc_html( dfather_home( 'gallery_eyebrow', __( 'Gallery', 'dog-father' ) ) ); ?></span>
 			<h2 class="df-section-title"><?php echo esc_html( $df_title ); ?></h2>
 		</div>
 		<div class="df-gallery-grid">
@@ -38,8 +38,13 @@ if ( ! $df_items ) {
 				<?php dfather_gallery_item( $df_post->ID ); ?>
 			<?php endforeach; ?>
 		</div>
-		<div style="text-align:center;margin-top:40px;">
-			<a class="df-btn df-btn--ghost" href="<?php echo esc_url( dfather_url( '/gallery/', '/gallery/' ) ); ?>"><?php esc_html_e( 'View Full Gallery', 'dog-father' ); ?></a>
-		</div>
+		<?php
+		$df_btn_label = dfather_home( 'gallery_button_label', __( 'View Full Gallery', 'dog-father' ) );
+		if ( '' !== trim( (string) $df_btn_label ) ) :
+			?>
+			<div style="text-align:center;margin-top:40px;">
+				<a class="df-btn df-btn--ghost" href="<?php echo dfather_url( dfather_home( 'gallery_button_url', '/gallery/' ), '/gallery/' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- dfather_url returns an escaped URL. ?>"><?php echo esc_html( $df_btn_label ); ?></a>
+			</div>
+		<?php endif; ?>
 	</div>
 </section>

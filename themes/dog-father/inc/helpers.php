@@ -64,6 +64,35 @@ function dfather_default_image( $slot ) {
 }
 
 /**
+ * Configured social profile links (only those with a URL set in
+ * Dog Father → Global Settings → Social Media).
+ *
+ * @return array[] Each: array( 'url', 'label', 'icon' (dashicon class) ).
+ */
+function dfather_social_links() {
+	$networks = array(
+		'facebook'  => array( 'label' => 'Facebook', 'icon' => 'dashicons-facebook' ),
+		'instagram' => array( 'label' => 'Instagram', 'icon' => 'dashicons-instagram' ),
+		'tiktok'    => array( 'label' => 'TikTok', 'icon' => 'dashicons-video-alt3' ),
+		'youtube'   => array( 'label' => 'YouTube', 'icon' => 'dashicons-youtube' ),
+		'twitter'   => array( 'label' => 'X / Twitter', 'icon' => 'dashicons-twitter' ),
+	);
+
+	$links = array();
+	foreach ( $networks as $key => $meta ) {
+		$url = dfather_info( $key, '' );
+		if ( $url ) {
+			$links[] = array(
+				'url'   => $url,
+				'label' => $meta['label'],
+				'icon'  => $meta['icon'],
+			);
+		}
+	}
+	return $links;
+}
+
+/**
  * Whether a homepage section should render. Defaults to visible.
  *
  * @param string $section Section key without the show_ prefix (e.g. 'about').

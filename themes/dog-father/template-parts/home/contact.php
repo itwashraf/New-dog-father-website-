@@ -24,7 +24,7 @@ $df_map      = dfather_info( 'maps_embed', '' );
 <section class="df-section df-reveal" id="contact" style="background:var(--df-surface-1);border-top:1px solid var(--df-border-soft);">
 	<div class="df-container">
 		<div class="df-section-head">
-			<span class="df-eyebrow"><?php esc_html_e( 'Get in Touch', 'dog-father' ); ?></span>
+			<span class="df-eyebrow"><?php echo esc_html( dfather_home( 'contact_eyebrow', __( 'Get in Touch', 'dog-father' ) ) ); ?></span>
 			<h2 class="df-section-title"><?php echo esc_html( $df_title ); ?></h2>
 		</div>
 		<div class="df-contact__grid">

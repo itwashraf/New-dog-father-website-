@@ -1,5 +1,10 @@
 # Architecture — The Dog Father Hotel
 
+> ⚠️ **OUTDATED — kept for history only.** This document describes an earlier
+> "Elementor-first" version of the project. The current build is a **standalone
+> theme + plugin with no page builder**. For the accurate, up-to-date overview
+> and the full "where do I edit X" map, see **[`BLUEPRINT.md`](BLUEPRINT.md)**.
+
 A technical overview for developers who maintain or extend the project.
 
 ---

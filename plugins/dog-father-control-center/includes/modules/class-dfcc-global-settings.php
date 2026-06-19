@@ -120,7 +120,38 @@ class DFCC_Global_Settings extends DFCC_Module {
 			$clean['maps_embed'] = $this->sanitize_iframe( $input['maps_embed'] );
 		}
 
+		// Social profiles (full URLs).
+		foreach ( array_keys( self::social_networks() ) as $network ) {
+			if ( isset( $input[ $network ] ) ) {
+				$clean[ $network ] = esc_url_raw( trim( $input[ $network ] ) );
+			}
+		}
+
+		// Footer credit.
+		if ( isset( $input['footer_credit_text'] ) ) {
+			$clean['footer_credit_text'] = sanitize_text_field( $input['footer_credit_text'] );
+		}
+		if ( isset( $input['footer_credit_url'] ) ) {
+			$clean['footer_credit_url'] = esc_url_raw( trim( $input['footer_credit_url'] ) );
+		}
+		$clean['hide_footer_credit'] = empty( $input['hide_footer_credit'] ) ? 0 : 1;
+
 		return $clean;
+	}
+
+	/**
+	 * Supported social networks: key => array( label, dashicon ).
+	 *
+	 * @return array
+	 */
+	public static function social_networks() {
+		return array(
+			'facebook'  => array( 'label' => __( 'Facebook', 'dog-father-control-center' ), 'icon' => 'dashicons-facebook' ),
+			'instagram' => array( 'label' => __( 'Instagram', 'dog-father-control-center' ), 'icon' => 'dashicons-instagram' ),
+			'tiktok'    => array( 'label' => __( 'TikTok', 'dog-father-control-center' ), 'icon' => 'dashicons-video-alt3' ),
+			'youtube'   => array( 'label' => __( 'YouTube', 'dog-father-control-center' ), 'icon' => 'dashicons-youtube' ),
+			'twitter'   => array( 'label' => __( 'X / Twitter', 'dog-father-control-center' ), 'icon' => 'dashicons-twitter' ),
+		);
 	}
 
 	/**
@@ -218,6 +249,35 @@ class DFCC_Global_Settings extends DFCC_Module {
 					<div class="dfcc-field">
 						<label for="opening_hours"><?php esc_html_e( 'Opening Hours', 'dog-father-control-center' ); ?></label>
 						<textarea id="opening_hours" rows="4" class="large-text" name="<?php echo esc_attr( self::OPTION . '[opening_hours]' ); ?>"><?php echo esc_textarea( $get( 'opening_hours' ) ); ?></textarea>
+					</div>
+				</div>
+
+				<div class="dfcc-panel">
+					<h2 class="dfcc-section-title"><?php esc_html_e( 'Social Media', 'dog-father-control-center' ); ?></h2>
+					<p class="description" style="margin-bottom:14px;"><?php esc_html_e( 'Paste the full link to each profile (e.g. https://instagram.com/yourpage). Empty ones are hidden. Icons appear in the footer.', 'dog-father-control-center' ); ?></p>
+					<?php foreach ( self::social_networks() as $network => $meta ) : ?>
+						<div class="dfcc-field">
+							<label for="<?php echo esc_attr( $network ); ?>"><?php echo esc_html( $meta['label'] ); ?></label>
+							<input type="url" class="regular-text" id="<?php echo esc_attr( $network ); ?>" name="<?php echo esc_attr( self::OPTION . '[' . $network . ']' ); ?>" value="<?php echo esc_attr( $get( $network ) ); ?>" placeholder="https://" />
+						</div>
+					<?php endforeach; ?>
+				</div>
+
+				<div class="dfcc-panel">
+					<h2 class="dfcc-section-title"><?php esc_html_e( 'Footer Credit', 'dog-father-control-center' ); ?></h2>
+					<div class="dfcc-field">
+						<label for="footer_credit_text"><?php esc_html_e( 'Credit Text', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="footer_credit_text" name="<?php echo esc_attr( self::OPTION . '[footer_credit_text]' ); ?>" value="<?php echo esc_attr( $get( 'footer_credit_text' ) ); ?>" placeholder="Provada" />
+					</div>
+					<div class="dfcc-field">
+						<label for="footer_credit_url"><?php esc_html_e( 'Credit Link', 'dog-father-control-center' ); ?></label>
+						<input type="url" class="regular-text" id="footer_credit_url" name="<?php echo esc_attr( self::OPTION . '[footer_credit_url]' ); ?>" value="<?php echo esc_attr( $get( 'footer_credit_url' ) ); ?>" placeholder="https://provada.net" />
+					</div>
+					<div class="dfcc-field">
+						<label for="hide_footer_credit">
+							<input type="checkbox" id="hide_footer_credit" name="<?php echo esc_attr( self::OPTION . '[hide_footer_credit]' ); ?>" value="1" <?php checked( ! empty( $settings['hide_footer_credit'] ) ); ?> />
+							<?php esc_html_e( 'Hide the "Designed & developed by" credit line', 'dog-father-control-center' ); ?>
+						</label>
 					</div>
 				</div>
 

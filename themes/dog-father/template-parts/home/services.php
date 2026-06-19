@@ -66,7 +66,7 @@ $df_defaults = array(
 			?>
 		</div>
 		<div style="text-align:center;margin-top:48px;">
-			<a class="df-btn df-btn--ghost" href="<?php echo esc_url( dfather_url( '/services/', '/services/' ) ); ?>"><?php esc_html_e( 'View All Services', 'dog-father' ); ?></a>
+			<a class="df-btn df-btn--ghost" href="<?php echo dfather_url( dfather_home( 'services_button_url', '/services/' ), '/services/' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- dfather_url returns an escaped URL. ?>"><?php echo esc_html( dfather_home( 'services_button_label', __( 'View All Services', 'dog-father' ) ) ); ?></a>
 		</div>
 	</div>
 </section>

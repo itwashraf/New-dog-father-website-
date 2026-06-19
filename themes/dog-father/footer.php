@@ -23,11 +23,21 @@ $df_address  = dfather_info( 'address', '' );
 		<div class="df-footer__col">
 			<h3 class="df-footer__title df-gradient-text"><?php echo esc_html( $df_name ); ?></h3>
 			<?php if ( $df_tagline ) : ?><p class="df-footer__tag"><?php echo esc_html( $df_tagline ); ?></p><?php endif; ?>
-			<?php if ( $df_whatsapp ) : ?>
+			<?php
+			$df_social = function_exists( 'dfather_social_links' ) ? dfather_social_links() : array();
+			if ( $df_whatsapp || $df_social ) :
+				?>
 				<div class="df-footer__social">
-					<a href="<?php echo esc_url( 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $df_whatsapp ) ); ?>" aria-label="WhatsApp" target="_blank" rel="noopener">
-						<span class="dashicons dashicons-whatsapp"></span>
-					</a>
+					<?php if ( $df_whatsapp ) : ?>
+						<a href="<?php echo esc_url( 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $df_whatsapp ) ); ?>" aria-label="WhatsApp" target="_blank" rel="noopener">
+							<span class="dashicons dashicons-whatsapp"></span>
+						</a>
+					<?php endif; ?>
+					<?php foreach ( $df_social as $df_link ) : ?>
+						<a href="<?php echo esc_url( $df_link['url'] ); ?>" aria-label="<?php echo esc_attr( $df_link['label'] ); ?>" target="_blank" rel="noopener">
+							<span class="dashicons <?php echo esc_attr( $df_link['icon'] ); ?>"></span>
+						</a>
+					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -75,10 +85,20 @@ $df_address  = dfather_info( 'address', '' );
 			);
 			?>
 		</p>
-		<p class="df-credit">
-			<?php esc_html_e( 'Designed & developed by', 'dog-father' ); ?>
-			<a href="https://provada.net" target="_blank" rel="noopener">Provada</a>
-		</p>
+		<?php
+		$df_credit_text = dfather_info( 'footer_credit_text', 'Provada' );
+		$df_credit_url  = dfather_info( 'footer_credit_url', 'https://provada.net' );
+		if ( ! dfather_info( 'hide_footer_credit', '' ) && $df_credit_text ) :
+			?>
+			<p class="df-credit">
+				<?php esc_html_e( 'Designed & developed by', 'dog-father' ); ?>
+				<?php if ( $df_credit_url ) : ?>
+					<a href="<?php echo esc_url( $df_credit_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $df_credit_text ); ?></a>
+				<?php else : ?>
+					<?php echo esc_html( $df_credit_text ); ?>
+				<?php endif; ?>
+			</p>
+		<?php endif; ?>
 	</div>
 </footer>
 

@@ -44,7 +44,7 @@ $df_defaults = array(
 <section class="df-section df-reveal" style="background:var(--df-surface-1);border-top:1px solid var(--df-border-soft);border-bottom:1px solid var(--df-border-soft);">
 	<div class="df-container">
 		<div class="df-section-head">
-			<span class="df-eyebrow"><?php esc_html_e( 'Testimonials', 'dog-father' ); ?></span>
+			<span class="df-eyebrow"><?php echo esc_html( dfather_home( 'testimonials_eyebrow', __( 'Testimonials', 'dog-father' ) ) ); ?></span>
 			<h2 class="df-section-title"><?php echo esc_html( $df_title ); ?></h2>
 		</div>
 		<div class="df-grid df-grid--3">

@@ -10,6 +10,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Safe icon markup for an owner-entered icon value: a Dashicon name
+ * (e.g. "dashicons-heart") renders as an icon span, anything else (an emoji or
+ * short text) is escaped and printed as-is.
+ *
+ * @param string $icon  Icon value from settings.
+ * @param string $class Extra CSS class for the wrapper.
+ * @return string
+ */
+function dfather_icon_html( $icon, $class = '' ) {
+	$icon = trim( (string) $icon );
+	if ( '' === $icon ) {
+		return '';
+	}
+	if ( 0 === strpos( $icon, 'dashicons-' ) ) {
+		return '<span class="dashicons ' . esc_attr( $icon ) . ' ' . esc_attr( $class ) . '" aria-hidden="true"></span>';
+	}
+	return '<span class="' . esc_attr( $class ) . '" aria-hidden="true">' . esc_html( $icon ) . '</span>';
+}
+
+/**
  * Render star rating markup.
  *
  * @param int $rating 1-5.

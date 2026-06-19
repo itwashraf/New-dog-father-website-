@@ -5,8 +5,13 @@ large imagery, smooth animations and Apple/Tesla-level simplicity. Built to be
 fast, accessible, SEO-friendly and easy for a non-technical owner to run.
 
 **Upload it, activate it, click once — you have a finished website.** No parent
-theme, no Elementor required. Still fully editable with Elementor *and* the
-Dog Father control panel.
+theme, no page builder required. Everything is editable from the **Dog Father**
+control panel.
+
+> 📘 **New here / taking over the project? Read [`docs/BLUEPRINT.md`](docs/BLUEPRINT.md) first.**
+> It explains how the theme + plugin fit together and maps **where to edit every
+> single thing** on the site. (Note: `docs/ARCHITECTURE.md` describes an older
+> Elementor-based build and is kept only for history.)
 
 ---
 
