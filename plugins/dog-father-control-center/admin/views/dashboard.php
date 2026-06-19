@@ -48,28 +48,28 @@ $cards = array(
 
 $quick_links = array(
 	array(
-		'label' => __( 'New Booking', 'dog-father-control-center' ),
-		'link'  => 'post-new.php?post_type=dfcc_booking',
+		'label' => __( 'Getting Started', 'dog-father-control-center' ),
+		'link'  => 'admin.php?page=dfcc-getting-started',
 	),
 	array(
-		'label' => __( 'Add Dog Profile', 'dog-father-control-center' ),
-		'link'  => 'post-new.php?post_type=dfcc_dog',
+		'label' => __( 'Edit Homepage', 'dog-father-control-center' ),
+		'link'  => 'admin.php?page=dfcc-home',
 	),
 	array(
 		'label' => __( 'Theme & Brand Colors', 'dog-father-control-center' ),
 		'link'  => 'admin.php?page=dfcc-theme',
 	),
 	array(
-		'label' => __( 'Integrations', 'dog-father-control-center' ),
-		'link'  => 'admin.php?page=dfcc-integrations',
+		'label' => __( 'Global Settings', 'dog-father-control-center' ),
+		'link'  => 'admin.php?page=dfcc-global',
 	),
 	array(
-		'label' => __( 'SEO Center', 'dog-father-control-center' ),
-		'link'  => 'admin.php?page=dfcc-seo',
+		'label' => __( 'Manage Services', 'dog-father-control-center' ),
+		'link'  => 'admin.php?page=dfcc-services',
 	),
 	array(
-		'label' => __( 'Edit Pages with Elementor', 'dog-father-control-center' ),
-		'link'  => 'edit.php?post_type=page',
+		'label' => __( 'Help & Docs', 'dog-father-control-center' ),
+		'link'  => 'admin.php?page=dfcc-help',
 	),
 );
 ?>
@@ -85,7 +85,7 @@ $quick_links = array(
 				echo esc_html(
 					sprintf(
 						/* translators: %s: business name. */
-						__( 'Manage everything for %s. Design your pages in Elementor — run your business here.', 'dog-father-control-center' ),
+						__( 'Manage everything for %s — content, design and bookings — from one place.', 'dog-father-control-center' ),
 						dfcc_get_setting( 'dfcc_global_settings', 'business_name', 'The Dog Father Hotel' )
 					)
 				);
@@ -147,10 +147,20 @@ $quick_links = array(
 	<div class="dfcc-panel dfcc-help">
 		<h2><?php esc_html_e( 'How this site works', 'dog-father-control-center' ); ?></h2>
 		<ol>
-			<li><?php esc_html_e( 'Design and edit all pages visually with Elementor — nothing is hardcoded.', 'dog-father-control-center' ); ?></li>
-			<li><?php esc_html_e( 'Use the Theme Settings screen to change brand colors and fonts everywhere at once.', 'dog-father-control-center' ); ?></li>
-			<li><?php esc_html_e( 'Manage bookings, dog profiles, services, gallery and testimonials from this menu.', 'dog-father-control-center' ); ?></li>
-			<li><?php esc_html_e( 'Connect payments, analytics and messaging from the Integrations screen when you are ready.', 'dog-father-control-center' ); ?></li>
+			<li><?php esc_html_e( 'Everything on the site is editable from this menu — nothing is hardcoded.', 'dog-father-control-center' ); ?></li>
+			<li><?php esc_html_e( 'Edit your homepage content and section order under Homepage.', 'dog-father-control-center' ); ?></li>
+			<li><?php esc_html_e( 'Change brand colors, fonts and layout everywhere at once from Theme Settings.', 'dog-father-control-center' ); ?></li>
+			<li><?php esc_html_e( 'New here? Open Getting Started, or see Help & Docs for where to edit anything.', 'dog-father-control-center' ); ?></li>
 		</ol>
 	</div>
+
+	<p style="color:#8a8a92;margin-top:6px;">
+		<?php
+		printf(
+			/* translators: 1: Provada link. */
+			esc_html__( 'The Dog Father theme & Control Center — built by %s.', 'dog-father-control-center' ),
+			'<a href="https://provada.net" target="_blank" rel="noopener"><strong>Provada</strong></a>'
+		);
+		?>
+	</p>
 </div>
