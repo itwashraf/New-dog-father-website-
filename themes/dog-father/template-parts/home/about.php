@@ -15,6 +15,10 @@ if ( ! dfather_show( 'about' ) ) {
 
 $df_img_id  = (int) dfather_home( 'about_image_id', 0 );
 $df_img_url = $df_img_id ? wp_get_attachment_image_url( $df_img_id, 'dfather-wide' ) : '';
+// Fall back to a default photo so the About media panel is never empty.
+if ( ! $df_img_url ) {
+	$df_img_url = dfather_default_image( 'about' );
+}
 $df_eyebrow = dfather_home( 'about_eyebrow', __( 'About The Dog Father', 'dog-father' ) );
 $df_title   = dfather_home( 'about_title', __( 'A Five-Star Home Away From Home', 'dog-father' ) );
 $df_text    = dfather_home( 'about_text', __( 'At The Dog Father Hotel we blend luxury hospitality with expert canine care. Every guest enjoys a private suite, daily enrichment, gourmet meals, and round-the-clock veterinary supervision — so you can travel knowing your best friend is in the safest, most loving hands.', 'dog-father' ) );

@@ -75,6 +75,30 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 		</div>
 
 		<div class="dfcc-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Section Colors', 'dog-father-control-center' ); ?></h2>
+			<p class="description" style="margin:-6px 0 16px;">
+				<?php esc_html_e( 'Choose exactly which part of the site each color affects. Leave a field empty to keep the default brand color above.', 'dog-father-control-center' ); ?>
+			</p>
+			<?php foreach ( DFCC_Theme_Settings::area_colors() as $area_key => $area ) : ?>
+				<?php $area_val = isset( $settings[ $area_key ] ) ? $settings[ $area_key ] : ''; ?>
+				<div class="dfcc-field">
+					<label for="<?php echo esc_attr( $area_key ); ?>">
+						<?php echo esc_html( $area['label'] ); ?>
+						<span class="description" style="display:block;font-weight:400;"><?php echo esc_html( $area['desc'] ); ?></span>
+					</label>
+					<input
+						type="text"
+						class="dfcc-color-field"
+						id="<?php echo esc_attr( $area_key ); ?>"
+						name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[' . $area_key . ']' ); ?>"
+						value="<?php echo esc_attr( $area_val ); ?>"
+						data-alpha-enabled="false"
+					/>
+				</div>
+			<?php endforeach; ?>
+		</div>
+
+		<div class="dfcc-panel">
 			<h2 class="dfcc-section-title"><?php esc_html_e( 'Typography & Layout', 'dog-father-control-center' ); ?></h2>
 
 			<div class="dfcc-field">

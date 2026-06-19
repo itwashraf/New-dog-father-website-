@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $df_bg_id  = (int) dfather_home( 'hero_bg_id', 0 );
 $df_bg_url = $df_bg_id ? wp_get_attachment_image_url( $df_bg_id, 'dfather-wide' ) : '';
+// Fall back to a tasteful default banner so the hero never looks empty.
+if ( ! $df_bg_url ) {
+	$df_bg_url = dfather_default_image( 'hero' );
+}
 
 $df_eyebrow   = dfather_home( 'hero_eyebrow', __( 'Welcome to The Dog Father Hotel', 'dog-father' ) );
 $df_title     = dfather_home( 'hero_title', __( 'Luxury Boarding & Five-Star Care for Your Best Friend', 'dog-father' ) );

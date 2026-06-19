@@ -119,6 +119,22 @@ class DFCC_Theme_Settings extends DFCC_Module {
 			}
 		}
 
+		// Section / area colors. These may be intentionally left blank to fall
+		// back to the brand palette, so an empty submission clears the value.
+		foreach ( array_keys( self::area_colors() ) as $key ) {
+			if ( isset( $input[ $key ] ) ) {
+				$raw = trim( (string) $input[ $key ] );
+				if ( '' === $raw ) {
+					$clean[ $key ] = '';
+				} else {
+					$color = sanitize_hex_color( $raw );
+					if ( $color ) {
+						$clean[ $key ] = $color;
+					}
+				}
+			}
+		}
+
 		if ( isset( $input['heading_font'] ) ) {
 			$clean['heading_font'] = sanitize_text_field( $input['heading_font'] );
 		}
@@ -132,6 +148,48 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		$clean['dark_mode_first'] = empty( $input['dark_mode_first'] ) ? 0 : 1;
 
 		return $clean;
+	}
+
+	/**
+	 * Section / area colors: the "which part does this color affect" controls.
+	 * Maps a setting key to the CSS custom property the theme consumes and a
+	 * human label. When a value is empty the theme keeps its brand default.
+	 *
+	 * @return array key => array( 'var' => css var, 'label' => string, 'desc' => string ).
+	 */
+	public static function area_colors() {
+		return array(
+			'header_bg'   => array(
+				'var'   => '--df-header-bg',
+				'label' => __( 'Header background', 'dog-father-control-center' ),
+				'desc'  => __( 'The top menu bar background.', 'dog-father-control-center' ),
+			),
+			'header_text' => array(
+				'var'   => '--df-header-text',
+				'label' => __( 'Header text & menu links', 'dog-father-control-center' ),
+				'desc'  => __( 'Logo text and navigation links.', 'dog-father-control-center' ),
+			),
+			'accent'      => array(
+				'var'   => '--df-accent',
+				'label' => __( 'Accents (eyebrows, icons, links)', 'dog-father-control-center' ),
+				'desc'  => __( 'Small highlight text and section icons.', 'dog-father-control-center' ),
+			),
+			'btn_bg'      => array(
+				'var'   => '--df-btn-bg',
+				'label' => __( 'Buttons background', 'dog-father-control-center' ),
+				'desc'  => __( 'Primary “Book Now” style buttons.', 'dog-father-control-center' ),
+			),
+			'btn_text'    => array(
+				'var'   => '--df-btn-text',
+				'label' => __( 'Buttons text', 'dog-father-control-center' ),
+				'desc'  => __( 'The label color inside primary buttons.', 'dog-father-control-center' ),
+			),
+			'footer_bg'   => array(
+				'var'   => '--df-footer-bg',
+				'label' => __( 'Footer background', 'dog-father-control-center' ),
+				'desc'  => __( 'The bottom site footer background.', 'dog-father-control-center' ),
+			),
+		);
 	}
 
 	/**
@@ -206,6 +264,17 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		$css .= '--dfcc-radius:' . $radius . 'px;';
 		$css .= '--dfcc-heading-font:' . $this->font_stack( $heading_font ) . ';';
 		$css .= '--dfcc-body-font:' . $this->font_stack( $body_font ) . ';';
+
+		// Section / area color overrides — only emitted when the owner set one,
+		// so the theme's brand defaults stay in effect otherwise.
+		foreach ( self::area_colors() as $key => $meta ) {
+			$value = dfcc_get_setting( self::OPTION, $key, '' );
+			$value = sanitize_hex_color( (string) $value );
+			if ( $value ) {
+				$css .= $meta['var'] . ':' . $value . ';';
+			}
+		}
+
 		$css .= '}';
 
 		printf( "<style id=\"dfcc-brand-vars\">%s</style>\n", $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- values sanitized above (hex colors / int / font name) and CSS cannot be escaped with esc_html.

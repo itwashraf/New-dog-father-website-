@@ -118,6 +118,7 @@ class DFCC_Home_Settings extends DFCC_Module {
 			'cta_text'            => 'textarea',
 			'cta_button_label'     => 'text',
 			'cta_button_url'       => 'url',
+			'cta_bg_id'            => 'media',
 			'contact_title'        => 'text',
 		);
 	}

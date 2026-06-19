@@ -39,6 +39,31 @@ function dfather_info( $key, $default = '' ) {
 }
 
 /**
+ * A tasteful default photo URL for a homepage slot, used only when the owner
+ * has not uploaded their own image yet — so the site looks finished out of the
+ * box. Royalty-free Unsplash photography; override any of these with the
+ * `dfather_default_images` filter or, better, by uploading your own image in
+ * Dog Father → Homepage.
+ *
+ * @param string $slot One of: hero, about, cta.
+ * @return string Image URL (empty string if unknown slot).
+ */
+function dfather_default_image( $slot ) {
+	$images = apply_filters(
+		'dfather_default_images',
+		array(
+			// Golden retriever close-up — warm, premium hero banner.
+			'hero'  => 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1600&q=80',
+			// Happy dog being held — friendly "about us" feel.
+			'about' => 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1200&q=80',
+			// Dog running on grass — energetic call-to-action backdrop.
+			'cta'   => 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1600&q=80',
+		)
+	);
+	return isset( $images[ $slot ] ) ? $images[ $slot ] : '';
+}
+
+/**
  * Whether a homepage section should render. Defaults to visible.
  *
  * @param string $section Section key without the show_ prefix (e.g. 'about').

@@ -162,6 +162,18 @@ $dfcc_name = 'dfcc_home_settings';
 				<label><?php esc_html_e( 'Button URL', 'dog-father-control-center' ); ?></label>
 				<input type="text" name="<?php echo esc_attr( $dfcc_name ); ?>[cta_button_url]" value="<?php echo esc_attr( $dfcc_val( 'cta_button_url' ) ); ?>" />
 			</div>
+			<?php
+			$dfcc_cta = (int) $dfcc_val( 'cta_bg_id' );
+			$dfcc_cta_url = $dfcc_cta ? wp_get_attachment_image_url( $dfcc_cta, 'medium' ) : '';
+			?>
+			<div class="dfcc-field">
+				<label><?php esc_html_e( 'Background Image', 'dog-father-control-center' ); ?></label>
+				<input type="hidden" id="cta_bg_id" name="<?php echo esc_attr( $dfcc_name ); ?>[cta_bg_id]" value="<?php echo esc_attr( $dfcc_cta ); ?>" />
+				<img id="cta_bg_preview" src="<?php echo esc_url( $dfcc_cta_url ); ?>" style="max-width:240px;display:<?php echo $dfcc_cta_url ? 'block' : 'none'; ?>;border-radius:8px;margin-bottom:8px;" alt="" />
+				<button type="button" class="button dfcc-media-upload" data-target="cta_bg_id" data-preview="cta_bg_preview"><?php esc_html_e( 'Choose Image', 'dog-father-control-center' ); ?></button>
+				<button type="button" class="button dfcc-media-clear" data-target="cta_bg_id" data-preview="cta_bg_preview"><?php esc_html_e( 'Remove', 'dog-father-control-center' ); ?></button>
+				<p class="description"><?php esc_html_e( 'Optional. Leave empty to use the default photo.', 'dog-father-control-center' ); ?></p>
+			</div>
 		</div>
 
 		<div class="dfcc-panel">
