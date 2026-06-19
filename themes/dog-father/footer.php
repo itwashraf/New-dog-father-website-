@@ -102,7 +102,7 @@ $df_address  = dfather_info( 'address', '' );
 	</div>
 </footer>
 
-<?php if ( $df_whatsapp ) : ?>
+<?php if ( $df_whatsapp && ( ! function_exists( 'dfather_style' ) || '0' !== (string) dfather_style( 'whatsapp_float', '1' ) ) ) : ?>
 	<a class="df-wa-float" href="<?php echo esc_url( 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $df_whatsapp ) ); ?>" target="_blank" rel="noopener" aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'dog-father' ); ?>">
 		<span class="dashicons dashicons-whatsapp"></span>
 	</a>

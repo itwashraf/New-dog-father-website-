@@ -25,6 +25,20 @@ function dfather_home( $key, $default = '' ) {
 }
 
 /**
+ * Read a theme/layout setting (managed in Dog Father → Theme Settings).
+ *
+ * @param string $key     Setting key.
+ * @param mixed  $default Fallback used when the plugin/value is absent.
+ * @return mixed
+ */
+function dfather_style( $key, $default = '' ) {
+	if ( function_exists( 'dfcc_get_setting' ) ) {
+		return dfcc_get_setting( 'dfcc_theme_settings', $key, $default );
+	}
+	return $default;
+}
+
+/**
  * Read a global business setting (managed in Dog Father → Global Settings).
  *
  * @param string $key     Setting key.

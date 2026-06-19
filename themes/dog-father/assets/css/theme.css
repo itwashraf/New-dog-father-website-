@@ -107,6 +107,11 @@ p { margin: 0 0 1.2em; }
 .df-btn--ghost:hover { border-color: var(--dfcc-primary); color: var(--dfcc-primary); transform: translateY(-3px); }
 .df-btn--block { width: 100%; }
 
+/* Announcement bar ------------------------------------------------------- */
+.df-announce { background: var(--dfcc-gold); color: #000; font-weight: 600; font-size: .92rem; text-align: center; padding: 9px 0; }
+.df-announce a, .df-announce span { color: inherit; }
+.df-announce a { text-decoration: underline; }
+
 /* Header ----------------------------------------------------------------- */
 .df-header {
   position: sticky; top: 0; z-index: 999;
@@ -114,6 +119,13 @@ p { margin: 0 0 1.2em; }
   border-bottom: 1px solid var(--df-border-soft); transition: background .3s ease, border-color .3s ease;
 }
 .df-header.is-scrolled { background: rgba(0,0,0,.95); border-bottom-color: var(--df-border); }
+
+/* Sticky header off */
+body.df-header-static .df-header { position: static; }
+
+/* Transparent header over the hero (front page) — solid again on scroll */
+body.df-front.df-header-transparent .df-header { position: absolute; left: 0; right: 0; background: transparent; border-bottom-color: transparent; }
+body.df-front.df-header-transparent .df-header.is-scrolled { position: fixed; background: var(--df-header-bg); border-bottom-color: var(--df-border); }
 .df-header__inner { display: flex; align-items: center; gap: 20px; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
 .df-brand { display: flex; align-items: center; flex: 0 0 auto; }
 .df-brand img, .df-brand .custom-logo { max-height: 58px; width: auto; }

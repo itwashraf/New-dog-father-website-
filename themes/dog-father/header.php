@@ -27,6 +27,32 @@ $df_name     = dfather_info( 'business_name', get_bloginfo( 'name' ) );
 
 <a class="df-skip screen-reader-text" href="#df-content"><?php esc_html_e( 'Skip to content', 'dog-father' ); ?></a>
 
+<?php
+$df_ann_on = (int) dfather_style( 'announcement_enabled', 0 );
+$df_ann_tx = dfather_style( 'announcement_text', '' );
+if ( $df_ann_on && '' !== trim( (string) $df_ann_tx ) ) :
+	$df_ann_link  = dfather_style( 'announcement_link', '' );
+	$df_ann_bg    = dfather_style( 'announcement_bg', '' );
+	$df_ann_color = dfather_style( 'announcement_color', '' );
+	$df_ann_style = '';
+	if ( $df_ann_bg ) {
+		$df_ann_style .= 'background:' . $df_ann_bg . ';';
+	}
+	if ( $df_ann_color ) {
+		$df_ann_style .= 'color:' . $df_ann_color . ';';
+	}
+	?>
+	<div class="df-announce"<?php echo $df_ann_style ? ' style="' . esc_attr( $df_ann_style ) . '"' : ''; ?>>
+		<div class="df-container">
+			<?php if ( $df_ann_link ) : ?>
+				<a href="<?php echo esc_url( $df_ann_link ); ?>"><?php echo esc_html( $df_ann_tx ); ?></a>
+			<?php else : ?>
+				<span><?php echo esc_html( $df_ann_tx ); ?></span>
+			<?php endif; ?>
+		</div>
+	</div>
+<?php endif; ?>
+
 <header class="df-header" id="df-header">
 	<div class="df-header__inner">
 		<div class="df-brand">

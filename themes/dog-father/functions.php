@@ -173,6 +173,18 @@ function dfather_body_classes( $classes ) {
 	if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 		$classes[] = 'dfather-no-sidebar';
 	}
+
+	if ( is_front_page() ) {
+		$classes[] = 'df-front';
+		if ( '0' !== (string) dfather_style( 'header_transparent', '0' ) && (int) dfather_style( 'header_transparent', 0 ) ) {
+			$classes[] = 'df-header-transparent';
+		}
+	}
+	// Sticky header on by default; add a class only when explicitly turned off.
+	if ( '0' === (string) dfather_style( 'header_sticky', '1' ) ) {
+		$classes[] = 'df-header-static';
+	}
+
 	return $classes;
 }
 add_filter( 'body_class', 'dfather_body_classes' );

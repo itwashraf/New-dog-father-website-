@@ -146,6 +146,69 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 			</div>
 		</div>
 
+		<div class="dfcc-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Layout & Extras', 'dog-father-control-center' ); ?></h2>
+			<input type="hidden" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[_layout_submitted]' ); ?>" value="1" />
+
+			<?php
+			$dfcc_cw   = isset( $settings['container_width'] ) ? $settings['container_width'] : '1280';
+			$dfcc_sticky = ! isset( $settings['header_sticky'] ) || ! empty( $settings['header_sticky'] );
+			$dfcc_trans  = ! empty( $settings['header_transparent'] );
+			$dfcc_wa     = ! isset( $settings['whatsapp_float'] ) || ! empty( $settings['whatsapp_float'] );
+			$dfcc_ann_on = ! empty( $settings['announcement_enabled'] );
+			$dfcc_ann_t  = isset( $settings['announcement_text'] ) ? $settings['announcement_text'] : '';
+			$dfcc_ann_l  = isset( $settings['announcement_link'] ) ? $settings['announcement_link'] : '';
+			$dfcc_ann_bg = isset( $settings['announcement_bg'] ) ? $settings['announcement_bg'] : '';
+			$dfcc_ann_c  = isset( $settings['announcement_color'] ) ? $settings['announcement_color'] : '';
+			$dfcc_css    = isset( $settings['custom_css'] ) ? $settings['custom_css'] : '';
+			?>
+
+			<div class="dfcc-field">
+				<label for="container_width"><?php esc_html_e( 'Content Width (px)', 'dog-father-control-center' ); ?></label>
+				<input type="number" min="800" max="1920" step="10" id="container_width" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[container_width]' ); ?>" value="<?php echo esc_attr( $dfcc_cw ); ?>" />
+				<p class="description"><?php esc_html_e( 'How wide the page content is (800–1920). Default 1280.', 'dog-father-control-center' ); ?></p>
+			</div>
+
+			<div class="dfcc-field">
+				<label><input type="checkbox" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[header_sticky]' ); ?>" value="1" <?php checked( $dfcc_sticky ); ?> /> <?php esc_html_e( 'Sticky header (stays at the top when scrolling)', 'dog-father-control-center' ); ?></label>
+			</div>
+			<div class="dfcc-field">
+				<label><input type="checkbox" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[header_transparent]' ); ?>" value="1" <?php checked( $dfcc_trans ); ?> /> <?php esc_html_e( 'Transparent header over the hero (becomes solid on scroll)', 'dog-father-control-center' ); ?></label>
+			</div>
+			<div class="dfcc-field">
+				<label><input type="checkbox" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[whatsapp_float]' ); ?>" value="1" <?php checked( $dfcc_wa ); ?> /> <?php esc_html_e( 'Show the floating WhatsApp button', 'dog-father-control-center' ); ?></label>
+			</div>
+
+			<hr />
+			<h3 style="margin:6px 0;"><?php esc_html_e( 'Announcement Bar', 'dog-father-control-center' ); ?></h3>
+			<div class="dfcc-field">
+				<label><input type="checkbox" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[announcement_enabled]' ); ?>" value="1" <?php checked( $dfcc_ann_on ); ?> /> <?php esc_html_e( 'Show a thin bar above the header', 'dog-father-control-center' ); ?></label>
+			</div>
+			<div class="dfcc-field">
+				<label for="announcement_text"><?php esc_html_e( 'Bar Text', 'dog-father-control-center' ); ?></label>
+				<input type="text" class="regular-text" id="announcement_text" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[announcement_text]' ); ?>" value="<?php echo esc_attr( $dfcc_ann_t ); ?>" placeholder="<?php esc_attr_e( '🎉 Now taking holiday bookings — reserve early!', 'dog-father-control-center' ); ?>" />
+			</div>
+			<div class="dfcc-field">
+				<label for="announcement_link"><?php esc_html_e( 'Bar Link (optional)', 'dog-father-control-center' ); ?></label>
+				<input type="url" class="regular-text" id="announcement_link" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[announcement_link]' ); ?>" value="<?php echo esc_attr( $dfcc_ann_l ); ?>" placeholder="https://" />
+			</div>
+			<div class="dfcc-field">
+				<label for="announcement_bg"><?php esc_html_e( 'Bar Background', 'dog-father-control-center' ); ?></label>
+				<input type="text" class="dfcc-color-field" id="announcement_bg" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[announcement_bg]' ); ?>" value="<?php echo esc_attr( $dfcc_ann_bg ); ?>" data-default-color="#FEC208" />
+			</div>
+			<div class="dfcc-field">
+				<label for="announcement_color"><?php esc_html_e( 'Bar Text Color', 'dog-father-control-center' ); ?></label>
+				<input type="text" class="dfcc-color-field" id="announcement_color" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[announcement_color]' ); ?>" value="<?php echo esc_attr( $dfcc_ann_c ); ?>" data-default-color="#000000" />
+			</div>
+
+			<hr />
+			<div class="dfcc-field">
+				<label for="custom_css"><?php esc_html_e( 'Custom CSS (advanced)', 'dog-father-control-center' ); ?></label>
+				<textarea id="custom_css" rows="8" class="large-text code" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[custom_css]' ); ?>" placeholder=".df-hero h1 { letter-spacing: -0.02em; }"><?php echo esc_textarea( $dfcc_css ); ?></textarea>
+				<p class="description"><?php esc_html_e( 'Optional. Added to every page after the theme styles, so it always wins.', 'dog-father-control-center' ); ?></p>
+			</div>
+		</div>
+
 		<?php submit_button( __( 'Save Theme Settings', 'dog-father-control-center' ) ); ?>
 	</form>
 </div>

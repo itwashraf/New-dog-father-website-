@@ -52,6 +52,7 @@ class DFCC_Theme_Settings extends DFCC_Module {
 
 		// Surface brand colors to the public site and the editor.
 		add_action( 'wp_head', array( $this, 'print_css_variables' ), 5 );
+		add_action( 'wp_head', array( $this, 'print_custom_css' ), 99 );
 		add_action( 'enqueue_block_assets', array( $this, 'maybe_print_editor_variables' ) );
 	}
 
@@ -145,9 +146,53 @@ class DFCC_Theme_Settings extends DFCC_Module {
 			$clean['border_radius'] = (string) absint( $input['border_radius'] );
 		}
 
+		// Layout & extras.
+		if ( isset( $input['container_width'] ) ) {
+			$width = absint( $input['container_width'] );
+			$clean['container_width'] = (string) ( $width >= 800 && $width <= 1920 ? $width : 1280 );
+		}
+		if ( isset( $input['announcement_text'] ) ) {
+			$clean['announcement_text'] = sanitize_text_field( $input['announcement_text'] );
+		}
+		if ( isset( $input['announcement_link'] ) ) {
+			$clean['announcement_link'] = esc_url_raw( trim( $input['announcement_link'] ) );
+		}
+		foreach ( array( 'announcement_bg', 'announcement_color' ) as $ac ) {
+			if ( isset( $input[ $ac ] ) ) {
+				$color = sanitize_hex_color( $input[ $ac ] );
+				$clean[ $ac ] = $color ? $color : '';
+			}
+		}
+		if ( isset( $input['custom_css'] ) ) {
+			$clean['custom_css'] = $this->sanitize_css( $input['custom_css'] );
+		}
+
+		// Checkboxes (present = 1, absent = 0) — only when the form section was
+		// submitted, detected via a hidden marker field.
+		if ( isset( $input['_layout_submitted'] ) ) {
+			$clean['announcement_enabled'] = empty( $input['announcement_enabled'] ) ? 0 : 1;
+			$clean['whatsapp_float']       = empty( $input['whatsapp_float'] ) ? 0 : 1;
+			$clean['header_transparent']   = empty( $input['header_transparent'] ) ? 0 : 1;
+			$clean['header_sticky']        = empty( $input['header_sticky'] ) ? 0 : 1;
+		}
+
 		$clean['dark_mode_first'] = empty( $input['dark_mode_first'] ) ? 0 : 1;
 
 		return $clean;
+	}
+
+	/**
+	 * Lightly sanitize a custom-CSS blob: strip any HTML tags (so no
+	 * </style>/<script> injection) while keeping valid CSS such as child
+	 * selectors (ul > li).
+	 *
+	 * @param string $css Raw CSS.
+	 * @return string
+	 */
+	private function sanitize_css( $css ) {
+		$css = (string) $css;
+		$css = preg_replace( '#</?[a-zA-Z][^>]*>#', '', $css );
+		return trim( $css );
 	}
 
 	/**
@@ -265,6 +310,11 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		$css .= '--dfcc-heading-font:' . $this->font_stack( $heading_font ) . ';';
 		$css .= '--dfcc-body-font:' . $this->font_stack( $body_font ) . ';';
 
+		$container = absint( dfcc_get_setting( self::OPTION, 'container_width', '1280' ) );
+		if ( $container >= 800 && $container <= 1920 ) {
+			$css .= '--df-container:' . $container . 'px;';
+		}
+
 		// Section / area color overrides — only emitted when the owner set one,
 		// so the theme's brand defaults stay in effect otherwise.
 		foreach ( self::area_colors() as $key => $meta ) {
@@ -278,6 +328,21 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		$css .= '}';
 
 		printf( "<style id=\"dfcc-brand-vars\">%s</style>\n", $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- values sanitized above (hex colors / int / font name) and CSS cannot be escaped with esc_html.
+	}
+
+	/**
+	 * Print the owner's custom CSS last so it can override everything.
+	 *
+	 * @return void
+	 */
+	public function print_custom_css() {
+		$css = (string) dfcc_get_setting( self::OPTION, 'custom_css', '' );
+		if ( '' === trim( $css ) ) {
+			return;
+		}
+		// Re-sanitize on output for defence in depth.
+		$css = preg_replace( '#</?[a-zA-Z][^>]*>#', '', $css );
+		printf( "<style id=\"dfcc-custom-css\">%s</style>\n", $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS, tags stripped above; cannot be esc_html'd.
 	}
 
 	/**
