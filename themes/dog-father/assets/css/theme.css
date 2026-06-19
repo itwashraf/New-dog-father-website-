@@ -124,8 +124,8 @@ p { margin: 0 0 1.2em; }
 body.df-header-static .df-header { position: static; }
 
 /* Transparent header over the hero (front page) — solid again on scroll */
-body.df-front.df-header-transparent .df-header { position: absolute; left: 0; right: 0; background: transparent; border-bottom-color: transparent; }
-body.df-front.df-header-transparent .df-header.is-scrolled { position: fixed; background: var(--df-header-bg); border-bottom-color: var(--df-border); }
+body.df-front.df-header-transparent .df-header { position: absolute; top: auto; left: 0; right: 0; background: transparent; border-bottom-color: transparent; }
+body.df-front.df-header-transparent .df-header.is-scrolled { position: fixed; top: 0; background: var(--df-header-bg); border-bottom-color: var(--df-border); }
 .df-header__inner { display: flex; align-items: center; gap: 20px; padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
 .df-brand { display: flex; align-items: center; flex: 0 0 auto; }
 .df-brand img, .df-brand .custom-logo { max-height: 58px; width: auto; }
