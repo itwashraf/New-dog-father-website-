@@ -43,7 +43,7 @@ $df_address  = dfather_info( 'address', '' );
 		</div>
 
 		<div class="df-footer__col">
-			<h4 class="df-footer__heading"><?php esc_html_e( 'Explore', 'dog-father' ); ?></h4>
+			<h4 class="df-footer__heading"><?php echo esc_html( dfather_info( 'footer_explore_title', __( 'Explore', 'dog-father' ) ) ); ?></h4>
 			<?php
 			if ( has_nav_menu( 'footer' ) ) {
 				wp_nav_menu(
@@ -60,7 +60,7 @@ $df_address  = dfather_info( 'address', '' );
 		</div>
 
 		<div class="df-footer__col">
-			<h4 class="df-footer__heading"><?php esc_html_e( 'Contact', 'dog-father' ); ?></h4>
+			<h4 class="df-footer__heading"><?php echo esc_html( dfather_info( 'footer_contact_title', __( 'Contact', 'dog-father' ) ) ); ?></h4>
 			<ul>
 				<?php if ( $df_phone ) : ?><li><a href="<?php echo esc_attr( dfather_tel( $df_phone ) ); ?>"><?php echo esc_html( $df_phone ); ?></a></li><?php endif; ?>
 				<?php if ( $df_email ) : ?><li><a href="mailto:<?php echo esc_attr( $df_email ); ?>"><?php echo esc_html( $df_email ); ?></a></li><?php endif; ?>
@@ -69,7 +69,7 @@ $df_address  = dfather_info( 'address', '' );
 		</div>
 
 		<div class="df-footer__col">
-			<h4 class="df-footer__heading"><?php esc_html_e( 'Hours', 'dog-father' ); ?></h4>
+			<h4 class="df-footer__heading"><?php echo esc_html( dfather_info( 'footer_hours_title', __( 'Hours', 'dog-father' ) ) ); ?></h4>
 			<p class="df-footer__tag"><?php echo nl2br( esc_html( dfather_info( 'opening_hours', __( 'Open 24 / 7', 'dog-father' ) ) ) ); ?></p>
 		</div>
 	</div>

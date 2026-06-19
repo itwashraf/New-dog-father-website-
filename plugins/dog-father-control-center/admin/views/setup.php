@@ -73,7 +73,7 @@ $dfcc_is_theme = ( 'dog-father' === get_template() );
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-theme' ) ); ?>"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></a>
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-home' ) ); ?>"><?php esc_html_e( 'Edit Homepage', 'dog-father-control-center' ); ?></a>
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=dfcc_service' ) ); ?>"><?php esc_html_e( 'Edit Services', 'dog-father-control-center' ); ?></a>
-				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>"><?php esc_html_e( 'Edit Pages (Elementor)', 'dog-father-control-center' ); ?></a>
+				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-help' ) ); ?>"><?php esc_html_e( 'Help & Docs', 'dog-father-control-center' ); ?></a>
 			</div>
 			<?php if ( $time ) : ?>
 				<p class="description" style="margin-top:18px;">

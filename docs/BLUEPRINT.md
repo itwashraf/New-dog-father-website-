@@ -257,8 +257,10 @@ the designed homepage show.
 | `class-dfcc-services.php` | The **Manage Services** screen + `[dfcc_services]` shortcode. |
 | `class-dfcc-faq.php` | The `dfcc_faq` CPT + the **Manage FAQs** screen. |
 | `class-dfcc-tools.php` | Reports, Notifications, Backup, **Cleanup (Kubio)**, Security, Users. |
+| `class-dfcc-onboarding.php` | **Getting Started**, **Help & Docs**, **License**, **About / Provada**. |
+| `class-dfcc-setup.php` | One-click **Setup** + demo-content importer / reset. |
 | `class-dfcc-post-types.php` | Registers all the CPTs and taxonomies. |
-| `class-dfcc-admin-menu.php` | Builds the Dog Father menu from the `dfcc_admin_pages` filter; loads admin assets. |
+| `class-dfcc-admin-menu.php` | Builds the Dog Father menu from the `dfcc_admin_pages` filter; loads admin assets (incl. jQuery UI sortable). |
 
 ---
 
@@ -272,10 +274,14 @@ the designed homepage show.
    `dfather_home( 'your_key', 'default' )`.
 
 ### Add a new homepage section
-1. Create `template-parts/home/yoursection.php` (copy an existing one).
-2. `get_template_part( 'template-parts/home/yoursection' )` in `front-page.php`.
-3. Add a `show_yoursection` toggle in `toggles()` and guard with
-   `if ( ! dfather_show( 'yoursection' ) ) return;`.
+1. Create `template-parts/home/yoursection.php` (copy an existing one) and guard
+   it with `if ( ! dfather_show( 'yoursection' ) ) return;`.
+2. Add `'yoursection' => __( 'Your Section' )` to
+   `DFCC_Home_Settings::sections()` (this auto-creates the show/hide toggle,
+   ordering row and per-section style controls).
+3. Add `'yoursection'` to `dfather_home_sections()` in the theme helper.
+   `front-page.php` then renders it automatically in the owner's chosen order,
+   wrapped in `.df-slot--yoursection`.
 
 ### Add a new admin screen (any module)
 Hook the `dfcc_admin_pages` filter with
@@ -312,9 +318,54 @@ WordPress migration for those.
 | Symptom | Fix |
 |---------|-----|
 | "Block not supported" / can't save a page | Dog Father → Cleanup → Clean that page (or All). |
+| Drag-reorder of sections won't drag | Make sure you're on Homepage → Section Layout; the handle is the move icon. |
 | Homepage shows old design, not the new sections | The Home page still has content — Cleanup it (empty Home page = theme homepage). |
 | A color change didn't apply | Clear site cache (Manage Services/FAQ save auto-purges); check it's set in Theme Settings. |
 | A default photo shows instead of mine | Upload your image in Homepage (Hero/About) — uploads always win over defaults. |
 | Phone/WhatsApp icon missing in header | Set the number in Global Settings; empty numbers hide the icon. |
 | FAQ section empty | Add questions in Manage FAQs (until then 4 sample questions show). |
 ```
+
+---
+
+## 11. The control panel as a product (v1.2)
+
+This build is designed to be sold as a theme. The full menu, in order:
+
+| Screen | Purpose |
+|--------|---------|
+| **Getting Started** | Guided checklist with a live progress bar — detects logo, colors, business details, services, FAQs and links to each task. |
+| **Dashboard** | Counts, quick actions, status. |
+| **Setup** | One-click build of pages/menus + **demo-content importer** and "reset to official content". |
+| **Homepage** | All section content + **Section Layout** (drag reorder, show/hide, per-section background & spacing) + item counts. |
+| **Manage Services / FAQs**, Bookings, Dog Profiles, Testimonials, Gallery | Content. |
+| **Theme Settings** | Brand colors, **Section Colors**, fonts, radius, and **Layout & Extras** (content width, sticky/transparent header, announcement bar, WhatsApp float, **Custom CSS**). |
+| **Global Settings** | Business info, social links, **footer credit & column headings**, **404 page text**, map. |
+| **SEO / Integrations / Reports / Notifications / Backup / Cleanup / Security / Users** | Operations. |
+| **Help & Docs** | In-panel manual: how it works, a "where do I edit X?" table, common questions. |
+| **License** | License-key screen (stores locally; wire remote checks via the `dfcc_license_validate` filter). |
+| **About / Provada** | Theme-author credit page. |
+
+### White-label / branding model
+- **Admin (theme author) = Provada, always.** The admin footer, About page, Help
+  and Getting Started credit **Provada (provada.net)**. These live in
+  `DFCC_Onboarding::BRAND_NAME` / `BRAND_URL` and
+  `DFCC_Admin_Menu::footer_credit()`.
+- **Public site = the buyer's brand, editable.** The visible site footer credit
+  is set in Global Settings → Footer Credit (text, link, or hidden entirely), so
+  each site owner brands their own site without touching the Provada author
+  credit.
+
+### Layout & Custom CSS internals
+`DFCC_Theme_Settings` prints, on `wp_head`: the brand + section color variables
+(priority 5), `--df-container` from the content-width setting, and the owner's
+**Custom CSS** last (priority 99) so it overrides everything. The theme exposes
+these via `dfather_style( $key, $default )` and adds body classes
+(`df-front`, `df-header-transparent`, `df-header-static`) used by the header CSS.
+
+### Section Layout internals
+Order is stored as `home_section_order` (array of slugs) in `dfcc_home_settings`;
+per-section `sec_{slug}_bg` / `sec_{slug}_space` drive scoped
+`.df-slot--{slug} > section { … }` rules printed by
+`dfather_section_inline_styles()`. The admin list is a jQuery-UI-sortable whose
+hidden `home_section_order[]` inputs submit in their dragged DOM order.

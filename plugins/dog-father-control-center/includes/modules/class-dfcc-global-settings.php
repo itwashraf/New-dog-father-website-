@@ -127,7 +127,7 @@ class DFCC_Global_Settings extends DFCC_Module {
 			}
 		}
 
-		// Footer credit.
+		// Footer credit + column headings.
 		if ( isset( $input['footer_credit_text'] ) ) {
 			$clean['footer_credit_text'] = sanitize_text_field( $input['footer_credit_text'] );
 		}
@@ -135,6 +135,12 @@ class DFCC_Global_Settings extends DFCC_Module {
 			$clean['footer_credit_url'] = esc_url_raw( trim( $input['footer_credit_url'] ) );
 		}
 		$clean['hide_footer_credit'] = empty( $input['hide_footer_credit'] ) ? 0 : 1;
+
+		foreach ( array( 'footer_explore_title', 'footer_contact_title', 'footer_hours_title', 'error_404_title', 'error_404_text', 'error_404_button' ) as $txt ) {
+			if ( isset( $input[ $txt ] ) ) {
+				$clean[ $txt ] = sanitize_text_field( $input[ $txt ] );
+			}
+		}
 
 		return $clean;
 	}
@@ -278,6 +284,34 @@ class DFCC_Global_Settings extends DFCC_Module {
 							<input type="checkbox" id="hide_footer_credit" name="<?php echo esc_attr( self::OPTION . '[hide_footer_credit]' ); ?>" value="1" <?php checked( ! empty( $settings['hide_footer_credit'] ) ); ?> />
 							<?php esc_html_e( 'Hide the "Designed & developed by" credit line', 'dog-father-control-center' ); ?>
 						</label>
+					</div>
+					<div class="dfcc-field">
+						<label for="footer_explore_title"><?php esc_html_e( 'Footer column 1 heading', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="footer_explore_title" name="<?php echo esc_attr( self::OPTION . '[footer_explore_title]' ); ?>" value="<?php echo esc_attr( $get( 'footer_explore_title' ) ); ?>" placeholder="Explore" />
+					</div>
+					<div class="dfcc-field">
+						<label for="footer_contact_title"><?php esc_html_e( 'Footer column 2 heading', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="footer_contact_title" name="<?php echo esc_attr( self::OPTION . '[footer_contact_title]' ); ?>" value="<?php echo esc_attr( $get( 'footer_contact_title' ) ); ?>" placeholder="Contact" />
+					</div>
+					<div class="dfcc-field">
+						<label for="footer_hours_title"><?php esc_html_e( 'Footer column 3 heading', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="footer_hours_title" name="<?php echo esc_attr( self::OPTION . '[footer_hours_title]' ); ?>" value="<?php echo esc_attr( $get( 'footer_hours_title' ) ); ?>" placeholder="Hours" />
+					</div>
+				</div>
+
+				<div class="dfcc-panel">
+					<h2 class="dfcc-section-title"><?php esc_html_e( '404 “Page Not Found”', 'dog-father-control-center' ); ?></h2>
+					<div class="dfcc-field">
+						<label for="error_404_title"><?php esc_html_e( 'Heading', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="error_404_title" name="<?php echo esc_attr( self::OPTION . '[error_404_title]' ); ?>" value="<?php echo esc_attr( $get( 'error_404_title' ) ); ?>" placeholder="<?php esc_attr_e( 'This page went walkies.', 'dog-father-control-center' ); ?>" />
+					</div>
+					<div class="dfcc-field">
+						<label for="error_404_text"><?php esc_html_e( 'Message', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="error_404_text" name="<?php echo esc_attr( self::OPTION . '[error_404_text]' ); ?>" value="<?php echo esc_attr( $get( 'error_404_text' ) ); ?>" />
+					</div>
+					<div class="dfcc-field">
+						<label for="error_404_button"><?php esc_html_e( 'Button label', 'dog-father-control-center' ); ?></label>
+						<input type="text" class="regular-text" id="error_404_button" name="<?php echo esc_attr( self::OPTION . '[error_404_button]' ); ?>" value="<?php echo esc_attr( $get( 'error_404_button' ) ); ?>" placeholder="<?php esc_attr_e( 'Back to Home', 'dog-father-control-center' ); ?>" />
 					</div>
 				</div>
 
