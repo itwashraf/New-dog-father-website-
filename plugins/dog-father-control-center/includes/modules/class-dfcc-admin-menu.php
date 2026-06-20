@@ -199,8 +199,13 @@ class DFCC_Admin_Menu extends DFCC_Module {
 	 */
 	public function body_class( $classes ) {
 		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( 0 === strpos( $page, 'dfcc' ) ) {
+		$screen  = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$is_dfcc = ( 0 === strpos( $page, 'dfcc' ) ) || ( $screen && 0 === strpos( (string) $screen->post_type, 'dfcc_' ) );
+
+		if ( $is_dfcc ) {
 			$classes .= ' dfcc-admin-screen';
+			$appearance = dfcc_get_setting( 'dfcc_theme_settings', 'admin_appearance', 'dark' );
+			$classes   .= ( 'light' === $appearance ) ? ' dfcc-admin-light' : ' dfcc-admin-dark';
 		}
 		return $classes;
 	}

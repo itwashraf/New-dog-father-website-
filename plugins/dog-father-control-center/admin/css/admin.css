@@ -266,3 +266,30 @@
 .dfcc-status-checked_in { background: var(--dfcc-yellow); }
 .dfcc-status-checked_out { background: #6ab0ff; }
 .dfcc-status-cancelled { background: var(--dfcc-red); color: #fff; }
+
+/* ---------------------------------------------------------------------------
+ * Light control-panel theme (Dog Father → Theme Settings → Control Panel
+ * Appearance = Light). Flips the shared color variables; the dark values above
+ * remain the default. Affects this admin panel only, never the website.
+ * ------------------------------------------------------------------------- */
+body.dfcc-admin-light {
+	--dfcc-panel: #ffffff;
+	--dfcc-panel-2: #f6f7f8;
+	--dfcc-border: #e2e2e6;
+	--dfcc-white: #1d2327; /* now the foreground text colour */
+	--dfcc-muted: #646970;
+}
+body.dfcc-admin-light .dfcc-header {
+	background: linear-gradient(135deg, #ffffff 0%, #fff7e6 100%);
+	border-color: #ececf0;
+}
+body.dfcc-admin-light .dfcc-title { color: #1d2327; }
+body.dfcc-admin-light .dfcc-card,
+body.dfcc-admin-light .dfcc-panel { box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+body.dfcc-admin-light .dfcc-field input[type="text"],
+body.dfcc-admin-light .dfcc-field input[type="email"],
+body.dfcc-admin-light .dfcc-field input[type="url"],
+body.dfcc-admin-light .dfcc-field input[type="number"],
+body.dfcc-admin-light .dfcc-field input[type="date"],
+body.dfcc-admin-light .dfcc-field select,
+body.dfcc-admin-light .dfcc-field textarea { background: #ffffff; }

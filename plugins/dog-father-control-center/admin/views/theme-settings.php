@@ -16,26 +16,32 @@ $colors = array(
 	'color_primary'  => array(
 		'label'   => __( 'Primary Yellow', 'dog-father-control-center' ),
 		'default' => '#FFF10A',
+		'desc'    => __( 'Main highlight: button gradients, link hovers, active menu underline.', 'dog-father-control-center' ),
 	),
 	'color_gold'     => array(
 		'label'   => __( 'Luxury Gold', 'dog-father-control-center' ),
 		'default' => '#FEC208',
+		'desc'    => __( 'Default accents: eyebrows, icons, links, badges.', 'dog-father-control-center' ),
 	),
 	'color_dark_red' => array(
 		'label'   => __( 'Dark Red', 'dog-father-control-center' ),
 		'default' => '#CF240A',
+		'desc'    => __( 'Secondary accent used in some gradients.', 'dog-father-control-center' ),
 	),
 	'color_orange'   => array(
 		'label'   => __( 'Accent Orange', 'dog-father-control-center' ),
 		'default' => '#FF2D08',
+		'desc'    => __( 'Tertiary accent in gradients and highlights.', 'dog-father-control-center' ),
 	),
 	'color_black'    => array(
 		'label'   => __( 'Black / Background', 'dog-father-control-center' ),
 		'default' => '#000000',
+		'desc'    => __( 'The base dark colour. (To recolour the page background use “Page background” under Section Colors.)', 'dog-father-control-center' ),
 	),
 	'color_white'    => array(
 		'label'   => __( 'White', 'dog-father-control-center' ),
 		'default' => '#FFFFFF',
+		'desc'    => __( 'Used for light text/elements on dark areas.', 'dog-father-control-center' ),
 	),
 );
 
@@ -58,10 +64,14 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 
 		<div class="dfcc-panel">
 			<h2 class="dfcc-section-title"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></h2>
+			<p class="description" style="margin:-6px 0 16px;"><?php esc_html_e( 'Your master palette. These flow across the whole site. To point a colour at one specific area instead, use “Section Colors” below.', 'dog-father-control-center' ); ?></p>
 			<?php foreach ( $colors as $key => $meta ) : ?>
 				<?php $value = isset( $settings[ $key ] ) ? $settings[ $key ] : $meta['default']; ?>
 				<div class="dfcc-field">
-					<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $meta['label'] ); ?></label>
+					<label for="<?php echo esc_attr( $key ); ?>">
+						<?php echo esc_html( $meta['label'] ); ?>
+						<span class="description" style="display:block;font-weight:400;"><?php echo esc_html( $meta['desc'] ); ?></span>
+					</label>
 					<input
 						type="text"
 						class="dfcc-color-field"
@@ -162,6 +172,16 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 			$dfcc_ann_c  = isset( $settings['announcement_color'] ) ? $settings['announcement_color'] : '';
 			$dfcc_css    = isset( $settings['custom_css'] ) ? $settings['custom_css'] : '';
 			?>
+
+			<?php $dfcc_admin_appear = isset( $settings['admin_appearance'] ) ? $settings['admin_appearance'] : 'dark'; ?>
+			<div class="dfcc-field">
+				<label for="admin_appearance"><?php esc_html_e( 'Control Panel Appearance', 'dog-father-control-center' ); ?></label>
+				<select id="admin_appearance" name="<?php echo esc_attr( DFCC_Theme_Settings::OPTION . '[admin_appearance]' ); ?>">
+					<option value="dark" <?php selected( $dfcc_admin_appear, 'dark' ); ?>><?php esc_html_e( 'Dark', 'dog-father-control-center' ); ?></option>
+					<option value="light" <?php selected( $dfcc_admin_appear, 'light' ); ?>><?php esc_html_e( 'Light', 'dog-father-control-center' ); ?></option>
+				</select>
+				<p class="description"><?php esc_html_e( 'Switches this admin control panel only between dark and light. It does not change your website colours.', 'dog-father-control-center' ); ?></p>
+			</div>
 
 			<div class="dfcc-field">
 				<label for="container_width"><?php esc_html_e( 'Content Width (px)', 'dog-father-control-center' ); ?></label>

@@ -50,8 +50,10 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		add_filter( 'dfcc_admin_pages', array( $this, 'register_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
-		// Surface brand colors to the public site and the editor.
-		add_action( 'wp_head', array( $this, 'print_css_variables' ), 5 );
+		// Surface brand colors to the public site and the editor. Priority 15 so
+		// these print AFTER the theme stylesheet (wp_print_styles runs at 8) —
+		// otherwise theme.css :root defaults would override the live values.
+		add_action( 'wp_head', array( $this, 'print_css_variables' ), 15 );
 		add_action( 'wp_head', array( $this, 'print_custom_css' ), 99 );
 		add_action( 'enqueue_block_assets', array( $this, 'maybe_print_editor_variables' ) );
 	}
@@ -166,6 +168,9 @@ class DFCC_Theme_Settings extends DFCC_Module {
 		if ( isset( $input['custom_css'] ) ) {
 			$clean['custom_css'] = $this->sanitize_css( $input['custom_css'] );
 		}
+		if ( isset( $input['admin_appearance'] ) ) {
+			$clean['admin_appearance'] = ( 'light' === $input['admin_appearance'] ) ? 'light' : 'dark';
+		}
 
 		// Checkboxes (present = 1, absent = 0) — only when the form section was
 		// submitted, detected via a hidden marker field.
@@ -204,35 +209,85 @@ class DFCC_Theme_Settings extends DFCC_Module {
 	 */
 	public static function area_colors() {
 		return array(
-			'header_bg'   => array(
+			// Header.
+			'header_bg'    => array(
 				'var'   => '--df-header-bg',
 				'label' => __( 'Header background', 'dog-father-control-center' ),
-				'desc'  => __( 'The top menu bar background.', 'dog-father-control-center' ),
+				'desc'  => __( 'The top menu bar. Tip: set this to white and set the header text dark.', 'dog-father-control-center' ),
 			),
-			'header_text' => array(
+			'header_text'  => array(
 				'var'   => '--df-header-text',
-				'label' => __( 'Header text & menu links', 'dog-father-control-center' ),
-				'desc'  => __( 'Logo text and navigation links.', 'dog-father-control-center' ),
+				'label' => __( 'Header text & menu tabs', 'dog-father-control-center' ),
+				'desc'  => __( 'Logo text and the navigation menu links in the header.', 'dog-father-control-center' ),
 			),
-			'accent'      => array(
+			// Page / body.
+			'page_bg'      => array(
+				'var'   => '--df-body-bg',
+				'label' => __( 'Page background', 'dog-father-control-center' ),
+				'desc'  => __( 'The main background colour behind everything.', 'dog-father-control-center' ),
+			),
+			'body_text'    => array(
+				'var'   => '--df-ink-1',
+				'label' => __( 'Main text', 'dog-father-control-center' ),
+				'desc'  => __( 'Default body text colour.', 'dog-father-control-center' ),
+			),
+			'muted_text'   => array(
+				'var'   => '--df-ink-2',
+				'label' => __( 'Secondary / muted text', 'dog-father-control-center' ),
+				'desc'  => __( 'Paragraph and sub-text in sections.', 'dog-father-control-center' ),
+			),
+			'heading_color' => array(
+				'var'   => '--df-heading',
+				'label' => __( 'Headings', 'dog-father-control-center' ),
+				'desc'  => __( 'All H1–H6 headings.', 'dog-father-control-center' ),
+			),
+			'link_color'   => array(
+				'var'   => '--df-link',
+				'label' => __( 'Links', 'dog-father-control-center' ),
+				'desc'  => __( 'Text links inside content.', 'dog-father-control-center' ),
+			),
+			'accent'       => array(
 				'var'   => '--df-accent',
-				'label' => __( 'Accents (eyebrows, icons, links)', 'dog-father-control-center' ),
-				'desc'  => __( 'Small highlight text and section icons.', 'dog-father-control-center' ),
+				'label' => __( 'Accents (eyebrows & icons)', 'dog-father-control-center' ),
+				'desc'  => __( 'Small highlight labels above titles, and section icons.', 'dog-father-control-center' ),
 			),
-			'btn_bg'      => array(
+			// Surfaces.
+			'card_bg'      => array(
+				'var'   => '--df-surface-2',
+				'label' => __( 'Card background', 'dog-father-control-center' ),
+				'desc'  => __( 'Service cards, feature boxes, testimonials, FAQ items.', 'dog-father-control-center' ),
+			),
+			'alt_bg'       => array(
+				'var'   => '--df-surface-1',
+				'label' => __( 'Alternate section background', 'dog-father-control-center' ),
+				'desc'  => __( 'The slightly different background used by some bands (trust, why, contact).', 'dog-father-control-center' ),
+			),
+			'border_color' => array(
+				'var'   => '--df-border-soft',
+				'label' => __( 'Borders', 'dog-father-control-center' ),
+				'desc'  => __( 'Thin lines and card outlines.', 'dog-father-control-center' ),
+			),
+			// Buttons.
+			'btn_bg'       => array(
 				'var'   => '--df-btn-bg',
-				'label' => __( 'Buttons background', 'dog-father-control-center' ),
+				'label' => __( 'Button background', 'dog-father-control-center' ),
 				'desc'  => __( 'Primary “Book Now” style buttons.', 'dog-father-control-center' ),
 			),
-			'btn_text'    => array(
+			'btn_text'     => array(
 				'var'   => '--df-btn-text',
-				'label' => __( 'Buttons text', 'dog-father-control-center' ),
-				'desc'  => __( 'The label color inside primary buttons.', 'dog-father-control-center' ),
+				'label' => __( 'Button text', 'dog-father-control-center' ),
+				'desc'  => __( 'The label colour inside primary buttons.', 'dog-father-control-center' ),
 			),
-			'footer_bg'   => array(
+			// Footer.
+			'footer_bg'    => array(
 				'var'   => '--df-footer-bg',
 				'label' => __( 'Footer background', 'dog-father-control-center' ),
 				'desc'  => __( 'The bottom site footer background.', 'dog-father-control-center' ),
+			),
+			'footer_text'  => array(
+				'var'   => '--df-footer-text',
+				'label' => __( 'Footer text', 'dog-father-control-center' ),
+				'desc'  => __( 'Footer links and paragraph text.', 'dog-father-control-center' ),
 			),
 		);
 	}
