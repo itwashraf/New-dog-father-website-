@@ -45,6 +45,10 @@ button.
 
 == Changelog ==
 
+= 1.3.4 =
+* Fixed: the phone + WhatsApp icons now stay visible in the header bar at all times on mobile (they used to only show when the menu was open).
+* Fixed: the mobile menu now shows all tabs — the contact icons and Book Now button were moved out of the slide-in drawer, so the menu is just your tabs (plus a full-width Book Now) and fits on screen.
+
 = 1.3.3 =
 * Added: “Reset all colours to The Dog Father defaults” button on Theme Settings (restores the original TDF palette; press Save to apply).
 * Improved: mobile slide-in menu is more compact — call/WhatsApp icons sit on one row and the Book Now button is full-width, so a normal menu fits on screen without scrolling (long menus still scroll).

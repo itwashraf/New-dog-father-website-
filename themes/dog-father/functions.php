@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DFATHER_VERSION', '1.3.3' );
+define( 'DFATHER_VERSION', '1.3.4' );
 define( 'DFATHER_DIR', get_template_directory() );
 define( 'DFATHER_URI', get_template_directory_uri() );
 
