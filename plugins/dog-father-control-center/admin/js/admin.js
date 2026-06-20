@@ -5,10 +5,61 @@
 	'use strict';
 
 	$( function () {
-		// WordPress color pickers for any brand color field.
-		if ( $.fn.wpColorPicker ) {
-			$( '.dfcc-color-field' ).wpColorPicker();
+		// Live theme preview ------------------------------------------------
+		var $preview = $( '#dfcc-preview' );
+
+		function pvVal( id, fallback ) {
+			var $f = $( '#' + id );
+			var v = $f.length ? $.trim( $f.val() || '' ) : '';
+			return v || fallback;
 		}
+
+		function updatePreview() {
+			if ( ! $preview.length ) { return; }
+
+			var primary    = pvVal( 'color_primary', '#FFF10A' );
+			var gold       = pvVal( 'color_gold', '#FEC208' );
+			var headerBg   = pvVal( 'header_bg', '#0b0b0d' );
+			var headerText = pvVal( 'header_text', '#ffffff' );
+			var pageBg     = pvVal( 'page_bg', '#0a0a0b' );
+			var bodyText   = pvVal( 'body_text', '#ffffff' );
+			var muted      = pvVal( 'muted_text', '#9a9aa3' );
+			var heading    = pvVal( 'heading_color', bodyText );
+			var link       = pvVal( 'link_color', gold );
+			var accent     = pvVal( 'accent', gold );
+			var cardBg     = pvVal( 'card_bg', '#15151a' );
+			var border     = pvVal( 'border_color', 'rgba(255,255,255,.14)' );
+			var btnBg      = pvVal( 'btn_bg', '' );
+			var btnText    = pvVal( 'btn_text', '#000000' );
+			var footerBg   = pvVal( 'footer_bg', '#050506' );
+			var footerText = pvVal( 'footer_text', muted );
+			var btnBackground = btnBg || ( 'linear-gradient(135deg,' + primary + ',' + gold + ')' );
+
+			$preview.find( '[data-pv-header]' ).css( { background: headerBg, borderColor: border } );
+			$preview.find( '[data-pv-headertext]' ).css( 'color', headerText );
+			$preview.find( '[data-pv-body]' ).css( 'background', pageBg );
+			$preview.find( '[data-pv-text]' ).css( 'color', bodyText );
+			$preview.find( '[data-pv-muted]' ).css( 'color', muted );
+			$preview.find( '[data-pv-heading]' ).css( 'color', heading );
+			$preview.find( '[data-pv-link]' ).css( 'color', link );
+			$preview.find( '[data-pv-accent]' ).css( 'color', accent );
+			$preview.find( '[data-pv-card]' ).css( { background: cardBg, borderColor: border } );
+			$preview.find( '[data-pv-btn]' ).css( { background: btnBackground, color: btnText } );
+			$preview.find( '[data-pv-footer]' ).css( 'background', footerBg );
+			$preview.find( '[data-pv-footertext]' ).css( 'color', footerText );
+		}
+
+		// WordPress color pickers for any brand color field. Refresh the
+		// preview whenever a colour changes or is cleared.
+		if ( $.fn.wpColorPicker ) {
+			$( '.dfcc-color-field' ).wpColorPicker( {
+				change: function () { setTimeout( updatePreview, 30 ); },
+				clear:  function () { setTimeout( updatePreview, 30 ); }
+			} );
+		}
+		// Also catch manual typing into the hex field.
+		$( document ).on( 'input change', '.dfcc-color-field', function () { setTimeout( updatePreview, 0 ); } );
+		updatePreview();
 
 		// Drag-to-reorder the homepage Section Layout list.
 		if ( $.fn.sortable ) {

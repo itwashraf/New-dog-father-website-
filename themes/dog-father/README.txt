@@ -45,5 +45,12 @@ button.
 
 == Changelog ==
 
+= 1.3.1 =
+* Fixed: mobile menu button (burger) was invisible when the header background was set to white/light — it now always uses the header text colour.
+* Fixed: the mobile slide-in menu now follows your chosen header colours instead of always being dark, so menu links stay readable on light themes.
+* Added: tap-outside backdrop and Escape key now close the mobile menu.
+* Fixed: FAQ questions and pagination text now follow your theme text colour (were hardcoded white).
+* Added: a live colour preview box on the Theme Settings screen.
+
 = 1.0.0 =
 * Initial release.

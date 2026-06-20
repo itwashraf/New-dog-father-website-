@@ -62,6 +62,36 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 	<form method="post" action="options.php">
 		<?php settings_fields( 'dfcc_theme_settings_group' ); ?>
 
+		<div class="dfcc-panel dfcc-preview-panel">
+			<h2 class="dfcc-section-title"><?php esc_html_e( 'Live Preview', 'dog-father-control-center' ); ?></h2>
+			<p class="description" style="margin:-6px 0 14px;"><?php esc_html_e( 'A small sample of your website. It updates instantly as you change any colour below — no need to save first.', 'dog-father-control-center' ); ?></p>
+			<div class="dfcc-preview" id="dfcc-preview" aria-hidden="true">
+				<div class="dfcc-pv-header" data-pv-header>
+					<span class="dfcc-pv-logo" data-pv-headertext><?php esc_html_e( 'The', 'dog-father-control-center' ); ?> <b data-pv-accent><?php esc_html_e( 'Dog Father', 'dog-father-control-center' ); ?></b></span>
+					<span class="dfcc-pv-nav">
+						<a data-pv-headertext><?php esc_html_e( 'Home', 'dog-father-control-center' ); ?></a>
+						<a data-pv-headertext><?php esc_html_e( 'Services', 'dog-father-control-center' ); ?></a>
+						<a data-pv-headertext><?php esc_html_e( 'Contact', 'dog-father-control-center' ); ?></a>
+					</span>
+					<span class="dfcc-pv-btn" data-pv-btn><?php esc_html_e( 'Book Now', 'dog-father-control-center' ); ?></span>
+				</div>
+				<div class="dfcc-pv-body" data-pv-body>
+					<span class="dfcc-pv-eyebrow" data-pv-accent><?php esc_html_e( 'WELCOME', 'dog-father-control-center' ); ?></span>
+					<h3 class="dfcc-pv-h" data-pv-heading><?php esc_html_e( 'Luxury care for your dog', 'dog-father-control-center' ); ?></h3>
+					<p class="dfcc-pv-text" data-pv-text><?php esc_html_e( 'This is how your main body text looks.', 'dog-father-control-center' ); ?> <a data-pv-link><?php esc_html_e( 'Here is a link.', 'dog-father-control-center' ); ?></a></p>
+					<p class="dfcc-pv-muted" data-pv-muted><?php esc_html_e( 'Secondary, muted text sits below.', 'dog-father-control-center' ); ?></p>
+					<div class="dfcc-pv-card" data-pv-card>
+						<strong data-pv-heading><?php esc_html_e( 'Boarding', 'dog-father-control-center' ); ?></strong>
+						<span data-pv-muted><?php esc_html_e( 'From SAR 120 / night', 'dog-father-control-center' ); ?></span>
+						<span class="dfcc-pv-btn dfcc-pv-btn--sm" data-pv-btn><?php esc_html_e( 'Reserve', 'dog-father-control-center' ); ?></span>
+					</div>
+				</div>
+				<div class="dfcc-pv-footer" data-pv-footer>
+					<span data-pv-footertext><?php esc_html_e( '© The Dog Father — all rights reserved', 'dog-father-control-center' ); ?></span>
+				</div>
+			</div>
+		</div>
+
 		<div class="dfcc-panel">
 			<h2 class="dfcc-section-title"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></h2>
 			<p class="description" style="margin:-6px 0 16px;"><?php esc_html_e( 'Your master palette. These flow across the whole site. To point a colour at one specific area instead, use “Section Colors” below.', 'dog-father-control-center' ); ?></p>

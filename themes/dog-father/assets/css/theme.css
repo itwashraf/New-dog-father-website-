@@ -166,7 +166,8 @@ body.df-front.df-header-transparent .df-header.is-scrolled { position: fixed; to
 .df-header__icon--whatsapp { color: #25D366; border-color: rgba(37,211,102,.45); }
 .df-header__icon--whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; }
 .df-burger { display: none; flex-direction: column; gap: 5px; background: none; border: 0; padding: 8px; cursor: pointer; margin-left: auto; }
-.df-burger span { width: 26px; height: 2px; background: #fff; transition: .25s ease; }
+.df-burger span { width: 26px; height: 2px; background: var(--df-header-text); border-radius: 2px; transition: .25s ease; }
+.df-nav-scrim { display: none; }
 body.df-nav-open .df-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 body.df-nav-open .df-burger span:nth-child(2) { opacity: 0; }
 body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -268,7 +269,7 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 /* FAQ -------------------------------------------------------------------- */
 .df-faq { max-width: 860px; margin: 0 auto; }
 .df-faq__item { border: 1px solid var(--df-border-soft); border-radius: 14px; margin-bottom: 14px; overflow: hidden; background: var(--df-surface-2); }
-.df-faq__q { width: 100%; text-align: left; background: none; border: 0; color: #fff; font-family: var(--dfcc-heading-font);
+.df-faq__q { width: 100%; text-align: left; background: none; border: 0; color: var(--df-heading); font-family: var(--dfcc-heading-font);
   font-weight: 600; font-size: 1.08rem; padding: 22px 26px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .df-faq__q::after { content: "+"; color: var(--dfcc-gold); font-size: 1.6rem; line-height: 1; transition: transform .25s ease; }
 .df-faq__item.is-open .df-faq__q::after { transform: rotate(45deg); }
@@ -308,7 +309,7 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 .df-post-card__meta { color: var(--df-ink-3); font-size: .85rem; margin-bottom: 8px; }
 .df-post-card h2, .df-post-card h3 { font-size: 1.25rem; margin: 0 0 10px; }
 .df-pagination { display: flex; gap: 10px; justify-content: center; margin-top: 50px; flex-wrap: wrap; }
-.df-pagination .page-numbers { padding: 10px 16px; border: 1px solid var(--df-border-soft); border-radius: 10px; color: #fff; }
+.df-pagination .page-numbers { padding: 10px 16px; border: 1px solid var(--df-border-soft); border-radius: 10px; color: var(--df-ink-1); }
 .df-pagination .page-numbers.current, .df-pagination .page-numbers:hover { background: var(--dfcc-primary); color: #000; border-color: var(--dfcc-primary); }
 
 /* 404 -------------------------------------------------------------------- */
@@ -346,10 +347,19 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 @media (max-width: 1200px) {
   .df-burger { display: flex; }
   .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 380px); flex-direction: column; align-items: flex-start;
-    gap: 22px; background: #08080a; border-left: 1px solid var(--df-border); padding: 90px 28px 40px; transform: translateX(100%);
+    gap: 22px; background-color: var(--df-body-bg); background-image: linear-gradient(var(--df-header-bg), var(--df-header-bg));
+    border-left: 1px solid var(--df-border); padding: 90px 28px 40px; transform: translateX(100%);
     transition: transform .32s ease; overflow-y: auto; }
+  .df-nav .df-menu a { color: var(--df-header-text); }
   body.df-nav-open .df-nav { transform: translateX(0); }
   body.df-nav-open { overflow: hidden; }
+  /* Keep the open drawer + burger above the body-level scrim. */
+  body.df-nav-open .df-header { z-index: 1001; }
+  .df-burger { position: relative; z-index: 2; }
+  .df-nav { z-index: 1; }
+  .df-nav-scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; visibility: hidden;
+    transition: opacity .3s ease; z-index: 1000; }
+  body.df-nav-open .df-nav-scrim { opacity: 1; visibility: visible; }
   .df-menu { flex-direction: column; align-items: flex-start; gap: 6px; width: 100%; }
   .df-menu .sub-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding-left: 14px; margin: 4px 0; }
   .df-header__actions { flex-direction: column; align-items: flex-start; width: 100%; }

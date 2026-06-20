@@ -20,15 +20,39 @@
 		var burger = document.querySelector( '.df-burger' );
 		var nav    = document.getElementById( 'df-nav' );
 		if ( burger && nav ) {
+			// Dim backdrop behind the drawer so tapping outside closes the menu.
+			var scrim = document.createElement( 'div' );
+			scrim.className = 'df-nav-scrim';
+			document.body.appendChild( scrim );
+
+			var closeNav = function () {
+				document.body.classList.remove( 'df-nav-open' );
+				burger.setAttribute( 'aria-expanded', 'false' );
+			};
+			var openNav = function () {
+				document.body.classList.add( 'df-nav-open' );
+				burger.setAttribute( 'aria-expanded', 'true' );
+			};
+
 			burger.addEventListener( 'click', function () {
-				var open = document.body.classList.toggle( 'df-nav-open' );
-				burger.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+				if ( document.body.classList.contains( 'df-nav-open' ) ) {
+					closeNav();
+				} else {
+					openNav();
+				}
 			} );
 			// Close when a link is tapped.
 			nav.addEventListener( 'click', function ( e ) {
 				if ( e.target.closest( 'a' ) && document.body.classList.contains( 'df-nav-open' ) ) {
-					document.body.classList.remove( 'df-nav-open' );
-					burger.setAttribute( 'aria-expanded', 'false' );
+					closeNav();
+				}
+			} );
+			// Close when tapping the backdrop.
+			scrim.addEventListener( 'click', closeNav );
+			// Close on Escape.
+			document.addEventListener( 'keydown', function ( e ) {
+				if ( ( 'Escape' === e.key || 'Esc' === e.key ) && document.body.classList.contains( 'df-nav-open' ) ) {
+					closeNav();
 				}
 			} );
 		}
