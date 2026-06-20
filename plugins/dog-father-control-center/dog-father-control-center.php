@@ -3,7 +3,7 @@
  * Plugin Name:       Dog Father Control Center
  * Plugin URI:        https://thedogfatherhotel.com
  * Description:        The business control center for The Dog Father Hotel — bookings, dog profiles, services, gallery, testimonials, SEO, integrations, one-click setup and more. Built by Provada (provada.net).
- * Version:           1.3.1
+ * Version:           1.3.2
  * Release:            TDF_CP_M5
  * Requires at least: 6.2
  * Requires PHP:      7.4
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Core plugin constants.
  */
-define( 'DFCC_VERSION', '1.3.1' );
+define( 'DFCC_VERSION', '1.3.2' );
 define( 'DFCC_RELEASE', 'TDF_CP_M5' );
 define( 'DFCC_PLUGIN_FILE', __FILE__ );
 define( 'DFCC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

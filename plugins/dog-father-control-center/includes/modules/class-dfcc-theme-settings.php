@@ -213,12 +213,12 @@ class DFCC_Theme_Settings extends DFCC_Module {
 			'header_bg'    => array(
 				'var'   => '--df-header-bg',
 				'label' => __( 'Header background', 'dog-father-control-center' ),
-				'desc'  => __( 'The top menu bar. Tip: set this to white and set the header text dark.', 'dog-father-control-center' ),
+				'desc'  => __( 'Background colour of the top menu bar (the strip across the very top of every page). For a white header set this to #FFFFFF, then set “Header text & menu tabs” below to a dark colour.', 'dog-father-control-center' ),
 			),
 			'header_text'  => array(
 				'var'   => '--df-header-text',
-				'label' => __( 'Header text & menu tabs', 'dog-father-control-center' ),
-				'desc'  => __( 'Logo text and the navigation menu links in the header.', 'dog-father-control-center' ),
+				'label' => __( 'Header text & menu tabs ← controls the main menu', 'dog-father-control-center' ),
+				'desc'  => __( 'THIS is the colour of your top navigation menu tabs (Home, Services, About, Contact…) and the logo text. It also colours the mobile menu (☰) button. If your header is light, pick a dark colour here so the tabs are visible.', 'dog-father-control-center' ),
 			),
 			// Page / body.
 			'page_bg'      => array(

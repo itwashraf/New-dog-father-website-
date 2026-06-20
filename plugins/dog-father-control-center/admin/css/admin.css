@@ -294,8 +294,46 @@ body.dfcc-admin-light .dfcc-field input[type="date"],
 body.dfcc-admin-light .dfcc-field select,
 body.dfcc-admin-light .dfcc-field textarea { background: #ffffff; }
 
+/* Theme Settings two-column layout (form + sticky preview) ---------------- */
+.dfcc-theme-layout { display: flex; gap: 24px; align-items: flex-start; }
+.dfcc-theme-main { flex: 1 1 auto; min-width: 0; }
+.dfcc-theme-side { flex: 0 0 400px; position: sticky; top: 40px; }
+@media ( max-width: 1280px ) {
+	.dfcc-theme-layout { display: block; }
+	.dfcc-theme-side { position: static; max-width: 460px; margin: 0 0 22px; }
+}
+
+/* Preview toggle */
+.dfcc-pv-toggle { display: inline-flex; gap: 4px; padding: 4px; border-radius: 10px; background: rgba(0,0,0,.25); margin-top: 4px; }
+.dfcc-pv-tab {
+	display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+	border: 0; background: none; color: inherit; opacity: .65;
+	font-size: .85rem; font-weight: 600; padding: 6px 12px; border-radius: 7px;
+}
+.dfcc-pv-tab .dashicons { font-size: 17px; width: 17px; height: 17px; }
+.dfcc-pv-tab.is-active { background: var(--dfcc-gold, #FEC208); color: #111; opacity: 1; }
+
+/* Frame visibility based on toggle */
+.dfcc-preview .dfcc-pv-frame--mobile { display: none; }
+.dfcc-preview.is-mobile .dfcc-pv-frame--desktop { display: none; }
+.dfcc-preview.is-mobile .dfcc-pv-frame--mobile { display: block; }
+.dfcc-preview.is-mobile { border: 0; box-shadow: none; }
+
+/* Phone mock */
+.dfcc-pv-phone {
+	width: 240px; margin: 0 auto; border-radius: 26px; overflow: hidden;
+	border: 8px solid #2a2a30; box-shadow: 0 14px 36px rgba(0,0,0,.4);
+}
+.dfcc-pv-mheader { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
+.dfcc-pv-burger { display: inline-flex; flex-direction: column; gap: 4px; }
+.dfcc-pv-burger i { display: block; width: 22px; height: 2px; border-radius: 2px; background: #fff; }
+.dfcc-pv-drawer { padding: 16px 16px 22px; display: flex; flex-direction: column; gap: 12px; min-height: 230px; }
+.dfcc-pv-drawer-label { font-size: .68rem; letter-spacing: .16em; font-weight: 700; opacity: .7; }
+.dfcc-pv-mlink { font-weight: 600; font-size: .95rem; cursor: default; text-decoration: none; }
+.dfcc-pv-btn--block { display: block; text-align: center; margin-top: 6px; }
+.dfcc-pv-mnote { margin-top: 14px; }
+
 /* Live theme preview ------------------------------------------------------ */
-.dfcc-preview-panel { position: sticky; top: 40px; z-index: 5; }
 .dfcc-preview {
 	border-radius: 14px; overflow: hidden;
 	border: 1px solid rgba(255,255,255,.12);

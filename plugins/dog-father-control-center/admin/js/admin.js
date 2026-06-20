@@ -47,7 +47,17 @@
 			$preview.find( '[data-pv-btn]' ).css( { background: btnBackground, color: btnText } );
 			$preview.find( '[data-pv-footer]' ).css( 'background', footerBg );
 			$preview.find( '[data-pv-footertext]' ).css( 'color', footerText );
+			// Mobile burger lines follow the header text colour.
+			$preview.find( '[data-pv-burger]' ).css( 'background', headerText );
 		}
+
+		// Desktop / Mobile preview toggle.
+		$( document ).on( 'click', '.dfcc-pv-tab', function () {
+			var view = $( this ).data( 'pv-view' );
+			$( '.dfcc-pv-tab' ).removeClass( 'is-active' );
+			$( this ).addClass( 'is-active' );
+			$preview.toggleClass( 'is-desktop', 'desktop' === view ).toggleClass( 'is-mobile', 'mobile' === view );
+		} );
 
 		// WordPress color pickers for any brand color field. Refresh the
 		// preview whenever a colour changes or is cleared.

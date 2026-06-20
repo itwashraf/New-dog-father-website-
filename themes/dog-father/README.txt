@@ -45,6 +45,12 @@ button.
 
 == Changelog ==
 
+= 1.3.2 =
+* Added: theme screenshot.png so the theme shows a real preview in Appearance → Themes.
+* Fixed: mobile slide-in menu tabs are now always readable — the drawer uses the page background + main text colours instead of the header colours, so tabs never disappear when the header is white.
+* Theme Settings: the live preview now sits in its own sticky side column (no longer covers the form) and includes a Desktop/Mobile toggle with a phone mock of the open menu.
+* Clearer colour descriptions, especially “Header text & menu tabs”, which controls the main navigation menu colour.
+
 = 1.3.1 =
 * Fixed: mobile menu button (burger) was invisible when the header background was set to white/light — it now always uses the header text colour.
 * Fixed: the mobile slide-in menu now follows your chosen header colours instead of always being dark, so menu links stay readable on light themes.

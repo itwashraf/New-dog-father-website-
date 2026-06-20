@@ -347,10 +347,14 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 @media (max-width: 1200px) {
   .df-burger { display: flex; }
   .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 380px); flex-direction: column; align-items: flex-start;
-    gap: 22px; background-color: var(--df-body-bg); background-image: linear-gradient(var(--df-header-bg), var(--df-header-bg));
+    gap: 22px; background: var(--df-body-bg);
     border-left: 1px solid var(--df-border); padding: 90px 28px 40px; transform: translateX(100%);
     transition: transform .32s ease; overflow-y: auto; }
-  .df-nav .df-menu a { color: var(--df-header-text); }
+  /* Inside the slide-in drawer use the page text colour so the menu tabs are
+     always readable, regardless of the header background/text colours. */
+  .df-nav .df-menu a { color: var(--df-ink-1); }
+  .df-nav .df-menu a:hover, .df-nav .df-menu .current-menu-item > a { color: var(--dfcc-primary); }
+  .df-nav .df-header__icon { color: var(--df-ink-1); border-color: var(--df-border-soft); }
   body.df-nav-open .df-nav { transform: translateX(0); }
   body.df-nav-open { overflow: hidden; }
   /* Keep the open drawer + burger above the body-level scrim. */
