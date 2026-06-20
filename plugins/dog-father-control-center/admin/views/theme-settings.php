@@ -66,8 +66,11 @@ $dark_mode_first = ! empty( $settings['dark_mode_first'] );
 		<div class="dfcc-theme-main">
 
 		<div class="dfcc-panel">
-			<h2 class="dfcc-section-title"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></h2>
-			<p class="description" style="margin:-6px 0 16px;"><?php esc_html_e( 'Your master palette. These flow across the whole site. To point a colour at one specific area instead, use “Section Colors” below.', 'dog-father-control-center' ); ?></p>
+			<div class="dfcc-panel-head">
+				<h2 class="dfcc-section-title" style="margin:0;"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></h2>
+				<button type="button" class="button dfcc-reset-colors"><span class="dashicons dashicons-image-rotate"></span> <?php esc_html_e( 'Reset all colours to The Dog Father defaults', 'dog-father-control-center' ); ?></button>
+			</div>
+			<p class="description" style="margin:8px 0 16px;"><?php esc_html_e( 'Your master palette. These flow across the whole site. To point a colour at one specific area instead, use “Section Colors” below. The reset button restores the original The Dog Father colours — remember to press Save afterwards.', 'dog-father-control-center' ); ?></p>
 			<?php foreach ( $colors as $key => $meta ) : ?>
 				<?php $value = isset( $settings[ $key ] ) ? $settings[ $key ] : $meta['default']; ?>
 				<div class="dfcc-field">

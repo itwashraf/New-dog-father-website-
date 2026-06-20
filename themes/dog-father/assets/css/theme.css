@@ -346,10 +346,10 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 /* Responsive ------------------------------------------------------------- */
 @media (max-width: 1200px) {
   .df-burger { display: flex; }
-  .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 380px); flex-direction: column; align-items: flex-start;
-    gap: 22px; background: var(--df-body-bg);
-    border-left: 1px solid var(--df-border); padding: 90px 28px 40px; transform: translateX(100%);
-    transition: transform .32s ease; overflow-y: auto; }
+  .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 360px); flex-direction: column; align-items: flex-start;
+    gap: 14px; background: var(--df-body-bg);
+    border-left: 1px solid var(--df-border); padding: 78px 24px 28px; transform: translateX(100%);
+    transition: transform .32s ease; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   /* Inside the slide-in drawer use the page text colour so the menu tabs are
      always readable, regardless of the header background/text colours. */
   .df-nav .df-menu a { color: var(--df-ink-1); }
@@ -364,9 +364,13 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
   .df-nav-scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; visibility: hidden;
     transition: opacity .3s ease; z-index: 1000; }
   body.df-nav-open .df-nav-scrim { opacity: 1; visibility: visible; }
-  .df-menu { flex-direction: column; align-items: flex-start; gap: 6px; width: 100%; }
-  .df-menu .sub-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding-left: 14px; margin: 4px 0; }
-  .df-header__actions { flex-direction: column; align-items: flex-start; width: 100%; }
+  .df-menu { flex-direction: column; align-items: stretch; gap: 2px; width: 100%; }
+  .df-nav .df-menu a { display: block; width: 100%; padding: 11px 0; font-size: 1.04rem; }
+  .df-menu .sub-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding-left: 14px; margin: 2px 0; }
+  /* Keep the call/WhatsApp icons on one row and the Book Now button full-width
+     so a typical menu fits on screen without scrolling. */
+  .df-header__actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px; width: 100%; margin-top: 8px; }
+  .df-header__actions .df-btn { flex: 1 1 100%; width: 100%; }
   .df-about__grid, .df-contact__grid { grid-template-columns: 1fr; gap: 36px; }
   .df-grid--4, .df-trust__grid, .df-stats__grid, .df-gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .df-grid--3 { grid-template-columns: repeat(2, 1fr); }

@@ -51,6 +51,38 @@
 			$preview.find( '[data-pv-burger]' ).css( 'background', headerText );
 		}
 
+		// Reset every colour back to the original The Dog Father palette.
+		$( document ).on( 'click', '.dfcc-reset-colors', function ( e ) {
+			e.preventDefault();
+			if ( ! window.confirm( 'Reset every colour to the original The Dog Father defaults? Your other settings are kept. Press Save afterwards to apply.' ) ) {
+				return;
+			}
+			$( '.dfcc-color-field' ).each( function () {
+				var $f    = $( this );
+				var $wrap = $f.closest( '.wp-picker-container' );
+				var def   = $f.data( 'default-color' );
+				if ( def ) {
+					// Brand / announcement colours have a defined default.
+					var $db = $wrap.find( '.wp-picker-default' );
+					if ( $db.length ) {
+						$db.prop( 'disabled', false ).trigger( 'click' );
+					} else if ( $f.wpColorPicker ) {
+						$f.wpColorPicker( 'color', def );
+					}
+				} else {
+					// Section colours: clearing them restores the theme's built-in
+					// The Dog Father default for that area.
+					var $cb = $wrap.find( '.wp-picker-clear' );
+					if ( $cb.length ) {
+						$cb.trigger( 'click' );
+					} else {
+						$f.val( '' ).trigger( 'change' );
+					}
+				}
+			} );
+			setTimeout( updatePreview, 80 );
+		} );
+
 		// Desktop / Mobile preview toggle.
 		$( document ).on( 'click', '.dfcc-pv-tab', function () {
 			var view = $( this ).data( 'pv-view' );

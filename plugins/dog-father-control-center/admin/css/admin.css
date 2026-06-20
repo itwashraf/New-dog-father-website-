@@ -295,6 +295,9 @@ body.dfcc-admin-light .dfcc-field select,
 body.dfcc-admin-light .dfcc-field textarea { background: #ffffff; }
 
 /* Theme Settings two-column layout (form + sticky preview) ---------------- */
+.dfcc-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.dfcc-reset-colors { display: inline-flex !important; align-items: center; gap: 5px; }
+.dfcc-reset-colors .dashicons { font-size: 16px; width: 16px; height: 16px; line-height: 1; }
 .dfcc-theme-layout { display: flex; gap: 24px; align-items: flex-start; }
 .dfcc-theme-main { flex: 1 1 auto; min-width: 0; }
 .dfcc-theme-side { flex: 0 0 400px; position: sticky; top: 40px; }

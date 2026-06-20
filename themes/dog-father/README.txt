@@ -45,6 +45,10 @@ button.
 
 == Changelog ==
 
+= 1.3.3 =
+* Added: “Reset all colours to The Dog Father defaults” button on Theme Settings (restores the original TDF palette; press Save to apply).
+* Improved: mobile slide-in menu is more compact — call/WhatsApp icons sit on one row and the Book Now button is full-width, so a normal menu fits on screen without scrolling (long menus still scroll).
+
 = 1.3.2 =
 * Added: theme screenshot.png so the theme shows a real preview in Appearance → Themes.
 * Fixed: mobile slide-in menu tabs are now always readable — the drawer uses the page background + main text colours instead of the header colours, so tabs never disappear when the header is white.
