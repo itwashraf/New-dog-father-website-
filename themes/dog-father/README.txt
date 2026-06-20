@@ -45,6 +45,9 @@ button.
 
 == Changelog ==
 
+= 1.3.6 =
+* Fixed: the mobile menu now opens as a full-height drawer with every menu item (Home, Gallery, Services, etc.) visible at once — no more cramped, scrollable two-row menu. Book Now sits pinned at the bottom. NOTE: clear any caching plugin/CDN after updating so the new menu styles load.
+
 = 1.3.5 =
 * Fixed: the “Save Services” button is now also shown at the TOP of Manage Services (not only in the sticky bar at the bottom), so it is always easy to find.
 

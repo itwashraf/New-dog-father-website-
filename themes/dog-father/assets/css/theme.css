@@ -347,10 +347,15 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
 /* Responsive ------------------------------------------------------------- */
 @media (max-width: 1200px) {
   .df-burger { display: flex; }
-  .df-nav { position: fixed; inset: 0 0 0 auto; width: min(86vw, 360px); flex-direction: column; align-items: flex-start;
-    gap: 14px; background: var(--df-body-bg);
-    border-left: 1px solid var(--df-border); padding: 78px 24px 28px; transform: translateX(100%);
-    transition: transform .32s ease; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  /* Full-height slide-in drawer pinned to the right. height:100dvh keeps the
+     whole menu usable on phones (dvh accounts for mobile browser toolbars), so
+     top-level items like Home/Gallery are visible at the top without scrolling. */
+  .df-nav { position: fixed; top: 0; right: 0; bottom: 0; left: auto; height: 100vh; height: 100dvh;
+    width: min(88vw, 340px); display: flex; flex-direction: column; align-items: stretch;
+    gap: 0; background: var(--df-body-bg);
+    border-left: 1px solid var(--df-border); padding: 72px 20px 24px; transform: translateX(100%);
+    transition: transform .32s ease; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+    box-shadow: -8px 0 30px rgba(0,0,0,.18); }
   /* Inside the slide-in drawer use the page text colour so the menu tabs are
      always readable, regardless of the header background/text colours. */
   .df-nav .df-menu a { color: var(--df-ink-1); }
@@ -359,7 +364,7 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
   .df-header__actions { margin-left: auto; gap: 8px; order: 1; }
   .df-burger { order: 2; }
   /* Book Now lives in the drawer, full width under the menu. */
-  .df-nav__cta { width: 100%; margin-top: 6px; }
+  .df-nav__cta { width: 100%; margin-top: auto; padding-top: 16px; }
   .df-nav__cta .df-btn { width: 100%; }
   body.df-nav-open .df-nav { transform: translateX(0); }
   body.df-nav-open { overflow: hidden; }
@@ -370,9 +375,12 @@ body.df-nav-open .df-burger span:nth-child(3) { transform: translateY(-7px) rota
   .df-nav-scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.5); opacity: 0; visibility: hidden;
     transition: opacity .3s ease; z-index: 1000; }
   body.df-nav-open .df-nav-scrim { opacity: 1; visibility: visible; }
-  .df-menu { flex-direction: column; align-items: stretch; gap: 2px; width: 100%; }
-  .df-nav .df-menu a { display: block; width: 100%; padding: 11px 0; font-size: 1.04rem; }
-  .df-menu .sub-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding-left: 14px; margin: 2px 0; }
+  /* One menu item per row, full width, comfortable tap targets, light dividers. */
+  .df-menu { flex-direction: column; align-items: stretch; gap: 0; width: 100%; }
+  .df-menu > li { width: 100%; border-bottom: 1px solid var(--df-border-soft, rgba(0,0,0,.08)); }
+  .df-nav .df-menu a { display: block; width: 100%; padding: 14px 2px; font-size: 1.08rem; font-weight: 600; }
+  .df-menu .sub-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding-left: 14px; margin: 0 0 6px; }
+  .df-menu .sub-menu a { font-size: .98rem; padding: 9px 2px; font-weight: 500; }
   .df-about__grid, .df-contact__grid { grid-template-columns: 1fr; gap: 36px; }
   .df-grid--4, .df-trust__grid, .df-stats__grid, .df-gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .df-grid--3 { grid-template-columns: repeat(2, 1fr); }
