@@ -110,14 +110,19 @@ class DFCC_Tools extends DFCC_Module {
 			'slug'     => 'dfcc-backup',
 			'title'    => __( 'Backup Center', 'dog-father-control-center' ),
 			'callback' => array( $this, 'render_backup' ),
-			'order'    => 110,
+			'order'    => 900,
 		);
-		$pages[] = array(
-			'slug'     => 'dfcc-cleanup',
-			'title'    => __( 'Cleanup (Kubio)', 'dog-father-control-center' ),
-			'callback' => array( $this, 'render_cleanup' ),
-			'order'    => 115,
-		);
+		// Only surface "Content Cleanup" when there is actually leftover
+		// page-builder markup to fix — so a fresh site never shows a tab the
+		// owner can't make sense of.
+		if ( $this->has_builder_leftovers() ) {
+			$pages[] = array(
+				'slug'     => 'dfcc-cleanup',
+				'title'    => __( 'Content Cleanup', 'dog-father-control-center' ),
+				'callback' => array( $this, 'render_cleanup' ),
+				'order'    => 130,
+			);
+		}
 		$pages[] = array(
 			'slug'     => 'dfcc-security',
 			'title'    => __( 'Security', 'dog-father-control-center' ),
@@ -415,6 +420,23 @@ class DFCC_Tools extends DFCC_Module {
 	/* ---------------------------------------------------------------------
 	 * Cleanup — remove leftover Kubio block markup
 	 * ------------------------------------------------------------------ */
+
+	/**
+	 * Fast check: is there any leftover page-builder markup anywhere? Used to
+	 * decide whether to show the Content Cleanup tab at all.
+	 *
+	 * @return bool
+	 */
+	private function has_builder_leftovers() {
+		global $wpdb;
+		$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			"SELECT ID FROM {$wpdb->posts}
+			 WHERE post_status NOT IN ('trash','auto-draft','inherit')
+			   AND post_content LIKE '%wp:kubio%'
+			 LIMIT 1"
+		);
+		return ! empty( $found );
+	}
 
 	/**
 	 * Find all posts/pages whose content still contains Kubio block markup.

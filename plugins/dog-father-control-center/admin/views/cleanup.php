@@ -20,8 +20,8 @@ $dfcc_action   = esc_url( admin_url( 'admin-post.php' ) );
 <div class="wrap dfcc-wrap">
 	<div class="dfcc-header">
 		<div>
-			<h1 class="dfcc-title"><span class="dashicons dashicons-editor-removeformatting"></span> <?php esc_html_e( 'Cleanup — Leftover Kubio Blocks', 'dog-father-control-center' ); ?></h1>
-			<p class="dfcc-subtitle"><?php esc_html_e( 'You removed the Kubio page builder, but some pages still contain its blocks — that is what causes the "block not supported" warnings and stops you editing or saving. Clean them here.', 'dog-father-control-center' ); ?></p>
+			<h1 class="dfcc-title"><span class="dashicons dashicons-editor-removeformatting"></span> <?php esc_html_e( 'Content Cleanup', 'dog-father-control-center' ); ?></h1>
+			<p class="dfcc-subtitle"><?php esc_html_e( 'Some pages were built with an old page-builder plugin that is no longer active. Its leftover blocks cause “block not supported” warnings and can stop you editing or saving. This tool safely cleans them — and only appears when there is something to clean.', 'dog-father-control-center' ); ?></p>
 		</div>
 	</div>
 
@@ -45,7 +45,7 @@ $dfcc_action   = esc_url( admin_url( 'admin-post.php' ) );
 	<div class="dfcc-panel" style="border-left:4px solid #ffb900;">
 		<h2 class="dfcc-section-title"><?php esc_html_e( 'How this works', 'dog-father-control-center' ); ?></h2>
 		<p>
-			<?php esc_html_e( 'Cleaning removes the Kubio block wrappers and keeps any real text/images as plain HTML — exactly like the editor\'s "Keep as HTML" option, but in one click. If a page was 100% Kubio with no plain content, it becomes empty, which lets The Dog Father theme show its own built-in design for that page (recommended for the Home page).', 'dog-father-control-center' ); ?>
+			<?php esc_html_e( 'Cleaning removes the old block wrappers and keeps any real text/images as plain HTML — exactly like the editor\'s "Keep as HTML" option, but in one click. If a page was built entirely with the old builder, it becomes empty, which lets the theme show its own built-in design for that page (recommended for the Home page).', 'dog-father-control-center' ); ?>
 		</p>
 		<p><strong><?php esc_html_e( 'Every change is backed up', 'dog-father-control-center' ); ?></strong> — <?php esc_html_e( 'you can undo any item with Restore below.', 'dog-father-control-center' ); ?></p>
 	</div>

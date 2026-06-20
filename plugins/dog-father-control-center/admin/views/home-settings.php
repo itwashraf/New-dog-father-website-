@@ -269,7 +269,12 @@ $dfcc_name = 'dfcc_home_settings';
 
 		<div class="dfcc-panel">
 			<h2 class="dfcc-section-title"><?php esc_html_e( 'Section Layout', 'dog-father-control-center' ); ?></h2>
-			<p class="description" style="margin:-6px 0 14px;"><?php esc_html_e( 'Drag the handle to reorder homepage sections, tick to show/hide, and optionally give each section its own background color and spacing. (The hero banner is always first.)', 'dog-father-control-center' ); ?></p>
+			<p class="description" style="margin:-6px 0 6px;"><?php esc_html_e( 'This controls the order and look of the blocks on your homepage. The hero banner is always first.', 'dog-father-control-center' ); ?></p>
+			<ul class="description" style="margin:0 0 14px 18px;list-style:disc;">
+				<li><?php esc_html_e( 'Drag the ✥ handle to change the order sections appear in.', 'dog-father-control-center' ); ?></li>
+				<li><?php esc_html_e( 'Tick / untick the box to show or hide a section.', 'dog-father-control-center' ); ?></li>
+				<li><?php esc_html_e( 'Spacing = how tall the section is. Background = an optional colour just for that section (leave empty to keep the theme default).', 'dog-father-control-center' ); ?></li>
+			</ul>
 
 			<style>
 				.dfcc-sortable{list-style:none;margin:0;padding:0;}

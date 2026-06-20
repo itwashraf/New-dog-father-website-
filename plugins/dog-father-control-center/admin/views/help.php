@@ -28,7 +28,7 @@ $dfcc_map = array(
 	__( 'Layout, announcement bar, custom CSS', 'dog-father-control-center' ) => array( __( 'Theme Settings → Layout', 'dog-father-control-center' ), admin_url( 'admin.php?page=dfcc-theme' ) ),
 	__( 'Address, hours, email, map, social links', 'dog-father-control-center' ) => array( __( 'Global Settings', 'dog-father-control-center' ), admin_url( 'admin.php?page=dfcc-global' ) ),
 	__( 'Footer credit ("Designed by…")', 'dog-father-control-center' ) => array( __( 'Global Settings → Footer Credit', 'dog-father-control-center' ), admin_url( 'admin.php?page=dfcc-global' ) ),
-	__( 'Old page-builder warnings', 'dog-father-control-center' ) => array( __( 'Cleanup (Kubio)', 'dog-father-control-center' ), admin_url( 'admin.php?page=dfcc-cleanup' ) ),
+	__( 'Old page-builder warnings', 'dog-father-control-center' ) => array( __( 'Content Cleanup (appears only when needed)', 'dog-father-control-center' ), admin_url( 'admin.php?page=dfcc-cleanup' ) ),
 );
 
 $dfcc_faq = array(

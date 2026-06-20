@@ -44,6 +44,46 @@ $dfcc_is_theme = ( 'dog-father' === get_template() );
 		</div>
 	<?php endif; ?>
 
+	<?php
+	// Live setup progress checklist.
+	$dfcc_steps = array(
+		array( __( 'Run setup', 'dog-father-control-center' ), (bool) get_option( 'dfcc_setup_done' ) ),
+		array( __( 'Add a logo', 'dog-father-control-center' ), (bool) get_theme_mod( 'custom_logo' ) ),
+		array( __( 'Business phone / email', 'dog-father-control-center' ), ( '' !== dfcc_get_setting( 'dfcc_global_settings', 'phone', '' ) || '' !== dfcc_get_setting( 'dfcc_global_settings', 'email', '' ) ) ),
+		array( __( 'Brand colours chosen', 'dog-father-control-center' ), ( is_array( get_option( 'dfcc_theme_settings' ) ) && ! empty( get_option( 'dfcc_theme_settings' ) ) ) ),
+		array( __( 'Services added', 'dog-father-control-center' ), (bool) get_posts( array( 'post_type' => 'dfcc_service', 'numberposts' => 1, 'fields' => 'ids', 'post_status' => 'publish' ) ) ),
+		array( __( 'Gallery photos', 'dog-father-control-center' ), (bool) get_posts( array( 'post_type' => 'dfcc_gallery', 'numberposts' => 1, 'fields' => 'ids', 'post_status' => 'publish' ) ) ),
+		array( __( 'FAQs added', 'dog-father-control-center' ), (bool) get_posts( array( 'post_type' => 'dfcc_faq', 'numberposts' => 1, 'fields' => 'ids', 'post_status' => 'publish' ) ) ),
+		array( __( 'Testimonials added', 'dog-father-control-center' ), (bool) get_posts( array( 'post_type' => 'dfcc_testimonial', 'numberposts' => 1, 'fields' => 'ids', 'post_status' => 'publish' ) ) ),
+	);
+	$dfcc_done_n  = count( array_filter( wp_list_pluck( $dfcc_steps, 1 ) ) );
+	$dfcc_total_n = count( $dfcc_steps );
+	$dfcc_pct     = $dfcc_total_n ? (int) round( $dfcc_done_n / $dfcc_total_n * 100 ) : 0;
+	?>
+	<div class="dfcc-panel">
+		<h2><?php esc_html_e( 'Your progress', 'dog-father-control-center' ); ?></h2>
+		<p class="description" style="margin:0 0 10px;">
+			<?php
+			/* translators: 1: done count, 2: total. */
+			echo esc_html( sprintf( __( '%1$d of %2$d essentials complete (%3$d%%)', 'dog-father-control-center' ), $dfcc_done_n, $dfcc_total_n, $dfcc_pct ) );
+			?>
+		</p>
+		<div style="height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;">
+			<div style="height:100%;width:<?php echo esc_attr( $dfcc_pct ); ?>%;background:linear-gradient(90deg,#FEC208,#FF2D08);"></div>
+		</div>
+		<div style="display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:16px;">
+			<?php foreach ( $dfcc_steps as $dfcc_step ) : ?>
+				<span style="display:inline-flex;align-items:center;gap:7px;">
+					<span class="dashicons dashicons-<?php echo $dfcc_step[1] ? 'yes-alt' : 'marker'; ?>" style="color:<?php echo $dfcc_step[1] ? '#46b450' : '#9a9aa5'; ?>;"></span>
+					<?php echo esc_html( $dfcc_step[0] ); ?>
+				</span>
+			<?php endforeach; ?>
+		</div>
+		<p style="margin-top:14px;">
+			<a class="button button-primary" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-getting-started' ) ); ?>"><?php esc_html_e( 'Open the step-by-step guide', 'dog-father-control-center' ); ?></a>
+		</p>
+	</div>
+
 	<div class="dfcc-grid">
 		<div class="dfcc-panel">
 			<h2><?php esc_html_e( 'What this creates', 'dog-father-control-center' ); ?></h2>
@@ -72,7 +112,10 @@ $dfcc_is_theme = ( 'dog-father' === get_template() );
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-global' ) ); ?>"><?php esc_html_e( 'Add Business Info', 'dog-father-control-center' ); ?></a>
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-theme' ) ); ?>"><?php esc_html_e( 'Brand Colors', 'dog-father-control-center' ); ?></a>
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-home' ) ); ?>"><?php esc_html_e( 'Edit Homepage', 'dog-father-control-center' ); ?></a>
-				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=dfcc_service' ) ); ?>"><?php esc_html_e( 'Edit Services', 'dog-father-control-center' ); ?></a>
+				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-services' ) ); ?>"><?php esc_html_e( 'Manage Services', 'dog-father-control-center' ); ?></a>
+				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-gallery-manager' ) ); ?>"><?php esc_html_e( 'Manage Gallery', 'dog-father-control-center' ); ?></a>
+				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-faqs' ) ); ?>"><?php esc_html_e( 'Manage FAQs', 'dog-father-control-center' ); ?></a>
+				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=dfcc_testimonial' ) ); ?>"><?php esc_html_e( 'Testimonials', 'dog-father-control-center' ); ?></a>
 				<a class="dfcc-button" href="<?php echo esc_url( admin_url( 'admin.php?page=dfcc-help' ) ); ?>"><?php esc_html_e( 'Help & Docs', 'dog-father-control-center' ); ?></a>
 			</div>
 			<?php if ( $time ) : ?>

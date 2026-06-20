@@ -70,21 +70,21 @@ class DFCC_Onboarding extends DFCC_Module {
 		);
 		$pages[] = array(
 			'slug'     => 'dfcc-help',
-			'title'    => __( 'Help & Docs', 'dog-father-control-center' ),
+			'title'    => __( 'How-to / Help & Guide', 'dog-father-control-center' ),
 			'callback' => array( $this, 'render_help' ),
-			'order'    => 200,
+			'order'    => 910,
 		);
 		$pages[] = array(
 			'slug'     => 'dfcc-license',
 			'title'    => __( 'License', 'dog-father-control-center' ),
 			'callback' => array( $this, 'render_license' ),
-			'order'    => 210,
+			'order'    => 920,
 		);
 		$pages[] = array(
 			'slug'     => 'dfcc-about',
 			'title'    => __( 'About / Provada', 'dog-father-control-center' ),
 			'callback' => array( $this, 'render_about' ),
-			'order'    => 220,
+			'order'    => 930,
 		);
 		return $pages;
 	}

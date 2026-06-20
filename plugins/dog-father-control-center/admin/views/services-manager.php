@@ -70,12 +70,13 @@ $dfcc_row = static function ( $key, $post, $icons ) {
 				<span class="description"><?php esc_html_e( 'One feature per line — each becomes a ticked bullet on the card.', 'dog-father-control-center' ); ?></span>
 			</p>
 			<div class="dfcc-svc-flags">
-				<label><input type="checkbox" name="<?php echo $b; ?>[visible]" value="1" <?php checked( $vis_on ); ?> /> <?php esc_html_e( 'Show on website', 'dog-father-control-center' ); ?></label>
-				<label><input type="checkbox" name="<?php echo $b; ?>[highlight]" value="1" <?php checked( $feat_on ); ?> /> <?php esc_html_e( 'Featured', 'dog-father-control-center' ); ?></label>
+				<label title="<?php esc_attr_e( 'Uncheck to hide this service everywhere without deleting it.', 'dog-father-control-center' ); ?>"><input type="checkbox" name="<?php echo $b; ?>[visible]" value="1" <?php checked( $vis_on ); ?> /> <?php esc_html_e( 'Show on website', 'dog-father-control-center' ); ?> <span class="dfcc-svc-hint"><?php esc_html_e( '(visible to visitors)', 'dog-father-control-center' ); ?></span></label>
+				<label title="<?php esc_attr_e( 'Adds a “Popular” badge and a highlighted border to make this card stand out.', 'dog-father-control-center' ); ?>"><input type="checkbox" name="<?php echo $b; ?>[highlight]" value="1" <?php checked( $feat_on ); ?> /> <?php esc_html_e( 'Featured', 'dog-father-control-center' ); ?> <span class="dfcc-svc-hint"><?php esc_html_e( '(adds a “Popular” badge)', 'dog-father-control-center' ); ?></span></label>
 				<?php if ( ! $is_new ) : ?>
 					<label class="dfcc-svc-delete"><input type="checkbox" name="<?php echo $b; ?>[delete]" value="1" /> <?php esc_html_e( 'Delete this service', 'dog-father-control-center' ); ?></label>
 				<?php endif; ?>
 			</div>
+			<p class="dfcc-svc-flagnote description"><?php esc_html_e( '“Show on website” = visible to visitors (untick to hide without deleting). “Featured” = highlights the card with a “Popular” badge.', 'dog-father-control-center' ); ?></p>
 		</div>
 	</div>
 	<?php
@@ -110,6 +111,8 @@ $dfcc_row = static function ( $key, $post, $icons ) {
 			.dfcc-svc-flags{grid-column:span 4;display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding-top:6px;border-top:1px solid #f0f0f1;margin-top:4px;}
 			.dfcc-svc-flags label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:600;}
 			.dfcc-svc-delete{color:#cf240a;}
+			.dfcc-svc-hint{font-weight:400;color:#787c82;font-size:12px;}
+			.dfcc-svc-flagnote{margin:6px 0 0;}
 			.dfcc-svc-actions{position:sticky;bottom:0;background:rgba(255,255,255,.96);padding:14px 0;border-top:1px solid #e2e2e6;margin-top:6px;display:flex;gap:12px;align-items:center;}
 			@media(max-width:1100px){.dfcc-svc-grid{grid-template-columns:repeat(2,1fr);}.dfcc-svc-title,.dfcc-svc-wide,.dfcc-svc-flags{grid-column:span 2;}}
 		</style>
