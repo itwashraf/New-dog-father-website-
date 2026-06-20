@@ -66,6 +66,77 @@ class DFCC_Testimonials extends DFCC_Module {
 		add_action( 'manage_dfcc_testimonial_posts_custom_column', array( $this, 'render_column' ), 10, 2 );
 
 		add_shortcode( 'dfcc_testimonials', array( $this, 'shortcode' ) );
+		add_shortcode( 'dfcc_satisfaction', array( $this, 'satisfaction_shortcode' ) );
+	}
+
+	/**
+	 * [dfcc_satisfaction] — a customer-satisfaction summary band computed from
+	 * approved testimonials (average rating, review count, satisfaction %).
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public function satisfaction_shortcode( $atts ) {
+		$atts = shortcode_atts( array( 'title' => __( 'Customer Satisfaction', 'dog-father-control-center' ) ), $atts, 'dfcc_satisfaction' );
+
+		$reviews = get_posts(
+			array(
+				'post_type'        => 'dfcc_testimonial',
+				'post_status'      => 'publish',
+				'numberposts'      => 500,
+				'fields'           => 'ids',
+				'suppress_filters' => true,
+				'meta_query'       => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'   => self::PREFIX . 'approved',
+						'value' => '1',
+					),
+				),
+			)
+		);
+
+		$count = count( $reviews );
+		if ( 0 === $count ) {
+			return '';
+		}
+
+		$sum     = 0;
+		$happy   = 0;
+		foreach ( $reviews as $rid ) {
+			$r    = max( 1, min( 5, (int) self::get_meta( $rid, 'rating', 5 ) ) );
+			$sum += $r;
+			if ( $r >= 4 ) {
+				$happy++;
+			}
+		}
+		$avg     = round( $sum / $count, 1 );
+		$percent = (int) round( $happy / $count * 100 );
+
+		DFCC_Frontend_Assets::need();
+
+		$stats = array(
+			array( number_format_i18n( $avg, 1 ) . ' / 5', __( 'Average rating', 'dog-father-control-center' ) ),
+			array( $percent . '%', __( 'Would recommend us', 'dog-father-control-center' ) ),
+			array( number_format_i18n( $count ) . '+', __( 'Happy reviews', 'dog-father-control-center' ) ),
+		);
+
+		ob_start();
+		?>
+		<div class="dfcc-satisfaction">
+			<?php if ( '' !== $atts['title'] ) : ?>
+				<h2 class="dfcc-satisfaction-title"><?php echo esc_html( $atts['title'] ); ?></h2>
+			<?php endif; ?>
+			<div class="dfcc-satisfaction-grid">
+				<?php foreach ( $stats as $s ) : ?>
+					<div class="dfcc-satisfaction-stat">
+						<span class="dfcc-satisfaction-num"><?php echo esc_html( $s[0] ); ?></span>
+						<span class="dfcc-satisfaction-label"><?php echo esc_html( $s[1] ); ?></span>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php
+		return (string) ob_get_clean();
 	}
 
 	/**

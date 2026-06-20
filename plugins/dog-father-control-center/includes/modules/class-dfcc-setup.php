@@ -214,6 +214,7 @@ class DFCC_Setup extends DFCC_Module {
 		$this->seed_testimonials();
 		$this->seed_faqs();
 		$this->seed_gallery();
+		$this->seed_seo( $pages );
 
 		update_option( 'dfcc_setup_done', 1 );
 		update_option( 'dfcc_setup_time', current_time( 'mysql' ) );
@@ -237,7 +238,7 @@ class DFCC_Setup extends DFCC_Module {
 			'pickup'            => array( __( 'Pickup', 'dog-father-control-center' ), $this->pickup_content() ),
 			'shop'              => array( __( 'Shop', 'dog-father-control-center' ), __( 'Our pet shop is coming soon — premium food, accessories and care products for your dog. Stay tuned!', 'dog-father-control-center' ) ),
 			'gallery'           => array( __( 'Gallery', 'dog-father-control-center' ), '[dfcc_gallery]' ),
-			'testimonials'      => array( __( 'Testimonials', 'dog-father-control-center' ), '[dfcc_testimonials count="9"]' ),
+			'testimonials'      => array( __( 'Testimonials', 'dog-father-control-center' ), "[dfcc_satisfaction]\n\n[dfcc_testimonials count=\"12\"]" ),
 			'book-now'          => array( __( 'Book Now', 'dog-father-control-center' ), '[dfcc_booking_form]' ),
 			'booking'           => array( __( 'Booking', 'dog-father-control-center' ), '[dfcc_booking_form]' ),
 			'contact'           => array( __( 'Contact', 'dog-father-control-center' ), "[dfcc_address]\n[dfcc_phone]\n[dfcc_whatsapp]\n[dfcc_email]\n[dfcc_map]" ),
@@ -626,6 +627,101 @@ class DFCC_Setup extends DFCC_Module {
 			);
 			if ( $id && ! is_wp_error( $id ) ) {
 				update_post_meta( $id, '_dfcc_media_type', 'image' );
+			}
+		}
+	}
+
+	/**
+	 * Seed SEO: a site-wide title suffix + schema, and a meta title/description
+	 * for every standard page (only when empty, so owner edits are preserved).
+	 *
+	 * @param array $pages Slug => id map.
+	 * @return void
+	 */
+	private function seed_seo( $pages ) {
+		$biz  = (string) dfcc_get_setting( 'dfcc_global_settings', 'business_name', 'The Dog Father Hotel' );
+		$city = 'Cairo & Giza';
+
+		// Site-wide SEO defaults.
+		$seo = get_option( 'dfcc_seo_settings', array() );
+		$seo = is_array( $seo ) ? $seo : array();
+		if ( empty( $seo['sitewide_title_suffix'] ) ) {
+			$seo['sitewide_title_suffix'] = ' | ' . $biz;
+		}
+		if ( ! isset( $seo['enable_schema'] ) ) {
+			$seo['enable_schema'] = 1;
+		}
+		if ( ! isset( $seo['enable_sitemap'] ) ) {
+			$seo['enable_sitemap'] = 1;
+		}
+		update_option( 'dfcc_seo_settings', $seo );
+
+		/* translators: used inside seeded meta descriptions. */
+		$map = array(
+			'home'               => array(
+				$biz . ' — ' . __( 'Luxury Dog Boarding in', 'dog-father-control-center' ) . ' ' . $city,
+				__( 'Professional dog boarding, daily exercise, grooming, training and 24/7 care. Daily photo updates and on-call vet. Book your dog’s stay today.', 'dog-father-control-center' ),
+			),
+			'about'              => array(
+				__( 'About Us', 'dog-father-control-center' ),
+				__( 'Meet the team behind ', 'dog-father-control-center' ) . $biz . __( ' — dog lovers providing safe, professional boarding and care.', 'dog-father-control-center' ),
+			),
+			'services'           => array(
+				__( 'Our Services & Prices', 'dog-father-control-center' ),
+				__( 'Boarding, day care, training, spa & grooming, swimming, pickup and veterinary support — see what we offer and our prices.', 'dog-father-control-center' ),
+			),
+			'dog-boarding'       => array(
+				__( 'Dog Boarding', 'dog-father-control-center' ),
+				__( 'Private rooms, meals included, daily exercise and 24/7 supervision with daily WhatsApp updates. Professional overnight dog boarding.', 'dog-father-control-center' ),
+			),
+			'clinic'             => array(
+				__( 'Veterinary Clinic', 'dog-father-control-center' ),
+				__( 'Consultations, vaccinations, treatments and emergency support with our partnered licensed veterinary team.', 'dog-father-control-center' ),
+			),
+			'home-visit'         => array(
+				__( 'Vet Home Visits', 'dog-father-control-center' ),
+				__( 'Expert veterinary care at your doorstep: checkups, vaccinations, sample collection and follow-up care across ' . $city . '.', 'dog-father-control-center' ),
+			),
+			'pickup'             => array(
+				__( 'Pickup & Drop-off', 'dog-father-control-center' ),
+				__( 'Door-to-door pet transport across ' . $city . ' so your dog travels in comfort. Book a pickup today.', 'dog-father-control-center' ),
+			),
+			'gallery'            => array(
+				__( 'Gallery', 'dog-father-control-center' ),
+				__( 'See life at our hotel: suites, play garden, spa days, training and happy guests.', 'dog-father-control-center' ),
+			),
+			'testimonials'       => array(
+				__( 'Reviews & Testimonials', 'dog-father-control-center' ),
+				__( 'Read why dog parents trust us with their best friends. Real reviews and our customer-satisfaction record.', 'dog-father-control-center' ),
+			),
+			'book-now'           => array(
+				__( 'Book Now', 'dog-father-control-center' ),
+				__( 'Reserve your dog’s stay in minutes. Choose dates, tell us about your dog, and we’ll confirm right away.', 'dog-father-control-center' ),
+			),
+			'contact'            => array(
+				__( 'Contact Us', 'dog-father-control-center' ),
+				__( 'Get in touch with ', 'dog-father-control-center' ) . $biz . __( ' — phone, WhatsApp, email, address and opening hours.', 'dog-father-control-center' ),
+			),
+			'faq'                => array(
+				__( 'Frequently Asked Questions', 'dog-father-control-center' ),
+				__( 'Vaccinations, what to bring, feeding, medication, visits and more — answers to the questions dog parents ask most.', 'dog-father-control-center' ),
+			),
+			'vaccination-policy' => array(
+				__( 'Vaccination Policy', 'dog-father-control-center' ),
+				__( 'The vaccinations required before boarding to keep every guest safe: rabies, DHPP, anti-flea and deworming.', 'dog-father-control-center' ),
+			),
+		);
+
+		foreach ( $map as $slug => $meta ) {
+			if ( empty( $pages[ $slug ] ) ) {
+				continue;
+			}
+			$id = (int) $pages[ $slug ];
+			if ( '' === (string) get_post_meta( $id, '_dfcc_seo_meta_title', true ) ) {
+				update_post_meta( $id, '_dfcc_seo_meta_title', $meta[0] );
+			}
+			if ( '' === (string) get_post_meta( $id, '_dfcc_seo_meta_description', true ) ) {
+				update_post_meta( $id, '_dfcc_seo_meta_description', $meta[1] );
 			}
 		}
 	}

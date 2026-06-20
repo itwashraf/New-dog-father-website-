@@ -55,4 +55,32 @@ $dfcc_saved  = isset( $_GET['updated'] ); // phpcs:ignore WordPress.Security.Non
 			?>
 		</p>
 	</div>
+
+	<div class="dfcc-panel" style="border-left:4px solid var(--dfcc-gold,#FEC208);">
+		<h2 class="dfcc-section-title"><?php esc_html_e( 'For the seller (Provada) — how licensing works', 'dog-father-control-center' ); ?></h2>
+		<p><?php esc_html_e( 'This site’s domain is:', 'dog-father-control-center' ); ?> <code><?php echo esc_html( $domain ); ?></code></p>
+		<?php if ( $secret_set ) : ?>
+			<p><strong style="color:#46b450;"><?php esc_html_e( 'Domain-locked mode is ON.', 'dog-father-control-center' ); ?></strong>
+				<?php esc_html_e( 'Each client needs a key generated from their own domain. Generate one below, then send it to them to paste above.', 'dog-father-control-center' ); ?></p>
+			<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+				<input type="hidden" name="page" value="dfcc-license" />
+				<span>
+					<label for="gen_domain"><strong><?php esc_html_e( 'Client domain', 'dog-father-control-center' ); ?></strong></label><br />
+					<input type="text" id="gen_domain" name="gen_domain" class="regular-text" value="<?php echo esc_attr( $gen_domain ); ?>" placeholder="clientsite.com" />
+				</span>
+				<button type="submit" class="button"><?php esc_html_e( 'Generate key', 'dog-father-control-center' ); ?></button>
+			</form>
+			<?php if ( '' !== $gen_key ) : ?>
+				<p style="margin-top:12px;"><?php esc_html_e( 'Key for', 'dog-father-control-center' ); ?> <code><?php echo esc_html( $gen_domain ); ?></code>:
+					<code style="font-size:15px;background:#111;color:#FEC208;padding:4px 10px;border-radius:6px;"><?php echo esc_html( $gen_key ); ?></code>
+				</p>
+			<?php endif; ?>
+		<?php else : ?>
+			<p><strong><?php esc_html_e( 'Simple mode is ON (default):', 'dog-father-control-center' ); ?></strong>
+				<?php esc_html_e( 'any non-empty key activates. Good for your own projects.', 'dog-father-control-center' ); ?></p>
+			<p><?php esc_html_e( 'To sell with per-client keys, add this line to wp-config.php (the same secret in every copy you sell), then reload this page:', 'dog-father-control-center' ); ?></p>
+			<p><code>define( 'DFCC_LICENSE_SECRET', 'your-long-random-secret' );</code></p>
+			<p class="description"><?php esc_html_e( 'A generator will then appear here. Note: offline keys are convenient but can be extracted from the code by a determined buyer — for strong protection, connect a license server via the dfcc_license_validate filter (see Help & Docs).', 'dog-father-control-center' ); ?></p>
+		<?php endif; ?>
+	</div>
 </div>

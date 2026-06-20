@@ -53,6 +53,64 @@ class DFCC_Onboarding extends DFCC_Module {
 	public function register() {
 		add_filter( 'dfcc_admin_pages', array( $this, 'register_pages' ) );
 		add_action( 'admin_init', array( $this, 'handle_license_save' ) );
+		add_filter( 'dfcc_license_validate', array( $this, 'validate_license' ), 10, 2 );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Licensing (self-contained, offline domain-locked keys)
+	 * ------------------------------------------------------------------ */
+
+	/**
+	 * The seller's secret. Provada defines DFCC_LICENSE_SECRET (in the plugin
+	 * file or wp-config.php) — the SAME value in every copy they sell. When it
+	 * is not defined the plugin runs in "simple mode": any non-empty key works.
+	 *
+	 * @return string
+	 */
+	public static function license_secret() {
+		return defined( 'DFCC_LICENSE_SECRET' ) ? (string) DFCC_LICENSE_SECRET : '';
+	}
+
+	/**
+	 * Normalised current site domain (no scheme, no www).
+	 *
+	 * @return string
+	 */
+	public static function current_domain() {
+		$host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+		return strtolower( preg_replace( '/^www\./', '', $host ) );
+	}
+
+	/**
+	 * Generate the license key for a domain (seller side). Deterministic, so the
+	 * same domain always yields the same key for a given secret.
+	 *
+	 * @param string $domain Domain.
+	 * @return string XXXX-XXXX-XXXX-XXXX
+	 */
+	public static function generate_key( $domain ) {
+		$domain = strtolower( preg_replace( '/^www\./', '', trim( (string) $domain ) ) );
+		$hash   = strtoupper( substr( hash( 'sha256', self::license_secret() . '|' . $domain ), 0, 16 ) );
+		return implode( '-', str_split( $hash, 4 ) );
+	}
+
+	/**
+	 * Default license validation. Domain-locked when a secret is set, otherwise
+	 * simple mode. Filterable so a remote license server can replace it.
+	 *
+	 * @param string $status Incoming status.
+	 * @param string $key    Submitted key.
+	 * @return string 'active' | 'invalid' | ''
+	 */
+	public function validate_license( $status, $key ) {
+		$key = strtoupper( preg_replace( '/[^A-Z0-9\-]/i', '', (string) $key ) );
+		if ( '' === $key ) {
+			return '';
+		}
+		if ( '' === self::license_secret() ) {
+			return 'active'; // Simple mode.
+		}
+		return hash_equals( self::generate_key( self::current_domain() ), $key ) ? 'active' : 'invalid';
 	}
 
 	/**
@@ -224,11 +282,19 @@ class DFCC_Onboarding extends DFCC_Module {
 	 * @return void
 	 */
 	public function render_license() {
+		// Optional seller-side generator: ?gen_domain=example.com
+		$gen_domain = isset( $_GET['gen_domain'] ) ? sanitize_text_field( wp_unslash( $_GET['gen_domain'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$gen_key    = ( '' !== $gen_domain ) ? self::generate_key( $gen_domain ) : '';
+
 		$this->view(
 			'license',
 			array(
-				'license' => get_option( self::OPT_LICENSE, array() ),
-				'brand'   => array( 'name' => self::BRAND_NAME, 'url' => self::BRAND_URL ),
+				'license'    => get_option( self::OPT_LICENSE, array() ),
+				'brand'      => array( 'name' => self::BRAND_NAME, 'url' => self::BRAND_URL ),
+				'secret_set' => ( '' !== self::license_secret() ),
+				'domain'     => self::current_domain(),
+				'gen_domain' => $gen_domain,
+				'gen_key'    => $gen_key,
 			)
 		);
 	}
