@@ -131,7 +131,8 @@ Dog Father → **Homepage → Why Choose Us**: eyebrow, title, and 4 reasons
 Dog Father → **Homepage → Statistics**: 4 × (number + label).
 
 ### Gallery
-- Photos: Dog Father → Gallery (add items with Featured Image).
+- Photos: Dog Father → **Manage Gallery** (upload photo + caption, add several at
+  once, delete). Sample photos show until you add your own.
 - Heading + button: Dog Father → Homepage → Section Titles & Buttons.
 
 ### Testimonials
@@ -369,3 +370,50 @@ per-section `sec_{slug}_bg` / `sec_{slug}_space` drive scoped
 `.df-slot--{slug} > section { … }` rules printed by
 `dfather_section_inline_styles()`. The admin list is a jQuery-UI-sortable whose
 hidden `home_section_order[]` inputs submit in their dragged DOM order.
+
+---
+
+## 12. v1.3 — what changed (for maintainers)
+
+**Colours actually apply now.** The live colour `<style>` is printed at `wp_head`
+priority **15** (after `wp_print_styles` at 8) so it overrides `theme.css`
+`:root` defaults. If you ever see colours "not applying", check this priority
+first.
+
+**Full theme palette.** `DFCC_Theme_Settings::area_colors()` now maps friendly
+labels to every meaningful CSS variable (page bg, text, muted text, headings,
+links, accents, card/alt backgrounds, borders, header, buttons, footer). Each is
+emitted only when set; the theme consumes them with brand-palette fallbacks.
+
+**Control-panel appearance.** `dfcc_theme_settings['admin_appearance']`
+(`dark`|`light`) adds a body class on admin screens; `admin.css` has a
+`body.dfcc-admin-light` variable override. This is admin-only and never touches
+the website.
+
+**Gallery.** `dfcc_gallery` is now `public=false` (no blog-style archive, no
+empty block editor, no `/gallery` slug clash). Manage via `DFCC_Gallery`'s
+"Manage Gallery" screen. Missing images fall back to
+`dfather_default_gallery_image()` (theme) in both the homepage grid and the
+`[dfcc_gallery]` shortcode.
+
+**Content Cleanup.** The old "Cleanup (Kubio)" tab is now neutral "Content
+Cleanup" and only registers when `DFCC_Tools::has_builder_leftovers()` is true —
+so a clean site never shows it.
+
+**SEO seeding.** `DFCC_Setup::seed_seo()` fills a meta title/description for every
+standard page (only when empty) plus a site-wide title suffix; the existing SEO
+module outputs meta/OG/Twitter/schema.
+
+**Licensing (resale).** `DFCC_Onboarding::validate_license()` runs on the
+`dfcc_license_validate` filter. Define `DFCC_LICENSE_SECRET` (same value in every
+copy you sell) to switch from "simple mode" (any key works) to **domain-locked**
+keys validated offline. The License screen shows a per-client key generator
+(`DFCC_Onboarding::generate_key( $domain )`). For strong protection, replace the
+filter with a license-server callback.
+
+**Customer satisfaction.** `[dfcc_satisfaction]` renders average rating, % who
+would recommend, and review count from approved testimonials. It's placed on the
+seeded Testimonials page above `[dfcc_testimonials]`.
+
+**Menu order tail.** Backup (900) · How-to/Help & Guide (910) · License (920) ·
+About / Provada (930).
