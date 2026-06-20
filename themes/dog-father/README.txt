@@ -45,6 +45,9 @@ button.
 
 == Changelog ==
 
+= 1.3.5 =
+* Fixed: the “Save Services” button is now also shown at the TOP of Manage Services (not only in the sticky bar at the bottom), so it is always easy to find.
+
 = 1.3.4 =
 * Fixed: the phone + WhatsApp icons now stay visible in the header bar at all times on mobile (they used to only show when the menu was open).
 * Fixed: the mobile menu now shows all tabs — the contact icons and Book Now button were moved out of the slide-in drawer, so the menu is just your tabs (plus a full-width Book Now) and fits on screen.

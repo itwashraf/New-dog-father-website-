@@ -113,9 +113,15 @@ $dfcc_row = static function ( $key, $post, $icons ) {
 			.dfcc-svc-delete{color:#cf240a;}
 			.dfcc-svc-hint{font-weight:400;color:#787c82;font-size:12px;}
 			.dfcc-svc-flagnote{margin:6px 0 0;}
-			.dfcc-svc-actions{position:sticky;bottom:0;background:rgba(255,255,255,.96);padding:14px 0;border-top:1px solid #e2e2e6;margin-top:6px;display:flex;gap:12px;align-items:center;}
+			.dfcc-svc-topbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #e2e2e6;border-radius:10px;padding:14px 16px;margin:0 0 18px;}
+			.dfcc-svc-actions{position:sticky;bottom:0;background:rgba(255,255,255,.97);padding:14px 16px;border:1px solid #e2e2e6;border-radius:10px;margin-top:10px;display:flex;gap:12px;align-items:center;box-shadow:0 -2px 12px rgba(0,0,0,.06);}
 			@media(max-width:1100px){.dfcc-svc-grid{grid-template-columns:repeat(2,1fr);}.dfcc-svc-title,.dfcc-svc-wide,.dfcc-svc-flags{grid-column:span 2;}}
 		</style>
+
+		<div class="dfcc-svc-topbar">
+			<button type="submit" class="button button-primary button-hero"><span class="dashicons dashicons-saved" style="margin:4px 6px 0 0;"></span><?php esc_html_e( 'Save Services', 'dog-father-control-center' ); ?></button>
+			<span class="description"><?php esc_html_e( 'Edit any service below, then click Save. (There is also a Save button at the bottom.)', 'dog-father-control-center' ); ?></span>
+		</div>
 
 		<h2><?php esc_html_e( 'Your services', 'dog-father-control-center' ); ?></h2>
 		<?php
