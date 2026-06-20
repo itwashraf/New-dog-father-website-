@@ -62,7 +62,117 @@ class DFCC_Gallery extends DFCC_Module {
 		add_action( 'add_meta_boxes_dfcc_gallery', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post_dfcc_gallery', array( $this, 'save_meta' ), 10, 2 );
 
+		// Friendly all-in-one manager (upload photo + title, reorder, delete).
+		add_filter( 'dfcc_admin_pages', array( $this, 'register_page' ) );
+		add_action( 'admin_post_dfcc_save_gallery_items', array( $this, 'handle_manager_save' ) );
+
 		add_shortcode( 'dfcc_gallery', array( $this, 'shortcode' ) );
+	}
+
+	/**
+	 * Register the "Manage Gallery" control-center page.
+	 *
+	 * @param array $pages Existing pages.
+	 * @return array
+	 */
+	public function register_page( $pages ) {
+		$pages[] = array(
+			'slug'     => 'dfcc-gallery-manager',
+			'title'    => __( 'Manage Gallery', 'dog-father-control-center' ),
+			'callback' => array( $this, 'render_manager' ),
+			'order'    => 45,
+		);
+		return $pages;
+	}
+
+	/**
+	 * All gallery items in display order.
+	 *
+	 * @return WP_Post[]
+	 */
+	private function all_items() {
+		return get_posts(
+			array(
+				'post_type'        => 'dfcc_gallery',
+				'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+				'numberposts'      => -1,
+				'orderby'          => 'menu_order',
+				'order'            => 'ASC',
+				'suppress_filters' => true,
+			)
+		);
+	}
+
+	/**
+	 * Render the Gallery Manager screen.
+	 *
+	 * @return void
+	 */
+	public function render_manager() {
+		$this->view( 'gallery-manager', array( 'items' => $this->all_items() ) );
+	}
+
+	/**
+	 * Handle the Gallery Manager save (create / update / delete in one submit).
+	 *
+	 * @return void
+	 */
+	public function handle_manager_save() {
+		if ( ! current_user_can( dfcc_admin_cap() ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'dog-father-control-center' ) );
+		}
+		check_admin_referer( 'dfcc_save_gallery_items' );
+
+		$rows = isset( $_POST['item'] ) && is_array( $_POST['item'] ) ? wp_unslash( $_POST['item'] ) : array(); // phpcs:ignore WordPress.Security.ValidationSanitization.MissingUnslash, WordPress.Security.ValidationSanitization.InputNotSanitized
+
+		$order = 0;
+		foreach ( $rows as $key => $row ) {
+			$title    = isset( $row['title'] ) ? sanitize_text_field( $row['title'] ) : '';
+			$image_id = isset( $row['image_id'] ) ? absint( $row['image_id'] ) : 0;
+			$is_new   = ( 0 === strpos( (string) $key, 'new' ) );
+
+			// New blank rows only create when an image or title is provided.
+			if ( $is_new && '' === $title && ! $image_id ) {
+				continue;
+			}
+
+			// Delete existing rows flagged for removal.
+			if ( ! $is_new && ! empty( $row['delete'] ) ) {
+				wp_trash_post( (int) $key );
+				continue;
+			}
+
+			$postarr = array(
+				'post_type'   => 'dfcc_gallery',
+				'post_status' => 'publish',
+				'post_title'  => '' !== $title ? $title : __( 'Photo', 'dog-father-control-center' ),
+				'menu_order'  => $order,
+			);
+
+			if ( $is_new ) {
+				$id = wp_insert_post( $postarr );
+			} else {
+				$postarr['ID'] = (int) $key;
+				$id            = wp_update_post( $postarr );
+			}
+
+			if ( $id && ! is_wp_error( $id ) ) {
+				if ( $image_id ) {
+					set_post_thumbnail( $id, $image_id );
+				} else {
+					delete_post_thumbnail( $id );
+				}
+				update_post_meta( $id, self::PREFIX . 'media_type', 'image' );
+			}
+			$order++;
+		}
+
+		if ( function_exists( 'dfcc_purge_caches' ) ) {
+			dfcc_purge_caches();
+		}
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'dfcc-gallery-manager', 'dfcc_saved' => '1' ), admin_url( 'admin.php' ) ) );
+		exit;
 	}
 
 	/**
@@ -253,6 +363,7 @@ class DFCC_Gallery extends DFCC_Module {
 
 			<div class="dfcc-gallery dfcc-masonry dfcc-cols-<?php echo esc_attr( $columns ); ?>">
 				<?php
+				$dfcc_gi = 0;
 				while ( $query->have_posts() ) :
 					$query->the_post();
 					$id         = get_the_ID();
@@ -261,9 +372,12 @@ class DFCC_Gallery extends DFCC_Module {
 					$title      = get_the_title();
 					$item_terms = wp_get_post_terms( $id, 'dfcc_gallery_cat', array( 'fields' => 'slugs' ) );
 					$item_terms = is_wp_error( $item_terms ) ? array() : $item_terms;
+					$has_thumb  = has_post_thumbnail( $id );
+					$default    = ( ! $has_thumb && function_exists( 'dfather_default_gallery_image' ) ) ? dfather_default_gallery_image( $dfcc_gi ) : '';
+					$thumb      = $has_thumb ? get_the_post_thumbnail_url( $id, 'large' ) : $default;
 					$slug_attr  = esc_attr( implode( ' ', $item_terms ) );
-					$thumb      = get_the_post_thumbnail_url( $id, 'large' );
 					$is_video   = ( 'video' === $media_type && '' !== $video_url );
+					$dfcc_gi++;
 					?>
 					<figure class="dfcc-gallery-item<?php echo $is_video ? ' is-video' : ''; ?>" data-terms="<?php echo $slug_attr; ?>">
 						<?php
@@ -274,8 +388,10 @@ class DFCC_Gallery extends DFCC_Module {
 							echo '<button type="button" class="dfcc-gallery-trigger" ' . $data . ' aria-label="' . esc_attr( $title ) . '">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pieces escaped above.
 						}
 
-						if ( has_post_thumbnail( $id ) ) {
+						if ( $has_thumb ) {
 							echo get_the_post_thumbnail( $id, 'large', array( 'loading' => 'lazy', 'class' => 'dfcc-gallery-img', 'alt' => esc_attr( $title ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- core returns safe markup.
+						} elseif ( $default ) {
+							printf( '<img class="dfcc-gallery-img" src="%s" loading="lazy" alt="%s" />', esc_url( $default ), esc_attr( $title ) );
 						} else {
 							echo '<span class="dfcc-gallery-noimg" aria-hidden="true"></span>';
 						}

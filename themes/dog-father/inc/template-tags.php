@@ -91,13 +91,20 @@ function dfather_service_card( $id ) {
  * @return void
  */
 function dfather_gallery_item( $id ) {
+	static $fallback_index = 0;
 	$thumb = get_the_post_thumbnail( $id, 'dfather-card', array( 'loading' => 'lazy' ) );
 	?>
 	<div class="df-gallery-item">
 		<?php if ( $thumb ) : ?>
 			<?php echo $thumb; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		<?php else : ?>
-			<div class="df-gallery-item__ph"><span class="dashicons dashicons-camera"></span></div>
+			<?php $df_default = function_exists( 'dfather_default_gallery_image' ) ? dfather_default_gallery_image( $fallback_index ) : ''; ?>
+			<?php if ( $df_default ) : ?>
+				<img src="<?php echo esc_url( $df_default ); ?>" alt="<?php echo esc_attr( get_the_title( $id ) ); ?>" loading="lazy" />
+			<?php else : ?>
+				<div class="df-gallery-item__ph"><span class="dashicons dashicons-camera"></span></div>
+			<?php endif; ?>
+			<?php $fallback_index++; ?>
 		<?php endif; ?>
 		<span class="df-gallery-item__label"><?php echo esc_html( get_the_title( $id ) ); ?></span>
 	</div>

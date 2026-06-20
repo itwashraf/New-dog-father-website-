@@ -78,6 +78,34 @@ function dfather_default_image( $slot ) {
 }
 
 /**
+ * A rotating set of tasteful default gallery photos, used when a gallery item
+ * has no uploaded image yet. Override with the `dfather_default_gallery_images`
+ * filter, or upload your own in Dog Father → Manage Gallery (uploads win).
+ *
+ * @param int $index Zero-based position in the grid.
+ * @return string Image URL.
+ */
+function dfather_default_gallery_image( $index ) {
+	$images = apply_filters(
+		'dfather_default_gallery_images',
+		array(
+			'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?auto=format&fit=crop&w=800&q=80',
+			'https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&w=800&q=80',
+		)
+	);
+	if ( empty( $images ) ) {
+		return '';
+	}
+	return $images[ $index % count( $images ) ];
+}
+
+/**
  * Configured social profile links (only those with a URL set in
  * Dog Father → Global Settings → Social Media).
  *

@@ -111,11 +111,15 @@ class DFCC_Post_Types extends DFCC_Module {
 				array(
 					'menu_icon'    => 'dashicons-format-gallery',
 					'show_in_menu' => $menu,
-					'public'       => true,
-					'has_archive'  => true,
-					'rewrite'      => array( 'slug' => 'gallery' ),
-					'supports'     => array( 'title', 'editor', 'thumbnail' ),
-					'show_in_rest' => true,
+					// Gallery items are content blocks shown via the grid/shortcode,
+					// not standalone pages — so no public single/archive (which used
+					// to render a blog-style "Archives: Gallery" list) and no block
+					// editor confusion. Manage them from Dog Father → Manage Gallery.
+					'public'       => false,
+					'show_ui'      => true,
+					'has_archive'  => false,
+					'supports'     => array( 'title', 'thumbnail', 'page-attributes' ),
+					'show_in_rest' => false,
 				)
 			)
 		);
