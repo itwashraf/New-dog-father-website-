@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cpanelusername/public_html/wp-content/themes/dog-father/
+    - /bin/cp -R theme/. $DEPLOYPATH
