@@ -1,0 +1,7 @@
+---
+# This is the EDITING branch — do not connect this to cPanel deployment.
+# Use the 'theme' branch for theme deployment and 'plugins' branch for plugins deployment.
+#
+# Folder structure:
+#   theme/    → wp-content/themes/dog-father/
+#   plugins/  → wp-content/plugins/
